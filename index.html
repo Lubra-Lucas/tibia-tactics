@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="versao-site" content="2026-10-14.1"><!-- a cada deploy: trocar aqui, em VERSAO_SITE e nos ?v= dos scripts locais -->
+<meta name="versao-site" content="2026-10-15.1"><!-- a cada deploy: trocar aqui, em VERSAO_SITE e nos ?v= dos scripts locais -->
 <script id="auto-update">
 /* auto-atualização: o GitHub Pages cacheia 10 min; compara a versão do index no servidor com a desta página e recarrega se mudou */
 (function(){
@@ -728,11 +728,11 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
 <div id="ghost"></div>
 
 <script async src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
-<script src="tibia-assets/sprites15.js?v=2026-10-14.1"></script>
-<script src="tibia-assets/combate15.js?v=2026-10-14.1"></script>
+<script src="tibia-assets/sprites15.js?v=2026-10-15.1"></script>
+<script src="tibia-assets/combate15.js?v=2026-10-15.1"></script>
 <script>
 'use strict';
-const VERSAO_SITE='2026-10-14.1';   // bumpar junto com <meta versao-site> e os ?v= dos scripts a cada deploy
+const VERSAO_SITE='2026-10-15.1';   // bumpar junto com <meta versao-site> e os ?v= dos scripts a cada deploy
 /* =====================================================================================
    TIBIA TACTICS  -  auto-battler estilo TFT com visual do Tibia
    Parte 1: dados (unidades, sinergias, itens, monstros). Nada aqui toca o DOM.
@@ -802,7 +802,8 @@ const TRACOS={
    UNIDADES  (custo 1..5). hab = habilidade ativa (usa magias/efeitos/mísseis do COMB15)
    tipos de hab: alvo | onda | self | pos | cura | curaAmigo | curaArea | invocar | buff | seq
    ===================================================================================== */
-const HPG=1.8;   // fator global de vida (ajustado nas simulações para lutas de ~15-25 s)
+const VIDA_LUTA=1.35;   // multiplicador global de vida em combate (lutas mais longas); entra em HPG, logo vale para cartas, itens e monstros e a ficha mostra a vida real
+const HPG=1.8*VIDA_LUTA;   // fator global de vida (ajustado nas simulações para lutas de ~25-30 s)
 const CUSTO_HP=[0,520,640,780,980,1250].map(v=>Math.round(v*HPG)),CUSTO_AT=[0,55,70,90,120,160],CUSTO_SK=[0,130,180,250,350,500];
 const ESTR=[0,1,1.8,3.2];
 const U={},LISTA_U=[];
@@ -1053,7 +1054,7 @@ function nivelTraco(t,n){const L=TRACOS[t].niv;let r=-1;for(let i=0;i<L.length;i
 function criarCombate(eqA,eqB,o){o=o||{};
   const seed=(o.seed!==undefined?o.seed:sementeLuta())>>>0;   // todo o sorteio do combate sai daqui: mesmas equipes + mesma semente = mesma luta
   const C={seed,r:mulberry(seed),esp:false,t:0,tk:0,un:[],occ:new Int16Array(NC*NR),map:{},uid:0,ev:[],vis:!!o.vis,fim:false,venc:-2,vivos:[0,0],
-    semSalto:!!o.semSalto,sd:0,tr:[{},{}],niv:[{},{}],mortos:[],fx:[],tiros:[],txts:[],falas:[],dano:[0,0],cura:[0,0],tempoMax:o.tempoMax||30000,pve:!!o.pve,imp:[]};
+    semSalto:!!o.semSalto,sd:0,tr:[{},{}],niv:[{},{}],mortos:[],fx:[],tiros:[],txts:[],falas:[],dano:[0,0],cura:[0,0],tempoMax:o.tempoMax||40000,pve:!!o.pve,imp:[]};
   [eqA,eqB].forEach((eq,lado)=>{
     C.tr[lado]=contarTracos(eq.un.filter(s=>!s.inv&&!s.d.pve).map(s=>s.d.id));
     Object.keys(C.tr[lado]).forEach(t=>{C.niv[lado][t]=nivelTraco(t,C.tr[lado][t]);});
@@ -1106,7 +1107,7 @@ function aplicarTracos(C){
     if((n=L('invocador'))>=0)C.invMul=C.invMul||[1,1],C.invMul[lado]=[1.5,2][n];
     if((n=L('humano'))>=0){const v=[25,50,80][n];mem('humano',u=>{u.mana=Math.min(u.manaM||999,u.mana+v);});}
     if((n=L('orc'))>=0){const v=[.5,1.0][n];mem('orc',u=>{u.orcFuria=v;});}
-    if((n=L('anao'))>=0){const v=[300,700][n];mem('anao',u=>{u.hpM+=v;});}
+    if((n=L('anao'))>=0){const v=[300,700][n];mem('anao',u=>{u.hpM+=Math.round(v*VIDA_LUTA);});}
     if((n=L('elfo'))>=0){const v=[.20,.35][n];mem('elfo',u=>{u.esq+=v;});}
     if((n=L('morto'))>=0){const v=[.2,.4,.6][n];inim.forEach(u=>{u.armMul*=1-v;});}
     if((n=L('fera'))>=0){const a=[.20,.40][n],b=[.15,.30][n];mem('fera',u=>{u.asB+=a;u.dmgB+=b;});}
@@ -1305,7 +1306,7 @@ function passo(C){if(C.fim)return;C.t+=100;C.tk++;
   // eventos agendados (mísseis em voo, magias atrasadas)
   while(C.ev.length&&C.ev[0].t<=C.t){const e=C.ev.shift();e.f();}
   // morte súbita: depois do tempo máximo todo mundo sofre dano verdadeiro crescente
-  if(C.t>C.tempoMax){C.sd=(C.t-C.tempoMax)/1000;if(C.t%1000===0)C.un.forEach(u=>{if(!u.vivo)return;const d=Math.round(u.hpM*(.02+.006*C.sd));u.hp-=d;txt(C,u.x,u.y,''+d,'#ff4040');if(u.hp<=0)morrer(C,u,null);});}
+  if(C.t>C.tempoMax){C.sd=(C.t-C.tempoMax)/1000;if(C.t%500===0)C.un.forEach(u=>{if(!u.vivo)return;const d=Math.round(u.hpM*(.08+.04*C.sd)/2);u.hp-=d;txt(C,u.x,u.y,''+d,'#ff4040');if(u.hp<=0)morrer(C,u,null);});}
   // efeitos por segundo / por 2 segundos
   if(C.t%1000===0)C.un.forEach(u=>{if(!u.vivo)return;
     if(u.regen)curar(C,u,u.hpM*u.regen,false);if(u.mreg&&u.manaM)u.mana=Math.min(u.manaM,u.mana+u.mreg);if(u.ie.aura)auraInfernal(C,u);
@@ -1638,7 +1639,7 @@ function comecarCombate(G){const r=G.info;G.fase='combate';const vivos=vivosDe(G
 function durLuta(f){if(f.dur===undefined){if(f.C.fim)f.dur=f.C.t;else{const tw=criarCombate(f.eqA,f.eqB,{seed:f.seed,pve:!!f.pve});simular(tw);f.dur=tw.t;}}return f.dur;}
 /* aplica os resultados de todas as lutas já terminadas */
 function fecharRodada(G){const r=G.info,est=G.est,mortos=[];
-  G.pares.forEach(f=>{if(!f.C.fim)simular(f.C);const C=f.C;est.lutas++;est.ticks.push(C.t/100);if(C.t>30000)est.sd++;if(C.tempoEsgotado)est.tempoEsg++;
+  G.pares.forEach(f=>{if(!f.C.fim)simular(f.C);const C=f.C;est.lutas++;est.ticks.push(C.t/100);if(C.t>C.tempoMax)est.sd++;if(C.tempoEsgotado)est.tempoEsg++;
     if(f.pve){const p=f.a,v=C.venc===0;est.pveV[r.nome]=(est.pveV[r.nome]||0)+(v?1:0);est.pveN[r.nome]=(est.pveN[r.nome]||0)+1;
       p.ult={pve:true,v};histAdd(p,v?'v':'d');
       if(v){const ouro=r.est===1?[0,2,3][r.n-1]:3+r.est;p.ouro+=ouro;const q=r.est===1?1:2;p.drop={ouro,itens:[]};
@@ -2053,6 +2054,45 @@ function fusaoFim(a){const now=performance.now(),tx=(a.fim.X-BX)/TS,ty=(a.fim.Y-
   UI.fxPrep.push({id:E('magic_blue'),x:tx,y:ty,b:now});UI.fxPrep.push({id:E('yellow_rings'),x:tx,y:ty,b:now+110});
   UI.anims.push({k:'texto',b:now,dur:1100,X:a.fim.X,Y:a.fim.Y,e:a.e});delete UI.voando[a.alvo];UI.prevSujo=true;Sons.fundir&&Sons.fundir();}
 
+/* ---- clímax da luta (só visual, lê C.t / C.tempoMax; não mexe no motor nem sorteia nada): barra de força das equipes e morte súbita ---- */
+function desenharClimax(C,rt,now){
+  const meu=ESP?1:0,w=244,x0=10,y0=5,h=13,rd=UI.reduz;   // barra à esquerda do botão Placar (que fica no canto superior direito)
+  // barra "cabo de guerra": vida total viva (invocações incluídas) do seu time (azul) contra o inimigo (vermelho)
+  let a=0,b=0;C.un.forEach(u=>{if(u.vivo)(u.lado===meu?(a+=u.hp):(b+=u.hp));});
+  let F=UI.forca;if(!F||F.C!==C){F=UI.forca={C,a,b,ult:now,lid:0,vir:0,virLado:0,t0:now};}
+  const dt=Math.min(100,now-F.ult);F.ult=now;const k=rd?1:1-Math.pow(.992,dt);F.a+=(a-F.a)*k;F.b+=(b-F.b)*k;   // anima suave (a luta continua no motor, aqui só o desenho alcança)
+  const tot=F.a+F.b,fr=tot>0?clamp(F.a/tot,0,1):.5,lid=fr>.53?1:fr<.47?-1:0;
+  if(lid&&F.lid&&lid!==F.lid&&now-F.t0>2500){F.vir=now;F.virLado=lid;}   // virada: quem lidera trocou
+  if(lid)F.lid=lid;
+  const vt=now-F.vir,flash=!rd&&F.vir&&vt<700?1-vt/700:0,tr=flash?Math.round(Math.sin(vt/35)*1.5*flash):0;
+  // morte súbita ativa: vinheta e borda vermelhas ficam ATRÁS da barra de força
+  const TM=C.tempoMax,rest=TM-rt,sdOn=rt>=TM&&!C.fim,age=rt-TM,p=rd?.7:.5+.5*Math.sin(age/170);
+  if(sdOn){const al=.16+.16*p;cx.save();let gr=cx.createRadialGradient(CW/2,CH/2,CH*.28,CW/2,CH/2,CW*.62);gr.addColorStop(0,'rgba(255,0,0,0)');gr.addColorStop(1,'rgba(230,20,10,'+(al*1.8)+')');cx.fillStyle=gr;cx.fillRect(0,0,CW,CH);   // vinheta vermelha
+    cx.strokeStyle='rgba(255,50,40,'+(.35+.5*p)+')';cx.lineWidth=3;cx.strokeRect(BX-6,BY-6,NC*TS+12,NR*TS+12);cx.restore();}   // borda da arena
+  cx.save();cx.translate(tr,0);
+  cx.fillStyle='rgba(0,0,0,.75)';cx.fillRect(x0-1,y0-1,w+2,h+2);
+  const wa=Math.round(w*fr);
+  let g=cx.createLinearGradient(0,y0,0,y0+h);g.addColorStop(0,'#6aa6ff');g.addColorStop(1,'#2a56b8');cx.fillStyle=g;cx.fillRect(x0,y0,wa,h);
+  g=cx.createLinearGradient(0,y0,0,y0+h);g.addColorStop(0,'#ff7a6a');g.addColorStop(1,'#b8302a');cx.fillStyle=g;cx.fillRect(x0+wa,y0,w-wa,h);
+  cx.fillStyle='#fff';cx.fillRect(x0+wa-1,y0-2,2,h+4);   // marcador da divisa
+  if(flash){cx.strokeStyle='rgba(255,255,255,'+(flash*.9)+')';cx.lineWidth=2;cx.strokeRect(x0-1,y0-1,w+2,h+2);}
+  cx.font='bold 9px Verdana';cx.textBaseline='middle';cx.lineJoin='round';cx.lineWidth=2.4;cx.strokeStyle='#000';cx.fillStyle='#fff';
+  const ty=y0+h/2+.5,tx=(t,X,al)=>{cx.textAlign=al;cx.strokeText(t,X,ty);cx.fillText(t,X,ty);};
+  tx(Math.round(F.a)+'',x0+4,'left');tx(Math.round(F.b)+'',x0+w-4,'right');tx(Math.round(fr*100)+'%',x0+w/2,'center');
+  if(F.vir&&vt<1400&&!C.fim){const al=vt<1000?1:1-(vt-1000)/400;cx.globalAlpha=al;cx.font='bold 8px Verdana';cx.lineWidth=2.4;cx.strokeStyle='#000';cx.fillStyle=F.virLado>0?'#9fd0ff':'#ff9a8a';
+    const vy=y0+h+7+(rd?0:-Math.min(vt,300)/60);cx.textAlign='center';cx.strokeText('Virada!',x0+w/2,vy);cx.fillText('Virada!',x0+w/2,vy);cx.globalAlpha=1;}
+  cx.restore();
+  // morte súbita: contagem regressiva, faixa vermelha pulsando e banner
+  if(rest>0&&rest<=3000&&!C.fim){const n=Math.ceil(rest/1000);cx.save();cx.textAlign='center';cx.textBaseline='middle';cx.font='bold 8px Verdana';cx.lineWidth=2.4;cx.lineJoin='round';cx.strokeStyle='#000';cx.fillStyle=n===1?'#ff6a5a':'#ffd24a';
+    const t='Morte súbita em '+n+'…';cx.strokeText(t,x0+w/2,y0+h+14);cx.fillText(t,x0+w/2,y0+h+14);cx.restore();}
+  if(sdOn){cx.save();
+    if(age<1500){const e=rd?1:Math.min(1,age/180),sc=rd?1:1+.35*(1-e),fade=age>1100?1-(age-1100)/400:1;   // banner centralizado
+      cx.globalAlpha=fade;cx.translate(CW/2,CH/2-10);cx.scale(sc,sc);cx.textAlign='center';cx.textBaseline='middle';cx.font='bold 26px Verdana';cx.lineJoin='round';cx.lineWidth=6;cx.strokeStyle='#000';cx.strokeText('MORTE SÚBITA!',0,0);cx.fillStyle='#ff3b2e';cx.fillText('MORTE SÚBITA!',0,0);cx.lineWidth=0;cx.fillStyle='rgba(255,220,120,.35)';cx.fillText('MORTE SÚBITA!',0,-1);}
+    cx.restore();}}
+/* sons do clímax: tique na contagem e sirene na morte súbita (uma vez por luta) */
+function somClimax(C,rt){if(UI.demo||!C.vis)return;let S=UI.sdSom;if(!S||S.C!==C)S=UI.sdSom={C,n:99,sd:false};
+  const rest=C.tempoMax-rt;if(rest>0&&rest<=3000){const n=Math.ceil(rest/1000);if(n<S.n){S.n=n;tom(880+(3-n)*220,880+(3-n)*220,.12,'square',.07);}}
+  if(rest<=0&&!S.sd){S.sd=true;tom(520,260,.9,'sawtooth',.16);tom(260,130,1.1,'square',.09,.05);ruidoSom(.7,.14,900,200,1,'lowpass');}}
 function render(){if(!cx)return;const C=UI.C,rt=C?C.t+UI.acc:performance.now(),now=performance.now();ESP=!!(C&&C.esp);
   cx.setTransform(Z*DPR,0,0,Z*DPR,0,0);cx.imageSmoothingEnabled=false;cx.globalAlpha=1;
   desenharTabuleiro(rt);
@@ -2061,6 +2101,7 @@ function render(){if(!cx)return;const C=UI.C,rt=C?C.t+UI.acc:performance.now(),n
   if(UI.jog&&!UI.demo&&UI.espiar==null)renderBanco(C?now:rt);
   desenharDestaques(now);
   desenharAnims(now);
+  if(C&&!UI.demo&&C.vis)desenharClimax(C,rt,now);
   // hover sutil
   if(UI.hoverCel&&!UI.drag&&!UI.demo&&UI.espiar==null){const c=UI.hoverCel;cx.strokeStyle='rgba(255,230,140,.55)';cx.lineWidth=1;
     if(c.onde==='tab')cx.strokeRect(BX+c.x*TS+.5,BY+(c.y+4)*TS+.5,TS-1,TS-1);else if(c.onde==='banco')cx.strokeRect(BEN_X+c.i*TS+.5,BEN_Y+.5,TS-1,TS-1);}
@@ -2068,8 +2109,14 @@ function render(){if(!cx)return;const C=UI.C,rt=C?C.t+UI.acc:performance.now(),n
 function sincCombate(){const a=$('app'),cb=UI.fase==='combate'&&!!UI.C&&!UI.demo,c=cb&&!UI.lojaAberta;
   if(cb&&UI.jog){const o=UI.jog.ouro;$('mini-ouro').textContent=o;$('bt-m-rolar').disabled=o<2;$('bt-m-xp').disabled=o<4||UI.jog.nivel>=9;}
   a.classList.toggle('combate',cb);if(a.classList.contains('em-combate')===c)return;
-  a.classList.toggle('em-combate',c);ajustarCanvas();clearTimeout(sincCombate.t);sincCombate.t=setTimeout(ajustarCanvas,260);}   // em combate a loja vira uma faixa (ouro, rolar, XP); 'Abrir loja'/S traz tudo de volta
+  a.classList.toggle('em-combate',c);ajustarCanvas();if(!observaCaixa())clearTimeout(sincCombate.t),sincCombate.t=setTimeout(ajustarCanvas,260);}   // em combate a loja vira uma faixa (ouro, rolar, XP); 'Abrir loja'/S traz tudo de volta
 function alternarLoja(){if(!(UI.fase==='combate'&&UI.C&&!UI.demo))return;UI.lojaAberta=!UI.lojaAberta;sincCombate();}
+/* observa o tamanho do #cvbox: recalcula o canvas sempre que a caixa mudar (transição da loja, janela, timers atrasados); sem ResizeObserver cai no setTimeout + transitionend */
+function observaCaixa(){if(observaCaixa.ok!==undefined)return observaCaixa.ok;const box=$('cvbox');
+  if(!box||typeof ResizeObserver==='undefined'){const app=$('app');app&&app.addEventListener('transitionend',()=>ajustarCanvas());return observaCaixa.ok=false;}
+  let w=box.clientWidth,h=box.clientHeight,raf=0;
+  new ResizeObserver(()=>{if(box.clientWidth===w&&box.clientHeight===h)return;w=box.clientWidth;h=box.clientHeight;cancelAnimationFrame(raf);raf=requestAnimationFrame(ajustarCanvas);}).observe(box);   // só age se o tamanho da caixa mudou (o canvas fica dentro e não a redimensiona)
+  return observaCaixa.ok=true;}
 function ajustarCanvas(){const box=$('cvbox');if(!box||!cv)return;const w=box.clientWidth-8,h=box.clientHeight-6;
   const zr=Math.min(w/CW,h/CH),zi=Math.round(zr);DPR=Math.min(2,window.devicePixelRatio||1);
   // render (Z) inteiro: cada pixel de sprite uniforme; exibição (ZD) preenche o espaço; fora de proporção inteira o navegador reduz suave
@@ -2275,7 +2322,7 @@ function hudStrip(){const el=$('faixa-rodada');if(!el)return;if(!G||!UI.jog){el.
   el.innerHTML=h;retratosPend(el);}
 function hudTempo(){const t=$('tempo-n'),b=$('tempo-b'),f=$('fase-t');let n='',pc=0,lab=NOME_FASE[UI.fase]||'';
   if(UI.fase==='prep'){n=Math.max(0,Math.ceil(UI.timer));pc=100*UI.timer/UI.timerMax;if(G.info.tipo==='car')lab='Carrossel';}
-  else if(UI.fase==='combate'&&UI.C){const rest=30-UI.C.t/1000;if(rest>0){n=Math.ceil(rest);pc=100*rest/30;}else{n='!';pc=100;lab='Morte súbita';}}
+  else if(UI.fase==='combate'&&UI.C){const TM=UI.C.tempoMax/1000,rest=TM-UI.C.t/1000;if(rest>0){n=Math.ceil(rest);pc=100*rest/TM;}else{n='!';pc=100;lab='Morte súbita';}}
   else{n='-';pc=0;}
   if(t.textContent!==''+n)t.textContent=n;f.textContent=lab;b.style.width=pc+'%';}
 
@@ -2780,7 +2827,7 @@ function fecharTela(){limparConsulta();esconderTip();const t=$('tela');t.classNa
 function mostrarMenu(){UI.estado='menu';fecharTela();iniciarDemo();$('app').style.visibility='visible';$('app').classList.add('menu');
   telaHTML(`<div class="painel modal"><h1>Tibia Tactics</h1><div class="sub">Auto-battler de Tibia</div>
     <div class="herois">${VOCS.map(v=>`<div class="heroi ${UI.voc===v?'sel':''}" data-v="${v}"><canvas width="56" height="56" data-av="${v}"></canvas>${{knight:'Knight',paladin:'Paladin',sorcerer:'Sorcerer',druid:'Druid'}[v]}</div>`).join('')}</div>
-    <div class="menu"><button class="bt primario" id="b-jogar">Jogar</button><button class="bt" id="b-online">Jogar online</button><button class="bt" id="b-como">Como jogar</button><button class="bt" id="b-rec">Recordes</button><button class="bt" id="b-cartas">Novas cartas</button></div><p class="versao-jogo">Fase 4 · Etapa 1 — tabuleiro maior e personagens nítidos</p></div>`);
+    <div class="menu"><button class="bt primario" id="b-jogar">Jogar</button><button class="bt" id="b-online">Jogar online</button><button class="bt" id="b-como">Como jogar</button><button class="bt" id="b-rec">Recordes</button><button class="bt" id="b-cartas">Novas cartas</button></div><p class="versao-jogo">Fase 4 · Etapa 2 — lutas mais longas e emocionantes</p></div>`);
   retratosPend();$('tela').classList.add('menu');$('b-jogar').onclick=novaPartida;$('b-online').onclick=()=>mostrarOnline();$('b-como').onclick=()=>mostrarComoJogar(mostrarMenu);$('b-rec').onclick=mostrarRecordes;$('b-cartas').onclick=mostrarNovasCartas;
   document.querySelectorAll('.heroi').forEach(el=>el.onclick=()=>{UI.voc=el.dataset.v;document.querySelectorAll('.heroi').forEach(e=>e.classList.toggle('sel',e===el));});}
 function voltarMenu(){onlineSair();G=null;UI.jog=null;UI.C=null;UI.prev=null;mostrarMenu();}
@@ -2820,7 +2867,8 @@ function iniciarDemo(){UI.demoBioma=BIOMAS[Math.floor(Math.random()*BIOMAS.lengt
    Camada de rede com dois transportes de mesma interface: PeerJS (WebRTC, real) e BroadcastChannel (?rede=local, duas abas).
    Mensagens JSON {t:tipo,...}; o handshake leva a versão do protocolo.
    ===================================================================================== */
-const PROTO=5; // 5: oito novas cartas e counters; versões antigas não simulam o mesmo combate.
+const PROTO=6; // 6: vida em combate x1,35 (VIDA_LUTA) e morte súbita aos 40 s; versões antigas não simulam o mesmo combate.
+// Histórico: const PROTO=5;   // 5: oito novas cartas e counters; versões antigas não simulam o mesmo combate.
 // Histórico: const PROTO=4;   // 4 (Fase 2): itens viram códigos inteiros (id + forja + encantamento); comandos novos combinar, forjar e encantar; inventário de 15 vagas; o equipar não aceita mais pergaminho. Antes: 2: pub/rodada/res levam tb (tabuleiros públicos) e hh (histórico); mensagem 'emote'; desc do resultado ganha v e dano. 3: desc ganha dop (dano causado ao adversário) para o convidado tocar o ataque do avatar
 const MODO_REDE=(()=>{try{return new URLSearchParams(location.search).get('rede')==='local'?'local':'peerjs';}catch(e){return 'peerjs';}})();
 const ALFA_SALA='ABCDEFGHJKMNPQRSTUVWXYZ23456789';           // sem letras que confundem (I, L, O, 0, 1)
@@ -3239,7 +3287,7 @@ function laco(ts){requestAnimationFrame(laco);const dt=Math.min(100,ts-(UI.ultT|
   const espera=now<UI.intro||now<UI.freezeAte;   // entrada da luta e congelamento de impacto: só o motor visual espera (o relógio do anfitrião é por setInterval)
   if(UI.C&&!pausa&&(UI.demo||UI.estado==='jogo'&&UI.fase==='combate')){
     if(!espera){UI.acc=Math.min(UI.acc+dt*(UI.demo?1:UI.vel),500);while(UI.acc>=100&&!UI.C.fim){passo(UI.C);UI.acc-=100;}}
-    if(!UI.demo){const I=UI.C.imp;while(UI.impIdx<I.length){impactoUI(I[UI.impIdx++].k,now);}somCombate(UI.C,UI.C.t+UI.acc);}
+    if(!UI.demo){const I=UI.C.imp;while(UI.impIdx<I.length){impactoUI(I[UI.impIdx++].k,now);}somCombate(UI.C,UI.C.t+UI.acc);somClimax(UI.C,UI.C.t+UI.acc);}
     if(UI.C.fim){UI.acc=0;UI.fimEm+=dt;if(UI.demo){if(UI.fimEm>2500)iniciarDemo();}else if(UI.fimEm>1500&&!Online.ativo)finalizarRodadaUI();}}
   else if(UI.estado==='jogo'&&!pausa){
     if(UI.fase==='prep'&&Online.host){}      // o relógio do anfitrião roda em tiqueHost (setInterval)
@@ -3261,7 +3309,7 @@ function laco(ts){requestAnimationFrame(laco);const dt=Math.min(100,ts-(UI.ultT|
 /* =====================================================================================
    Inicialização
    ===================================================================================== */
-function iniciar(){cv=$('cv');cx=cv.getContext('2d');ajustarCanvas();addEventListener('resize',ajustarCanvas);
+function iniciar(){cv=$('cv');cx=cv.getContext('2d');ajustarCanvas();observaCaixa();addEventListener('resize',ajustarCanvas);
   cv.addEventListener('pointerdown',pointerDownCv);$('grade-itens').addEventListener('pointerdown',pointerDownItem);
   addEventListener('pointermove',pointerMove);addEventListener('pointerup',pointerUp);addEventListener('keydown',teclado);
   cv.addEventListener('pointerleave',()=>{if(!UI.drag){esconderTip();UI.hoverCel=null;UI.hover=null;UI.hoverU=null;}});
