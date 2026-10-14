@@ -22,3 +22,9 @@ O arquivo `.nojekyll` já está incluído.
 
 Tibia e todos os sprites, nomes e marcas relacionados pertencem à CipSoft GmbH.
 Este é um projeto de fã, sem fins lucrativos e sem qualquer vínculo com a CipSoft.
+
+## Melhorias incrementais
+
+A etapa atual adiciona funções e elementos nas cartas, inspeção sem compra, resumo de espionagem e uma consulta de receitas com busca e filtros. Use **i** na carta para ver detalhes e **Receitas** para abrir o compêndio. O solo pausa durante a consulta; online continua. **P** abre o placar e **Tab** navega pelos controles.
+
+O ponto de retorno anterior às melhorias, as próximas etapas e os comandos de Git Bash estão em [docs/ETAPAS.md](docs/ETAPAS.md).

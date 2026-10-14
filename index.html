@@ -301,29 +301,29 @@ html.reduz .cslot:hover .carta:not(.vend){transform:translateY(var(--dy,0px)) ro
 #cpainel.on{display:block;animation:cpIn .12s ease-out both}
 #cpainel::after{content:'';position:absolute;left:var(--ax,50%);bottom:-7px;width:12px;height:12px;background:#0d0f17;border-right:1px solid var(--ouro2);border-bottom:1px solid var(--ouro2);transform:translateX(-50%) rotate(45deg)}
 @keyframes cpIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-#cpainel .cab{display:flex;align-items:center;gap:8px}
-#cpainel .cab h4{margin:0;flex:1;font:700 15px Cinzel,serif;color:var(--ouro);letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#cpainel .cab .cus{display:flex;align-items:center;gap:3px;font:700 14px Cinzel,serif;color:#fff1c4}
-#cpainel .cab .cus img{width:16px;height:16px}
-#cpainel .sub{font:10px Verdana;color:var(--mut);margin:1px 0 0;letter-spacing:.04em}
-#cpainel .st{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin:7px 0 6px}
-#cpainel .st div{display:flex;align-items:center;gap:5px;background:#0a0c13;border:1px solid #2a2616;border-radius:3px;padding:3px 5px}
-#cpainel .st svg{width:15px;height:15px;flex:none}
-#cpainel .st b{display:block;font:700 12px/1 Cinzel,serif;color:#fff1c4}
-#cpainel .st small{display:block;font:8px Verdana;color:var(--mut);text-transform:uppercase;letter-spacing:.05em;margin-top:2px}
-#cpainel .hab{padding-top:6px;border-top:1px solid #3a321c}
-#cpainel .hab .pm{font:700 12.5px Verdana;color:#ffe14a;text-shadow:0 1px 0 #000}
-#cpainel .hab .tp{display:inline-block;margin-left:6px;padding:0 6px;border:1px solid #6b5a2e;border-radius:8px;font:700 9px Cinzel,serif;color:var(--ouro);letter-spacing:.06em;text-transform:uppercase;vertical-align:1px}
-#cpainel .hab p{margin:3px 0 0;color:#d4cdb4}
-#cpainel .sn{margin-top:7px;padding-top:6px;border-top:1px solid #3a321c}
-#cpainel .sn .lin{display:flex;align-items:center;gap:8px;padding:1px 0}
-#cpainel .sn .ti{--s:30px}
-#cpainel .sn .nm{font:700 12.5px Cinzel,serif;color:#f0e8cc;flex:1}
-#cpainel .sn .pp{min-width:15px;height:14px;font-size:9px}
-#cpainel .sn .ct{font:700 13px Cinzel,serif;color:#fff1c4;white-space:nowrap}
-#cpainel .sn .ct i{font-style:normal;color:#9a957f;padding:0 3px}
-#cpainel .sn .ct u{text-decoration:none;font:700 9px Cinzel,serif;color:#1b1400;background:#ffd95a;border-radius:8px;padding:0 5px;margin-left:5px;text-transform:uppercase;letter-spacing:.04em}
-#cpainel .dica-up{margin-top:6px;padding-top:5px;border-top:1px solid #3a321c;color:#ffe27a;font-weight:700}
+:where(#cpainel,.detalhe-unidade) .cab{display:flex;align-items:center;gap:8px}
+:where(#cpainel,.detalhe-unidade) .cab h4{margin:0;flex:1;font:700 15px Cinzel,serif;color:var(--ouro);letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+:where(#cpainel,.detalhe-unidade) .cab .cus{display:flex;align-items:center;gap:3px;font:700 14px Cinzel,serif;color:#fff1c4}
+:where(#cpainel,.detalhe-unidade) .cab .cus img{width:16px;height:16px}
+:where(#cpainel,.detalhe-unidade) .sub{font:10px Verdana;color:var(--mut);margin:1px 0 0;letter-spacing:.04em}
+:where(#cpainel,.detalhe-unidade) .st{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin:7px 0 6px}
+:where(#cpainel,.detalhe-unidade) .st div{display:flex;align-items:center;gap:5px;background:#0a0c13;border:1px solid #2a2616;border-radius:3px;padding:3px 5px}
+:where(#cpainel,.detalhe-unidade) .st svg{width:15px;height:15px;flex:none}
+:where(#cpainel,.detalhe-unidade) .st b{display:block;font:700 12px/1 Cinzel,serif;color:#fff1c4}
+:where(#cpainel,.detalhe-unidade) .st small{display:block;font:8px Verdana;color:var(--mut);text-transform:uppercase;letter-spacing:.05em;margin-top:2px}
+:where(#cpainel,.detalhe-unidade) .hab{padding-top:6px;border-top:1px solid #3a321c}
+:where(#cpainel,.detalhe-unidade) .hab .pm{font:700 12.5px Verdana;color:#ffe14a;text-shadow:0 1px 0 #000}
+:where(#cpainel,.detalhe-unidade) .hab .tp{display:inline-block;margin-left:6px;padding:0 6px;border:1px solid #6b5a2e;border-radius:8px;font:700 9px Cinzel,serif;color:var(--ouro);letter-spacing:.06em;text-transform:uppercase;vertical-align:1px}
+:where(#cpainel,.detalhe-unidade) .hab p{margin:3px 0 0;color:#d4cdb4}
+:where(#cpainel,.detalhe-unidade) .sn{margin-top:7px;padding-top:6px;border-top:1px solid #3a321c}
+:where(#cpainel,.detalhe-unidade) .sn .lin{display:flex;align-items:center;gap:8px;padding:1px 0}
+:where(#cpainel,.detalhe-unidade) .sn .ti{--s:30px}
+:where(#cpainel,.detalhe-unidade) .sn .nm{font:700 12.5px Cinzel,serif;color:#f0e8cc;flex:1}
+:where(#cpainel,.detalhe-unidade) .sn .pp{min-width:15px;height:14px;font-size:9px}
+:where(#cpainel,.detalhe-unidade) .sn .ct{font:700 13px Cinzel,serif;color:#fff1c4;white-space:nowrap}
+:where(#cpainel,.detalhe-unidade) .sn .ct i{font-style:normal;color:#9a957f;padding:0 3px}
+:where(#cpainel,.detalhe-unidade) .sn .ct u{text-decoration:none;font:700 9px Cinzel,serif;color:#1b1400;background:#ffd95a;border-radius:8px;padding:0 5px;margin-left:5px;text-transform:uppercase;letter-spacing:.04em}
+:where(#cpainel,.detalhe-unidade) .dica-up{margin-top:6px;padding-top:5px;border-top:1px solid #3a321c;color:#ffe27a;font-weight:700}
 /* ---------- tooltip ---------- */
 #tip{position:fixed;z-index:60;display:none;pointer-events:none;max-width:290px;min-width:190px;background:linear-gradient(180deg,#1b1e2c,#0d0f17);border:1px solid var(--ouro2);box-shadow:inset 0 0 0 1px #05060a,0 6px 20px #000d;border-radius:3px;padding:8px 10px;font-size:10.5px;line-height:1.45}
 #tip h4{margin:0 0 3px;font:700 13px Cinzel,serif;color:var(--ouro);letter-spacing:.03em;display:flex;justify-content:space-between;gap:10px}
@@ -531,6 +531,108 @@ input{font:12px Verdana,Geneva,sans-serif;user-select:text;-webkit-user-select:t
 .bt.ic.mudo{position:relative}.bt.ic.mudo svg{opacity:.5}.bt.ic.mudo::after{content:'';position:absolute;left:5px;right:5px;top:50%;height:2px;background:#e0574a;transform:rotate(-40deg)}
 html.reduz *,html.reduz *::before,html.reduz *::after{animation-duration:.001s!important;animation-iteration-count:1!important;transition-duration:.001s!important}
 @media (max-width:1100px){.sin .ti{--s:38px}.sin .nm{font-size:12px}.sin .pips .tp{display:none}#faixa-rodada .drops img{width:22px;height:22px}#faixa-rodada .drops .ic img{width:32px;height:32px}}
+/* Fase 3 / etapa 1: leitura estratégica e consulta acessível. */
+.versao-jogo{margin:18px 0 0;font:11px/1.5 Verdana,sans-serif;color:#ada895}
+:root{--mut:#ada895;--foco:#9ddaff}
+#app{grid-template-columns:230px minmax(0,1fr) 224px;grid-template-rows:64px minmax(0,1fr) 208px;gap:8px;padding:8px}
+.painel{border-radius:5px}
+button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--foco);outline-offset:3px}
+.bt{min-height:32px}
+#topo{gap:12px}#cabdir{gap:10px}
+#tempo .txt,#estagio span{font-size:11px}
+.carta .cn{height:24px;padding:0 22px 0 4px;font-size:11px}
+.carta .identidade{display:flex;align-items:center;justify-content:space-between;gap:4px;padding:5px 7px;background:#111621;border-top:1px solid #373121;min-height:27px}
+.papel-badge{display:inline-flex;align-items:center;gap:5px;font:700 11px Verdana,sans-serif;color:#f2e5c4;white-space:nowrap}
+.papel-badge svg{width:14px;height:14px;flex:none}
+.elementos-mini{display:flex;gap:5px;font-size:16px;line-height:1}.elementos-mini i{font-style:normal}
+.detalhes-carta{position:absolute;top:7px;right:7px;z-index:31;border:1px solid #93815a;background:#101520;color:#f3df9e;width:23px;height:23px;border-radius:50%;font:bold 14px Georgia;cursor:pointer}
+.detalhes-carta:hover{background:#3c321c}
+.cslot:focus-within{z-index:31}
+.perfil-unidade{padding:8px 0}.perfil-unidade p{font:12px/1.6 Verdana,sans-serif;color:#b9b5a6;margin:7px 0 0}
+.elementos{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
+.elemento{display:inline-flex;align-items:center;gap:4px;color:var(--el);font:11px Verdana,sans-serif;border:1px solid color-mix(in srgb,var(--el) 30%,#242630);padding:4px 6px;border-radius:4px;background:#090e17}
+.elemento i{font-size:15px;font-style:normal;line-height:1}
+.defesas-el{display:flex;flex-wrap:wrap;gap:6px;padding:8px 0}.defesas-el b,.defesas-el small{width:100%}
+#cpainel{max-width:calc(100vw - 16px);max-height:calc(100dvh - 16px);overflow-y:auto}
+#espia-analise{margin-top:18px;padding-top:10px;border-top:1px solid #4d5364;font:12px/1.5 Verdana}
+#espia-analise[hidden]{display:none}
+#espia-analise h3{font-size:12px;color:#acd7ff}
+#espia-analise p{margin:7px 0}.analise-nome{color:#eee2c3}
+#espia-analise .lin{display:flex;justify-content:space-between;gap:8px;padding:5px 0;border-bottom:1px solid #252a35}
+#espia-analise .lin b{color:#f1dfb1}
+.analise-papeis{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+.analise-papeis span{background:#111521;border:1px solid #45422f;padding:3px 5px;border-radius:3px}
+#espia-analise ul{padding-left:17px;color:#d9d4c1}#espia-analise li{margin:7px 0}
+#espia-analise small{display:block;color:var(--mut);font-size:10px}
+.consulta{width:min(1000px,96vw);max-height:94dvh;padding:22px;text-align:left;box-shadow:0 20px 100px #000;border-color:#9b814b}
+.consulta-cab{display:flex;justify-content:space-between;align-items:center;gap:16px;padding-bottom:12px;border-bottom:1px solid #4b4028}
+.consulta-cab h2{margin:4px 0 0;font-size:25px;letter-spacing:0;text-transform:none}
+.eyebrow{font:10px Verdana,sans-serif;text-transform:uppercase;letter-spacing:.18em;color:#b9a77c}
+.consulta-cab .bt{min-height:40px;flex:none}.consulta-cab kbd{font:10px Verdana,sans-serif;opacity:.65;margin-left:8px}
+.consulta-status{font:11px/1.5 Verdana,sans-serif;color:#b7c7d5;margin:12px 0 18px}
+.consulta-nota{font:12px/1.6 Verdana,sans-serif;color:#c7b98c;border-top:1px solid #4b4028;padding-top:12px}
+.detalhe-unidade{max-width:640px;margin:auto;font:13px/1.6 Verdana}
+.detalhe-unidade .cab{display:none}
+.detalhe-unidade .st{grid-template-columns:repeat(4,1fr);gap:8px;margin:15px 0}
+.detalhe-unidade .st div{padding:10px}.detalhe-unidade .st small{font-size:10px}
+.detalhe-unidade .st b{font-size:16px}.detalhe-unidade .hab p{font-size:13px}
+.receita-filtros{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:12px}
+.receita-filtros label{display:flex;flex-direction:column;gap:7px;color:#e8d8ad;font:12px Verdana,sans-serif;min-width:0}
+.receita-filtros input[type=search],.receita-filtros select{width:100%;min-width:0;min-height:42px;border:1px solid #665b41;background:#0a101b;color:#eee9dc;border-radius:5px;padding:9px;font:13px Verdana}
+.receita-filtros .receita-check{grid-column:1/-1;flex-direction:row;align-items:center;font-size:12px;min-height:28px;cursor:pointer}
+.receita-check input{width:18px;height:18px;accent-color:#d9b45a}
+.receita-ajuda{display:flex;justify-content:space-between;gap:10px;margin:14px 0 10px;font:11px/1.5 Verdana,sans-serif;color:var(--mut)}
+#receita-contagem{color:#e7cd8b;white-space:nowrap}
+.receita-layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:16px;align-items:start}
+#receita-lista{display:grid;gap:8px;max-height:360px;overflow:auto;padding:3px 6px 3px 3px;scrollbar-color:#655839 #0c1019}
+.receita-card{width:100%;display:flex;align-items:center;gap:12px;min-height:80px;padding:12px;text-align:left;background:linear-gradient(110deg,#202333,#11151f);border:1px solid #45402f;border-radius:5px;color:#e9dec2;cursor:pointer}
+.receita-card:hover,.receita-card.selecionada{border-color:#d9b45a;background:linear-gradient(110deg,#363021,#151822)}
+.receita-card>.ic{flex:none}.receita-card>span:not(.ic){flex:1;min-width:0}
+.receita-card b{font:700 13px/1.4 Verdana,sans-serif;display:block}.receita-card small{display:block;color:#c8b782;font:11px/1.5 Verdana,sans-serif;margin-top:3px}
+.receita-card em{display:block;font:10px/1.5 Verdana,sans-serif;font-style:normal;color:var(--mut);margin-top:3px}
+.receita-card strong{font:10px Verdana,sans-serif;color:#97dfa1;flex:none}
+#receita-detalhe{background:#0d121d;border:1px solid #4b4028;border-radius:5px;padding:16px;font:12px/1.6 Verdana,sans-serif;min-height:150px;overflow-wrap:anywhere}
+#receita-detalhe .cabi{display:flex;gap:10px;align-items:center;margin-bottom:12px}
+#receita-detalhe h4{margin:0;font-size:16px;color:#efdba4}#receita-detalhe .sb{display:block;color:var(--mut);font-size:11px}
+#receita-detalhe .lin{display:flex;justify-content:space-between;gap:8px;padding:4px 0}
+#receita-detalhe .hab{border-top:1px solid #3d3727;padding:10px 0;margin-top:10px}
+.receita-guia{margin-top:20px;border-top:1px solid #4b4028;padding-top:14px}
+.receita-guia summary{font:700 12px/1.6 Verdana,sans-serif;color:#dfc58d;cursor:pointer;padding:8px 0}
+.receita-guia .txt{overflow:auto;margin-top:10px}
+.receita-vazia{font:13px/1.7 Verdana,sans-serif;padding:20px;color:#c6c0ac}
+@media(max-width:1200px){
+ #app{grid-template-columns:190px minmax(0,1fr) 190px}#topo{gap:8px}#logo{font-size:21px}#cabdir{gap:7px}#trilha{display:none}
+ #base{grid-template-columns:170px minmax(0,1fr) 165px}.carta .identidade{padding:5px 3px}.papel-badge{font-size:10px}.carta .pie{padding:0 3px;gap:2px}.carta .pie .ti{--s:27px}
+}
+@media(max-width:900px){
+ html,body{height:auto;min-height:100%;overflow:auto;overflow-x:hidden}
+ #app{height:auto;min-height:100dvh;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto min(72vh,570px) auto auto;padding:6px;gap:6px}
+ #topo{grid-column:1/-1;grid-row:1;flex-wrap:wrap;gap:10px;padding:10px}#centro{grid-column:1/-1;grid-row:2}#base{grid-column:1/-1;grid-row:3;grid-template-columns:minmax(0,1fr) 180px}
+ #loja{grid-column:1/-1;grid-row:1;min-height:200px}#itens{grid-column:1;grid-row:2}#botoes{grid-column:2;grid-row:2}
+ #esq{grid-column:1;grid-row:4;max-height:400px}#dir{grid-column:2;grid-row:4;max-height:600px}
+ #cabdir{flex:1;flex-wrap:wrap;justify-content:flex-end;gap:10px}#tempo{min-width:100px}#nivelbox{min-width:95px}
+ #faixa-rodada{flex-wrap:wrap;min-height:44px}#espia{white-space:normal;max-width:calc(100% - 12px)}
+ .cslot:hover .carta:not(.vend){transform:none}.carta{transform:none}.carta .copias{font-size:9px}
+ .detalhes-carta{width:28px;height:28px;top:5px;right:5px}.carta .cn{padding-right:27px}
+ .bt.peq{min-height:34px}
+}
+@media(max-width:540px){
+ #app{grid-template-rows:auto 440px auto auto auto;grid-template-columns:minmax(0,1fr)}
+ #esq{grid-column:1;grid-row:4;max-height:230px}#dir{grid-column:1;grid-row:5}
+ #logo{font-size:22px}#estagio{min-width:60px}#cabdir{flex-basis:100%;justify-content:space-between;gap:8px}#nivelbox{min-width:80px}
+ #cabdir .stat{gap:3px}#cabdir .stat b{font-size:15px}#cabdir .stat small{font-size:8px}#cabdir .stat img{width:20px;height:20px}
+ #cabdir .bt{padding:5px 7px}#base{grid-template-columns:minmax(0,1fr) 140px}
+ #loja{min-height:208px;overflow:hidden}#cartas{overflow-x:auto;overflow-y:hidden;padding:5px 2px 10px;gap:8px;scroll-snap-type:x proximity}
+ .cslot{min-width:135px;scroll-snap-align:start}.carta .cn{font-size:11px}.carta .pie .ti{--s:30px}
+ #grade-itens{grid-template-columns:repeat(4,1fr)}#botoes .bt{font-size:10px;letter-spacing:0}
+ .consulta{padding:14px;width:96vw}.consulta-cab{gap:6px}.consulta-cab h2{font-size:21px}.consulta-cab kbd{display:none}.consulta-cab .bt{font-size:10px;padding:8px}
+ .eyebrow{font-size:8px;letter-spacing:.1em}.consulta-status{font-size:10px}
+ .receita-filtros{grid-template-columns:minmax(0,1fr)}.receita-ajuda{flex-direction:column;gap:3px}
+ .receita-layout{grid-template-columns:minmax(0,1fr)}#receita-lista{max-height:260px}.receita-card{padding:10px;gap:8px}
+ .receita-card strong{font-size:9px}.receita-card b{font-size:12px}.detalhe-unidade .st{grid-template-columns:repeat(2,1fr)}
+ .modal{padding:16px}.modal h1{font-size:44px}.modal .sub{letter-spacing:.15em}.herois{gap:4px}.heroi{width:66px}
+}
+
 </style>
 </head>
 <body>
@@ -555,13 +657,13 @@ html.reduz *,html.reduz *::before,html.reduz *::after{animation-duration:.001s!i
   <main id="centro">
     <div id="faixa-rodada" class="painel"></div>
     <div id="cvbox"><div id="cvw"><canvas id="cv"></canvas><div id="faixa"></div><div id="aviso"></div>
-      <button class="bt peq" id="bt-meter" title="Placar da luta: dano causado, recebido e cura (Tab)"><svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="9" width="3.5" height="6"/><rect x="6.2" y="2" width="3.5" height="13"/><rect x="11.5" y="6" width="3.5" height="9"/></svg>Placar</button>
+      <button class="bt peq" id="bt-meter" title="Placar da luta: dano causado, recebido e cura (P)"><svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="9" width="3.5" height="6"/><rect x="6.2" y="2" width="3.5" height="13"/><rect x="11.5" y="6" width="3.5" height="9"/></svg>Placar</button>
       <div id="meter" class="painel"></div>
       <div id="espia" class="painel"><span>Tabuleiro de <b id="espia-nome"></b></span><button class="bt peq" id="bt-espia-v">Voltar</button></div>
       <div id="emotes" class="painel"></div>
     </div></div>
   </main>
-  <aside id="dir" class="painel"><h2>Jogadores</h2><div id="jogadores"></div></aside>
+  <aside id="dir" class="painel"><h2>Jogadores</h2><div id="jogadores"></div><section id="espia-analise" aria-label="Análise do adversário" hidden></section></aside>
   <footer id="base">
     <div id="itens" class="painel"><h3><span data-tip="bt:itens">Itens</span><span class="bts"><button class="bt peq" id="bt-forjar" data-tip="bt:forjar" style="display:none">Forjar</button><button class="bt peq" id="bt-rec" data-tip="bt:rec">Receitas</button></span></h3><div id="grade-itens"></div></div>
     <div id="loja" class="painel"><div id="cartas"></div><div id="zona-venda"><div class="vt">Vender por</div><div class="vv"><img src="tibia-assets/sprites15/ui/gold.png" alt=""><span id="venda-v">0</span></div></div></div>
@@ -1901,7 +2003,7 @@ function render(){if(!cx)return;const C=UI.C,rt=C?C.t+UI.acc:performance.now(),n
     if(c.onde==='tab')cx.strokeRect(BX+c.x*TS+.5,BY+(c.y+4)*TS+.5,TS-1,TS-1);else if(c.onde==='banco')cx.strokeRect(BEN_X+c.i*TS+.5,BEN_Y+.5,TS-1,TS-1);}
 }
 function ajustarCanvas(){const box=$('cvbox');if(!box||!cv)return;const w=box.clientWidth-8,h=box.clientHeight-6;
-  const zr=Math.min(w/CW,h/CH);Z=zr>=2?Math.floor(zr):Math.max(1,Math.floor(zr*16)/16);DPR=Math.min(2,window.devicePixelRatio||1);
+  const zr=Math.min(w/CW,h/CH);Z=zr>=2?Math.floor(zr):Math.max(.25,Math.floor(zr*16)/16);DPR=Math.min(2,window.devicePixelRatio||1);
   cv.style.width=Math.round(CW*Z)+'px';cv.style.height=Math.round(CH*Z)+'px';cv.width=Math.round(CW*Z*DPR);cv.height=Math.round(CH*Z*DPR);
   $('meter').classList.toggle('fora',(box.clientWidth-CW*Z)/2>=236);}   // placar ao lado do tabuleiro quando há espaço; senão sobre ele
 
@@ -1911,6 +2013,22 @@ function ajustarCanvas(){const box=$('cvbox');if(!box||!cv)return;const w=box.cl
 const $=id=>document.getElementById(id);
 let G=null;
 const NOME_EL={phys:'físico',fire:'fogo',energy:'energia',earth:'terra',ice:'gelo',holy:'sagrado',death:'morte'};
+/* Fase 3 / etapa 1: apresentação dos dados que o motor já utiliza. */
+const PAPEIS={
+ carry:{n:'Carry',ico:'atk',d:'Causa dano. Itens de ataque ou de magia reforçam sua especialidade.'},
+ tanque:{n:'Tanque',ico:'arm',d:'Segura a linha de frente. Escolha armadura contra físico e resistência mágica contra elementos.'},
+ suporte:{n:'Suporte',ico:'vida',d:'Sustenta o time com cura e reforços. Proteja sua posição.'},
+ invocador:{n:'Invocador',ico:'mana',d:'Cria aliados durante o combate. Mana ajuda a invocar mais cedo.'}};
+const PAPEL_CLASSE={guardiao:'tanque',guerreiro:'carry',atirador:'carry',mago:'carry',assassino:'carry',curandeiro:'suporte',invocador:'invocador'};
+const EL_SIMBOLO={phys:'⚔',fire:'♨',ice:'❄',earth:'◆',energy:'ϟ',holy:'✦',death:'☽'};
+function partesHab(d){return d.hab?(d.hab.t==='seq'?d.hab.seq:[d.hab]):[];}
+function elementosUnidade(d){return [...new Set([d.el||'phys',...partesHab(d).flatMap(h=>[h.el,h.dot&&h.dot.el]).filter(Boolean)])];}
+function chipElemento(el){return `<span class="elemento" style="--el:${EL[el].cor}"><i aria-hidden="true">${EL_SIMBOLO[el]}</i>${NOME_EL[el]}</span>`;}
+function seloPapel(d){const r=PAPEIS[PAPEL_CLASSE[d.k]];return r?`<span class="papel-badge">${SVG_ST[r.ico]}${r.n}</span>`:'';}
+function perfilUnidade(d){const r=PAPEIS[PAPEL_CLASSE[d.k]];
+  return `<div class="perfil-unidade">${seloPapel(d)}<div class="elementos">${elementosUnidade(d).map(chipElemento).join('')}</div>${r?`<p>${r.d}</p>`:''}</div>`;}
+function defesasElementais(u){const els=Object.keys(NOME_EL).filter(e=>e!=='phys'&&(u.res[e]||0)!==0);
+  return els.length?`<div class="defesas-el"><b>Proteção elemental adicional</b>${els.map(e=>`<span>${chipElemento(e)} ${Math.round(Math.min(.6,u.res[e])*100)}%</span>`).join('')}<small>Aplicada depois da resistência mágica.</small></div>`:'';}
 const NOME_FASE={prep:'Preparação',combate:'Combate',resultado:'Resultado',espera:'Aguardando'};
 const ROMANO=n=>n+'º';
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -1957,7 +2075,7 @@ const chipTraco=t=>`<span class="tg">${iconeTraco(t,nivAgora(t),'',true)}${trNom
 const CACHE_ST={};
 function statCarta(id){let s=CACHE_ST[id];if(s)return s;
   const C=criarCombate({un:[{d:U[id],e:1,x:0,y:7,itens:[]}]},{un:[]},{semSalto:true,seed:1}),u=C.un[0];
-  return CACHE_ST[id]={hp:Math.round(u.hpM),atk:Math.round(u.atk),arm:Math.round(u.arm),al:u.al,as:u.as*(1+u.asB),m0:Math.round(u.mana),mM:u.manaM};}
+  return CACHE_ST[id]={hp:Math.round(u.hpM),atk:Math.round(u.atk),arm:Math.round(u.arm),rm:Math.round(u.rm),al:u.al,as:u.as*(1+u.asB),m0:Math.round(u.mana),mM:u.manaM};}
 const SVG_ST={
   vida:'<svg viewBox="0 0 14 14"><path fill="#e0574a" stroke="#4a0f0a" d="M7 12.6S1.4 8.8 1.4 5A3 3 0 0 1 7 3.7 3 3 0 0 1 12.6 5C12.6 8.8 7 12.6 7 12.6z"/></svg>',
   atk:'<svg viewBox="0 0 14 14"><path fill="#e6e2d2" stroke="#3a3830" d="M12.5 1.5l-.3 3-6.6 6.6-2.7-2.7L9.5 1.8z"/><path stroke="#c9971c" stroke-width="1.6" d="M3 11l-1.5 1.5M4.3 8.7l3 3"/></svg>',
@@ -1973,9 +2091,9 @@ function htmlPainelCarta(i){const p=UI.jog,id=p&&p.loja[i];if(!id)return '';
   const lin=t=>{const T=TRACOS[t],a=cnt[t]||0,b=a+(novo?1:0),na=nivelTraco(t,a),nb=nivelTraco(t,b);
     return `<div class="lin">${iconeTraco(t,nb,'',true)}<span class="nm">${T.n}</span>${pipsTraco(t,b)}<span class="ct">${a}<i>→</i>${b}${nb>na?`<u>${na<0?'ativa':'sobe'}</u>`:''}</span></div>`;};
   let h=`<div class="cab"><h4>${esc(d.nome)}</h4><span class="cus">${d.c}<img src="${ICO.ouro}" alt=""></span></div><div class="sub">${TRACOS[d.o].n} · ${TRACOS[d.k].n}</div>
-    <div class="st">${cel('vida',st.hp,'Vida')}${cel('atk',st.atk,'Ataque')}${cel('arm',st.arm,'Armadura')}${cel('al',st.al+(st.al>1?' tiles':' tile'),'Alcance')}${cel('vel',st.as.toFixed(2)+'/s','Vel. ataque')}${cel('mana',st.mM?st.m0+'/'+st.mM:'-','Mana')}</div>
+    ${perfilUnidade(d)}<div class="st">${cel('vida',st.hp,'Vida')}${cel('atk',st.atk,'Ataque')}${cel('arm',st.arm,'Armadura')}${cel('mana',st.rm,'Res. mágica')}${cel('al',st.al+(st.al>1?' tiles':' tile'),'Alcance')}${cel('vel',st.as.toFixed(2)+'/s','Vel. ataque')}${cel('mana',st.mM?st.m0+'/'+st.mM:'-','Mana')}</div>
     <div class="hab">${hb?`<span class="pm">"${esc(hb.p)}"</span><span class="tp">${esc(hb.tipo)}</span><p>${hb.txt}.</p>`:'<p>Sem habilidade ativa.</p>'}</div>
-    <div class="sn"><div class="sub" style="margin:0 0 3px">Sinergias: no tabuleiro agora → depois da compra</div>${lin(d.o)}${lin(d.k)}</div>`;
+    <div class="sn"><div class="sub" style="margin:0 0 3px">Sinergias: agora → se posicionar esta unidade</div>${lin(d.o)}${lin(d.k)}</div>`;
   if(pv.up)h+=`<div class="dica-up">${pv.up===3?'Comprar forma 3 estrelas (já tem duas cópias de 2 estrelas)':'Comprar forma 2 estrelas (já tem duas cópias)'}</div>`;
   return h;}
 /* o painel só aparece acima da carta levantada (dentro da tela); forcar = reconstruir o conteúdo da carta que continua sob o mouse */
@@ -1991,11 +2109,12 @@ function tipUnidade(d,e,itens,u){const cl=CLASSES[d.k];const star=d.pve?'':'<spa
   const sk=d.pve?'':`<span style="color:${TIER_COR[d.c]}">${d.c} <img src="${ICO.ouro}" style="width:11px;height:11px;vertical-align:-2px"></span>`;
   const tr=d.pve?'Criatura selvagem':chipTraco(d.o)+chipTraco(d.k);
   const L=(a,b)=>`<div class="lin"><span>${a}</span><b>${b}</b></div>`;
-  let h=`<h4><span>${esc(d.nome)}</span>${star||''}${sk}</h4><div class="sb">${tr}</div>`;
+  let h=`<h4><span>${esc(d.nome)}</span>${star||''}${sk}</h4><div class="sb">${tr}</div>${perfilUnidade(d)}`;
   if(u){const asv=u.as*(1+u.asB)*(u.furia?1+u.orcFuria:1);
-    h+=L('Vida',(u.vivo&&u.hp<u.hpM?Math.round(u.hp)+' / ':'')+Math.round(u.hpM))+L('Ataque',Math.round(u.atk*(1+u.dmgB)))+L('Vel. de ataque',asv.toFixed(2)+'/s')+L('Armadura',Math.round(u.arm))+L('Alcance',u.al===1?'corpo a corpo':u.al+' tiles');
+    h+=L('Vida',(u.vivo&&u.hp<u.hpM?Math.round(u.hp)+' / ':'')+Math.round(u.hpM))+L('Ataque',Math.round(u.atk*(1+u.dmgB)))+L('Vel. de ataque',asv.toFixed(2)+'/s')+L('Armadura',Math.round(armEff(u)))+L('Res. mágica',Math.round(u.rm))+L('Alcance',u.al===1?'corpo a corpo':u.al+' tiles');
     if(u.manaM)h+=L('Mana',Math.round(u.mana)+' / '+u.manaM);
     if(u.crit)h+=L('Crítico',Math.round(u.crit*100)+'%');if(u.ap)h+=L('Poder de habilidade','+'+Math.round(u.ap*100)+'%');if(u.esq)h+=L('Esquiva',Math.round(u.esq*100)+'%');if(u.roubo)h+=L('Roubo de vida',Math.round(u.roubo*100)+'%');}
+  if(u)h+=defesasElementais(u);
   h+=`<div class="hab"><b style="color:#d9b45a">Habilidade</b><br>${descHab(d,e)}</div>`;
   if(itens&&itens.length)h+='<div class="itl">'+itens.map(c=>{const it=itemInfo(c);if(!it)return '';
     return `<div class="itx">${htmlItem(c,{tip:false})}<div><b>${esc(it.n)}</b>${it.enc?` <em style="color:${it.enc.cor}">· ${esc(it.enc.n)}</em>`:''}<span>${it.rec?`<u style="text-decoration:none;color:#d9b45a">${esc(it.base.fx)}</u>: `:''}${esc(it.d)}</span></div></div>`;}).join('')+'</div>';
@@ -2115,7 +2234,7 @@ function hudLoja(){const p=UI.jog;if(!p)return;
     const d=U[id],cop=copias(p,id,1),pv=previaCompra(p,id),dest=pv.up?'pert'+(pv.up===3?' pert3':''):pv.tem?'tem':'';
     return `<div class="cslot" data-i="${i}" style="${leque}"><div class="carta c${d.c} ${p.ouro<d.c?'pobre':''} ${dest}" style="--chao:url(tactics-assets/chao_${BIOMA_O[d.o]}.png)"><div class="cin"><div class="cn">${esc(d.nome)}</div>
       <div class="art"><span class="tecla">${i+1}</span><span class="cu">${d.c}<img src="${ICO.ouro}" alt=""></span><canvas width="128" height="92" data-and="${id}" data-k="${i}"></canvas></div>
-      <div class="pie">${iconeTraco(d.o,pv.nO,pv.acO?'acende':'',true)}${iconeTraco(d.k,pv.nK,pv.acK?'acende':'',true)}${cop?`<span class="copias">${cop} no time</span>`:''}</div></div>${pv.up?`<span class="selo">${'★'.repeat(pv.up)}</span>`:''}</div></div>`;}).join('');
+      <div class="identidade">${seloPapel(d)}<span class="elementos-mini" aria-label="Elementos: ${elementosUnidade(d).map(e=>NOME_EL[e]).join(', ')}">${elementosUnidade(d).map(e=>`<i style="color:${EL[e].cor}" title="${NOME_EL[e]}">${EL_SIMBOLO[e]}</i>`).join('')}</span></div><div class="pie">${iconeTraco(d.o,pv.nO,pv.acO?'acende':'',true)}${iconeTraco(d.k,pv.nK,pv.acK?'acende':'',true)}${cop?`<span class="copias">${cop} no time</span>`:''}</div></div>${pv.up?`<span class="selo">${'★'.repeat(pv.up)}</span>`:''}</div><button class="detalhes-carta" type="button" data-detalhe="${i}" aria-label="Detalhes de ${esc(d.nome)}" title="Ver função, elementos e habilidade">i</button></div>`;}).join('');
   retratosPend($('cartas'));hudOdds();
   const k=UI.hoverCartaI;if(k>=0){const sl=$('cartas').children[k];if(sl&&p.loja[k]&&p.loja[k]===UI.hoverCartaId)cartaHover(sl,true);else cartaHover(null);}}   // o painel acompanha a carta sob o mouse
 function hudOdds(){const p=UI.jog;if(!p)return;const el=$('odds');if(el._nv===p.nivel)return;el._nv=p.nivel;const o=ODDS[p.nivel];
@@ -2191,7 +2310,7 @@ function forjarUI(){const p=UI.jog;if(!p||UI.estado!=='jogo')return;const par=ac
   usarPlano({tipo:'forjar',a:par.c,b:par.c,r:codForjar(par.c,par.c),cmd:{t:'forjar',a:par.a,ca:par.c,b:par.b,cb:par.c}},{slot:par.a,slot2:par.b});}
 function hudItens(){const p=UI.jog;if(!p)return;let h='';
   for(let i=0;i<MAX_ITENS;i++){const c=p.itens[i];h+=`<div class="slot ${c!==undefined?'cheio':''}" data-s="${i}">${c!==undefined?htmlItem(c,{slot:i}):''}</div>`;}
-  $('grade-itens').innerHTML=h;const f=$('bt-forjar');if(f)f.style.display=acharParForja(p)?'':'none';}
+  $('grade-itens').innerHTML=h;const f=$('bt-forjar');if(f)f.style.display=acharParForja(p)?'':'none';if($('receita-lista'))atualizarReceitas();}
 /* ---------- tela de receitas: grade 8x8 de componentes, forja e encantamentos ---------- */
 function htmlGradeReceitas(){let h='<table class="grd"><tr><th></th>'+COMPS.map(c=>`<th>${htmlItem(c)}</th>`).join('')+'</tr>';
   COMPS.forEach(a=>{h+=`<tr><th>${htmlItem(a)}</th>`+COMPS.map(b=>`<td class="${a===b?'dg':''}" data-pa="${a}" data-pb="${b}">${htmlItem(RECEITA[a+'_'+b])}</td>`).join('')+'</tr>';});
@@ -2203,8 +2322,35 @@ function htmlExplicaItens(){return `<p>Os 8 componentes caem nas rodadas contra 
   <div class="recl">${ENCANTOS.map(e=>`<div>${htmlItem(e.pid)}<span><b>${esc(e.n)}</b><br>${esc(e.d)}</span></div>`).join('')}</div>`;}
 function ligarGradeReceitas(raiz){raiz.querySelectorAll('.grd td').forEach(td=>{td.onmouseenter=()=>{raiz.querySelectorAll('.grd td.hl').forEach(x=>x.classList.remove('hl'));
   const m=raiz.querySelector(`.grd td[data-pa="${td.dataset.pb}"][data-pb="${td.dataset.pa}"]`);if(m&&m!==td)m.classList.add('hl');};});}
-function mostrarReceitas(volta){telaHTML(`<div class="painel modal" style="width:min(780px,96vw)"><h2>Receitas</h2><div class="txt">${htmlExplicaItens()}</div><div class="menu" style="margin-top:12px"><button class="bt" id="b-v">Fechar</button></div></div>`,true);
-  ligarGradeReceitas($('tela'));$('b-v').onclick=volta||(()=>{fecharTela();});}
+let consultaAtual=null;
+function limparConsulta(){if(!consultaAtual)return;UI.pausado=consultaAtual.pausa;consultaAtual=null;}
+function fecharConsulta(){const c=consultaAtual;if(!c)return;fecharTela();if(c.volta)c.volta();if(c.foco&&c.foco.isConnected)c.foco.focus();}
+function abrirConsulta(titulo,html,volta){const foco=document.activeElement,pausa=UI.pausado;
+  telaHTML(`<section class="painel modal consulta" role="dialog" aria-modal="true" aria-labelledby="consulta-titulo"><header class="consulta-cab"><div><span class="eyebrow">Compêndio do aventureiro</span><h2 id="consulta-titulo">${esc(titulo)}</h2></div><button class="bt" id="consulta-fechar" aria-label="Fechar consulta">Fechar <kbd>Esc</kbd></button></header><p class="consulta-status">${Online.ativo?'Partida online: o tempo continua.':UI.estado==='jogo'?'Partida solo pausada durante a consulta.':'Explore unidades e equipamentos.'}</p>${html}</section>`,true);
+  consultaAtual={foco,pausa,volta};if(UI.estado==='jogo'&&!Online.ativo)UI.pausado=true;cartaHover(null);
+  $('consulta-fechar').onclick=fecharConsulta;$('consulta-fechar').focus();retratosPend($('tela'));}
+function mostrarDetalhesCarta(i){if(!UI.jog||!UI.jog.loja[i])return;const d=U[UI.jog.loja[i]];
+  abrirConsulta(d.nome,`<div class="detalhe-unidade">${htmlPainelCarta(i)}</div><p class="consulta-nota">Consultar não compra a unidade. Feche e clique na carta para comprar.</p>`);}
+const normalizarBusca=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+function receitaDisponivel(it,p){if(!p)return false;const a=p.itens.filter(c=>c===it.pa).length,b=p.itens.filter(c=>c===it.pb).length;return it.pa===it.pb?a>=2:a>=1&&b>=1;}
+function atualizarReceitas(){const selecionada=$('receita-lista').querySelector('.selecionada'),sel=selecionada&&+selecionada.dataset.receita,foco=document.activeElement.closest('[data-receita]'),fid=foco&&foco.dataset.receita;const busca=normalizarBusca($('receita-busca').value.trim()),papel=$('receita-papel').value,so=$('receita-disponivel').checked,p=UI.estado==='jogo'?UI.jog:null;
+  const lista=ITENS.filter(it=>it.rec&&(!papel||it.tag.includes(papel))&&(!so||receitaDisponivel(it,p))&&normalizarBusca([it.n,it.fx,itemInfo(it.id).d,ITEM[it.pa].n,ITEM[it.pb].n].join(' ')).includes(busca));
+  $('receita-contagem').textContent=lista.length+' de 36 receitas';
+  $('receita-lista').innerHTML=lista.length?lista.map(it=>`<button class="receita-card${it.id===sel?' selecionada':''}" data-receita="${it.id}" aria-controls="receita-detalhe">${htmlItem(it.id,{tip:false})}<span><b>${esc(it.n)}</b><small>${esc(it.fx)}</small><em>${esc(ITEM[it.pa].n)} + ${esc(ITEM[it.pb].n)}</em></span>${receitaDisponivel(it,p)?'<strong>Disponível</strong>':''}</button>`).join(''):'<p class="receita-vazia">Nenhuma receita com estes filtros. Tente outro termo ou desmarque o filtro de inventário.</p>';
+  $('receita-detalhe').innerHTML=lista.some(it=>it.id===sel)?htmlTipItem(sel):'<p>Selecione uma receita para ver os atributos e o efeito completo.</p>';
+  if(fid){const alvo=$('receita-lista').querySelector(`[data-receita="${fid}"]`)||$('receita-busca');alvo.focus({preventScroll:true});}}
+function mostrarReceitas(volta){abrirConsulta('Receitas e equipamentos',`
+  <div class="receita-filtros"><label>Buscar receita<input id="receita-busca" type="search" placeholder="Nome, efeito ou componente…" autocomplete="off"></label>
+  <label>Função do item<select id="receita-papel"><option value="">Todas as funções</option value="ad">Carry físico</option><option value="ap">Carry mágico</option><option value="tk">Tanque</option><option value="su">Suporte</option></select></label>
+  <label class="receita-check"><input id="receita-disponivel" type="checkbox" ${UI.estado==='jogo'?'':'disabled'}>Só o que posso montar</label></div>
+  <div class="receita-ajuda"><span id="receita-contagem" role="status"></span><span>Considera componentes soltos no inventário.</span></div>
+  <div class="receita-layout"><div id="receita-lista"></div><section id="receita-detalhe" aria-label="Detalhes da receita" aria-live="polite"></section></div>
+  <details class="receita-guia"><summary>Grade de combinações, forja e encantamentos</summary><div class="txt">${htmlExplicaItens()}</div></details>`,volta);
+  $('receita-busca').oninput=atualizarReceitas;$('receita-papel').onchange=atualizarReceitas;$('receita-disponivel').onchange=atualizarReceitas;
+  $('receita-lista').onclick=e=>{const card=e.target.closest('[data-receita]');if(!card)return;
+    $('receita-lista').querySelectorAll('.receita-card').forEach(c=>c.classList.toggle('selecionada',c===card));
+    $('receita-detalhe').innerHTML=htmlTipItem(+card.dataset.receita);};
+  atualizarReceitas();ligarGradeReceitas($('tela'));$('receita-busca').focus();}
 function hudBotoes(){const p=UI.jog;if(!p)return;const fase=UI.fase,car=G.info.tipo==='car';
   $('bt-rolar').disabled=p.ouro<2;$('bt-xp').disabled=p.ouro<4||p.nivel>=9;
   $('bt-trava').classList.toggle('on',!!p.travada);$('bt-pronto').disabled=fase!=='prep'||car||!!(Online.ativo&&(p.pronto||!p.vivo));
@@ -2215,7 +2361,7 @@ function atualizarSujos(){const s=UI.sujo;if(!G)return;
   if(UI.prevSujo)reconstruirPrev();
   if(UI.sujoRet){UI.sujoRet=false;retratosPend();}}
 function reconstruirPrev(){UI.prevSujo=false;if(!G||UI.C||!UI.jog){UI.prev=null;return;}
-  if(UI.espiar!==null&&G.jog[UI.espiar]){UI.prev=criarCombate(espDeJog(G.jog[UI.espiar],0),{un:[]},{semSalto:true,seed:1});UI.prev.un.forEach(u=>{u.vivo=true;});return;}   // modo espiar: tabuleiro de outro jogador, só leitura
+  if(UI.espiar!==null&&G.jog[UI.espiar]){UI.prev=criarCombate(espDeJog(G.jog[UI.espiar],0),{un:[]},{semSalto:true,seed:1});UI.prev.un.forEach(u=>{u.vivo=true;});hudAnaliseEspia();return;}   // modo espiar: tabuleiro de outro jogador, só leitura
   const p=UI.jog,ser=G.opoEq&&G.opoEq[p.id];
   UI.prev=criarCombate(espDeJog(p,0),ser?eqDes(ser):{un:[]},{semSalto:true,seed:1});UI.prev.un.forEach(u=>{u.vivo=true;});}
 
@@ -2285,7 +2431,23 @@ function espiarJog(id){if(!G||!UI.jog||UI.estado!=='jogo'||UI.pausado)return;con
   if(q===UI.jog||UI.espiar===id){sairEspiar();return;}
   if(UI.fase!=='prep'||UI.C){aviso('Só dá para espiar tabuleiros na preparação');return;}
   UI.espiar=id;UI.prevSujo=true;$('espia-nome').textContent=q.nome;$('espia').classList.add('on');cancelarArrasto();marcar('jog');}
-function sairEspiar(){if(UI.espiar===null)return;UI.espiar=null;UI.prevSujo=true;$('espia').classList.remove('on');marcar('jog');}
+function sairEspiar(){if(UI.espiar===null)return;UI.espiar=null;UI.prevSujo=true;$('espia').classList.remove('on');$('espia-analise').hidden=true;marcar('jog');}
+function hudAnaliseEspia(){const el=$('espia-analise'),q=G.jog[UI.espiar],un=UI.prev&&UI.prev.un||[];el.hidden=false;
+  if(!un.length){el.innerHTML='<h3>Tabuleiro vazio</h3><p>Este jogador ainda não posicionou unidades.</p>';return;}
+  const media=k=>Math.round(un.reduce((s,u)=>s+(k==='arm'?armEff(u):u[k]),0)/un.length);
+  const roles={},els={};un.forEach(u=>{const k=PAPEL_CLASSE[u.d.k];if(k)roles[k]=(roles[k]||0)+1;elementosUnidade(u.d).forEach(e=>els[e]=(els[e]||0)+1);});
+  const dicas=[];
+  if(roles.invocador)dicas.push('Invocações: ondas e explosões podem atingir vários alvos.');
+  if(un.some(u=>u.salta))dicas.push('Salto na retaguarda: proteja seus carries com posicionamento.');
+  if(un.some(u=>u.queima))dicas.push('Queima de mana: habilidades podem demorar mais para sair.');
+  if(un.some(u=>u.res.fire>0))dicas.push('Há proteção contra fogo. Considere outras fontes de dano.');
+  if(roles.suporte)dicas.push('Cura no time: concentrar dano pode impedir que um alvo se recupere.');
+  if(!dicas.length)dicas.push('Compare as defesas e ajuste seus itens e posicionamento.');
+  el.innerHTML=`<h3>Leitura do adversário</h3><p class="analise-nome">${esc(q.nome)} · ${un.length} unidades no tabuleiro</p>
+    <div class="analise-papeis">${Object.entries(roles).map(([k,n])=>`<span>${n} ${PAPEIS[k].n}</span>`).join('')}</div>
+    <div class="lin"><span>Armadura média</span><b>${media('arm')}</b></div><div class="lin"><span>Res. mágica média</span><b>${media('rm')}</b></div>
+    <p>Elementos disponíveis</p><div class="elementos">${Object.keys(els).map(chipElemento).join('')}</div>
+    <ul>${dicas.map(d=>`<li>${d}</li>`).join('')}</ul><small>Inclui itens e sinergias visíveis. A média não prevê o resultado da luta.</small>`;}
 function cancelarArrasto(){UI.pd=null;esconderPrevia();if(UI.drag){UI.drag=null;$('ghost').style.display='none';$('zona-venda').classList.remove('on','sobre');}}
 
 /* ---------- emotes (tecla E): balão amarelo, como a fala do Tibia; online vai para os outros ---------- */
@@ -2405,13 +2567,20 @@ function pointerUp(ev){const pd=UI.pd,d=UI.drag;UI.pd=null;if(!d)return;UI.drag=
     if(sl){const j=+sl.dataset.s;if(j!==d.idx&&p.itens[j]!==undefined)usarPlano(planoSobreItem(p,d.idx,j),{slot:d.idx,slot2:j});return;}
     const cel=celAt(ev);if(!cel)return;const L=unidadeEm(cel);if(!L)return;
     usarPlano(planoSobreUn(p,d.idx,L),{L});}}
-function teclado(ev){if(UI.estado!=='jogo'||UI.pausado||ev.ctrlKey||ev.metaKey||ev.altKey)return;const k=ev.key.toLowerCase();
+function teclado(ev){if(consultaAtual){
+    if(ev.key==='Escape'){ev.preventDefault();fecharConsulta();}
+    else if(ev.key==='Tab'){const els=[...$('tela').querySelectorAll('button,input,select,summary,[tabindex="0"]')].filter(el=>!el.disabled&&el.getClientRects().length),first=els[0],last=els[els.length-1];
+      if(ev.shiftKey&&document.activeElement===first){ev.preventDefault();last.focus();}else if(!ev.shiftKey&&document.activeElement===last){ev.preventDefault();first.focus();}}
+    return;}
+  if(ev.target.closest&&ev.target.closest('input,textarea,select,[contenteditable="true"]'))return;
+  if([' ','Enter','Tab'].includes(ev.key)&&ev.target.closest&&ev.target.closest('button,summary'))return;
+  if(UI.estado!=='jogo'||UI.pausado||ev.ctrlKey||ev.metaKey||ev.altKey)return;const k=ev.key.toLowerCase();
   if(UI.atq&&(k===' '||k==='enter')){pularAtaque();ev.preventDefault();return;}
   if(UI.emoteAberto){if(k>='1'&&k<='5'){enviarEmote(+k-1);return;}if(k==='e'||k==='escape'){fecharEmotes();return;}}
   if(k==='d'){rolarUI();}else if(k==='f'){xpUI();}else if(k==='l'){travarUI();}else if(k===' '){ev.preventDefault();pronto();}
   else if(k==='w'){const h=UI.hover;if(h)venderUI(h);else aviso('Passe o mouse sobre uma unidade sua e aperte W');}
   else if(k==='v'){alternarVel();}else if(k>='1'&&k<='5'){comprarUI(+k-1);}
-  else if(k==='e'){abrirEmotes();}else if(k==='tab'){ev.preventDefault();alternarMeter();}else if(k==='m'){alternarMudo();}
+  else if(k==='e'){abrirEmotes();}else if(k==='p'){alternarMeter();}else if(k==='tab'){return;}else if(k==='m'){alternarMudo();}
   else if(k==='escape'){if(UI.espiar!==null)sairEspiar();else pausar();}}
 function alternarVel(){if(Online.ativo)return;UI.vel=UI.vel===1?2:UI.vel===2?4:1;$('bt-vel').textContent=UI.vel+'x';}
 
@@ -2511,12 +2680,12 @@ function abrirCarrosselUI(){const c=G.car;if(!c||UI.pausado||UI.estado!=='jogo')
     if(!Online.ativo)setTimeout(()=>{if(UI.fase==='prep'&&G.info.tipo==='car')pronto(true);},900);});}
 
 /* ---------- telas ---------- */
-function telaHTML(h,leve){esconderTip();const t=$('tela');t.innerHTML=h;t.className='on'+(leve?' leve':'');}
-function fecharTela(){esconderTip();const t=$('tela');t.className='';t.innerHTML='';}
+function telaHTML(h,leve){limparConsulta();esconderTip();const t=$('tela');t.innerHTML=h;t.className='on'+(leve?' leve':'');}
+function fecharTela(){limparConsulta();esconderTip();const t=$('tela');t.className='';t.innerHTML='';}
 function mostrarMenu(){UI.estado='menu';fecharTela();iniciarDemo();$('app').style.visibility='visible';$('app').classList.add('menu');
   telaHTML(`<div class="painel modal"><h1>Tibia Tactics</h1><div class="sub">Auto-battler de Tibia</div>
     <div class="herois">${VOCS.map(v=>`<div class="heroi ${UI.voc===v?'sel':''}" data-v="${v}"><canvas width="56" height="56" data-av="${v}"></canvas>${{knight:'Knight',paladin:'Paladin',sorcerer:'Sorcerer',druid:'Druid'}[v]}</div>`).join('')}</div>
-    <div class="menu"><button class="bt primario" id="b-jogar">Jogar</button><button class="bt" id="b-online">Jogar online</button><button class="bt" id="b-como">Como jogar</button><button class="bt" id="b-rec">Recordes</button></div></div>`);
+    <div class="menu"><button class="bt primario" id="b-jogar">Jogar</button><button class="bt" id="b-online">Jogar online</button><button class="bt" id="b-como">Como jogar</button><button class="bt" id="b-rec">Recordes</button></div><p class="versao-jogo">Fase 3 · Etapa 1 — interface e estratégia</p></div>`);
   retratosPend();$('tela').classList.add('menu');$('b-jogar').onclick=novaPartida;$('b-online').onclick=()=>mostrarOnline();$('b-como').onclick=()=>mostrarComoJogar(mostrarMenu);$('b-rec').onclick=mostrarRecordes;
   document.querySelectorAll('.heroi').forEach(el=>el.onclick=()=>{UI.voc=el.dataset.v;document.querySelectorAll('.heroi').forEach(e=>e.classList.toggle('sel',e===el));});}
 function voltarMenu(){onlineSair();G=null;UI.jog=null;UI.C=null;UI.prev=null;mostrarMenu();}
@@ -2536,8 +2705,8 @@ function mostrarComoJogar(volta){
     <h3>Itens, receitas, forja e encantamentos</h3>${htmlExplicaItens()}
     <h3>Jogar online</h3><p>Em "Jogar online" um jogador cria a sala e passa o código de 4 letras aos amigos (2 a 8 jogadores); as vagas que sobrarem viram bots. O anfitrião roda a partida: se ele sair, a partida acaba; se um convidado cair, um bot assume e ele pode voltar com o mesmo código e nome. Online não há pausa nem velocidade 2x/4x; a preparação termina quando todos apertam Pronto ou o relógio zera.</p>
     <h3>Fim da luta</h3><p>Quando uma luta entre jogadores termina, o avatar de quem venceu corre até o do perdedor e lança a magia da vocação (Knight: exori; Paladin: exori san; Sorcerer: sudden death; Druid: avalanche). O dano aparece sobre o avatar atingido e a vida desce na lista da direita. É só visual e dura cerca de 1,5 s; clique no tabuleiro ou aperte <kbd>Espaço</kbd> para pular. Contra monstros, se você perder, o monstro mais forte que sobrou ataca o seu avatar.</p>
-    <h3>Espiar e placar</h3><p>Clique num jogador da lista da direita para ver o tabuleiro dele na preparação (só leitura); clique de novo, em "Voltar" ou aperte <kbd>Esc</kbd> para sair. O botão "Placar" (ou <kbd>Tab</kbd>) mostra o dano causado, o dano recebido e a cura de cada unidade na luta atual ou na última. Na preparação, a faixa acima do tabuleiro mostra a próxima onda e o butim (PvE) ou o adversário e as sinergias dele (PvP).</p>
-    <h3>Atalhos</h3><p><kbd>D</kbd> rolar &nbsp; <kbd>F</kbd> comprar XP &nbsp; <kbd>L</kbd> travar loja &nbsp; <kbd>1</kbd>-<kbd>5</kbd> comprar carta &nbsp; <kbd>W</kbd> vender a unidade sob o mouse &nbsp; <kbd>Espaço</kbd> pronto &nbsp; <kbd>V</kbd> velocidade do combate &nbsp; <kbd>E</kbd> emotes &nbsp; <kbd>Tab</kbd> placar da luta &nbsp; <kbd>M</kbd> mudo &nbsp; <kbd>Esc</kbd> pausa</p>
+    <h3>Espiar e placar</h3><p>Clique num jogador da lista da direita para ver o tabuleiro dele na preparação (só leitura); clique de novo, em "Voltar" ou aperte <kbd>Esc</kbd> para sair. O botão "Placar" (ou <kbd>P</kbd>) mostra o dano causado, o dano recebido e a cura de cada unidade na luta atual ou na última. Na preparação, a faixa acima do tabuleiro mostra a próxima onda e o butim (PvE) ou o adversário e as sinergias dele (PvP).</p>
+    <h3>Atalhos</h3><p><kbd>D</kbd> rolar &nbsp; <kbd>F</kbd> comprar XP &nbsp; <kbd>L</kbd> travar loja &nbsp; <kbd>1</kbd>-<kbd>5</kbd> comprar carta &nbsp; <kbd>W</kbd> vender a unidade sob o mouse &nbsp; <kbd>Espaço</kbd> pronto &nbsp; <kbd>V</kbd> velocidade do combate &nbsp; <kbd>E</kbd> emotes &nbsp; <kbd>P</kbd> placar da luta &nbsp; <kbd>Tab</kbd> navegar pelos controles &nbsp; <kbd>M</kbd> mudo &nbsp; <kbd>Esc</kbd> pausa</p>
     </div><div class="menu" style="margin-top:16px"><button class="bt" id="b-v">Voltar</button></div></div>`);ligarGradeReceitas($('tela'));$('b-v').onclick=volta||mostrarMenu;}
 function pausar(){if(UI.estado!=='jogo'||UI.pausado)return;UI.pausado=true;const on=Online.ativo;   // online: o jogo NÃO pausa, é só um menu
   telaHTML(`<div class="painel modal" style="width:min(380px,94vw)"><h2>${on?'Menu':'Pausa'}</h2><div class="menu"><button class="bt primario" id="b-c">Continuar</button><button class="bt" id="b-h">Como jogar</button><button class="bt" id="b-r">Receitas</button><button class="bt" id="b-a">${on?'Sair da partida':'Abandonar partida'}</button></div></div>`,true);
@@ -3001,7 +3170,7 @@ function iniciar(){cv=$('cv');cx=cv.getContext('2d');ajustarCanvas();addEventLis
   addEventListener('pointermove',pointerMove);addEventListener('pointerup',pointerUp);addEventListener('keydown',teclado);
   cv.addEventListener('pointerleave',()=>{if(!UI.drag){esconderTip();UI.hoverCel=null;UI.hover=null;UI.hoverU=null;}});
   document.body.addEventListener('pointerleave',()=>{esconderTip();cartaHover(null);UI.hoverTr=null;});
-  $('cartas').addEventListener('click',e=>{const s=e.target.closest('.cslot');if(s&&!s.querySelector('.vend'))comprarUI(+s.dataset.i);});
+  $('cartas').addEventListener('click',e=>{const info=e.target.closest('[data-detalhe]');if(info){mostrarDetalhesCarta(+info.dataset.detalhe);return;}const s=e.target.closest('.cslot');if(s&&!s.querySelector('.vend'))comprarUI(+s.dataset.i);});
   $('cartas').addEventListener('mouseover',e=>{if(!UI.drag)cartaHover(e.target.closest('.cslot'));});
   $('cartas').addEventListener('mouseleave',()=>cartaHover(null));
   $('bt-forjar').onclick=forjarUI;$('bt-rec').onclick=()=>{if(UI.estado==='jogo')mostrarReceitas(()=>fecharTela());};$('bt-rolar').onclick=rolarUI;$('bt-xp').onclick=xpUI;$('bt-trava').onclick=travarUI;$('bt-pronto').onclick=()=>pronto();$('bt-vel').onclick=alternarVel;$('bt-menu').onclick=pausar;$('logo').onclick=()=>{if(UI.estado==='jogo')pausar();};
