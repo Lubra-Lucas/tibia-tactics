@@ -13,7 +13,7 @@
 html,body{margin:0;height:100%;overflow:hidden;background:radial-gradient(ellipse at 50% 30%,#141824 0%,#07080c 70%);color:var(--txt);font:11px Verdana,Geneva,sans-serif;user-select:none;-webkit-user-select:none}
 img,canvas{image-rendering:pixelated}
 button{font-family:inherit}
-#app{display:grid;grid-template-columns:250px minmax(0,1fr) 236px;grid-template-rows:60px minmax(0,1fr) 176px;gap:6px;padding:6px;height:100vh}
+#app{display:grid;grid-template-columns:250px minmax(0,1fr) 236px;--hh:60px;--bh:176px;grid-template-rows:var(--hh) minmax(0,1fr) var(--bh);gap:6px;padding:6px;height:100vh}
 .painel{background:linear-gradient(180deg,var(--pn1),var(--pn2));border:1px solid #6b5a2e;box-shadow:inset 0 0 0 1px #05060a,inset 0 0 0 2px #2b2616,0 2px 10px #000a;border-radius:3px;padding:8px;position:relative;min-height:0}
 .painel h2,.painel h3{font:700 12px Cinzel,'Palatino Linotype',serif;color:var(--ouro);letter-spacing:.1em;text-transform:uppercase;margin:0 0 7px;padding-bottom:5px;border-bottom:1px solid var(--ouro3)}
 .painel h3{font-size:11px;margin-bottom:5px}
@@ -534,7 +534,7 @@ html.reduz *,html.reduz *::before,html.reduz *::after{animation-duration:.001s!i
 /* Fase 3 / etapa 1: leitura estratégica e consulta acessível. */
 .versao-jogo{margin:18px 0 0;font:11px/1.5 Verdana,sans-serif;color:#ada895}
 :root{--mut:#ada895;--foco:#9ddaff}
-#app{grid-template-columns:230px minmax(0,1fr) 224px;grid-template-rows:64px minmax(0,1fr) 208px;gap:8px;padding:8px}
+#app{grid-template-columns:230px minmax(0,1fr) 224px;--hh:64px;--bh:208px;grid-template-rows:var(--hh) minmax(0,1fr) var(--bh);gap:8px;padding:8px}
 .painel{border-radius:5px}
 button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--foco);outline-offset:3px}
 .bt{min-height:32px}
@@ -645,6 +645,15 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
 .ficha-unidade .hab{margin-top:15px;padding:12px 0;border-top:1px solid #655532}.ficha-unidade .itl{margin-top:12px}.ficha-unidade .itx{display:flex;gap:10px;margin:8px 0}.ficha-unidade .itx span{display:block}
 .estados-unidade{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}.estados-unidade>span{border:1px solid currentColor;padding:3px 6px;border-radius:4px;font-size:11px}
 @media(max-width:650px){.novas-cartas{grid-template-columns:minmax(0,1fr)}.nova-carta{padding:10px;gap:10px}.nova-carta canvas{width:64px;height:64px}}
+/* Combate: a loja recolhe e o tabuleiro ganha a altura toda (só desktop; no mobile a pilha rola) */
+@media(min-width:901px){#app{transition:grid-template-rows .22s ease}#base{transition:opacity .18s}
+#app.em-combate{--bh:46px}#app.em-combate #base{display:none}
+#mini{display:none;grid-column:1/4;grid-row:3;align-items:center;justify-content:center;gap:12px;padding:4px 10px;min-height:0;overflow:hidden}
+#app.em-combate #mini{display:flex}#mini .ou{display:flex;align-items:center;gap:5px;font:700 15px Cinzel,serif;color:#fff1c4}#mini .ou img{width:18px;height:18px}
+#mini .bt{padding:5px 12px;font-size:12px}#mini .bt span{opacity:.75;margin-left:4px}
+#app.combate #botoes #bt-pronto{display:none}#app.combate #botoes #bt-recolher{display:flex}}
+#botoes #bt-recolher{display:none}
+#cpainel.lado::after{display:none}
 </style>
 </head>
 <body>
@@ -676,6 +685,8 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
     </div></div>
   </main>
   <aside id="dir" class="painel"><h2>Jogadores</h2><div id="jogadores"></div><section id="espia-analise" aria-label="Análise do adversário" hidden></section></aside>
+  <div id="mini" class="painel"><div class="ou"><img src="tibia-assets/sprites15/ui/gold.png" alt=""><b id="mini-ouro">0</b></div>
+    <button class="bt" id="bt-m-rolar">Rolar <span>2 · D</span></button><button class="bt" id="bt-m-xp">Comprar XP <span>4 · F</span></button><button class="bt primario" id="bt-m-loja">Abrir loja <span>S</span></button></div>
   <footer id="base">
     <div id="itens" class="painel"><h3><span data-tip="bt:itens">Itens</span><span class="bts"><button class="bt peq" id="bt-forjar" data-tip="bt:forjar" style="display:none">Forjar</button><button class="bt peq" id="bt-rec" data-tip="bt:rec">Receitas</button></span></h3><div id="grade-itens"></div></div>
     <div id="loja" class="painel"><div id="cartas"></div><div id="zona-venda"><div class="vt">Vender por</div><div class="vv"><img src="tibia-assets/sprites15/ui/gold.png" alt=""><span id="venda-v">0</span></div></div></div>
@@ -684,6 +695,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
       <button class="bt" id="bt-rolar" data-tip="bt:rolar">Rolar <span><img src="tibia-assets/sprites15/ui/gold.png" alt="">2 · D</span></button>
       <button class="bt" id="bt-xp" data-tip="bt:xp">Comprar XP <span><img src="tibia-assets/sprites15/ui/gold.png" alt="">4 · F</span></button>
       <button class="bt" id="bt-trava" data-tip="bt:trava">Travar loja <span>L</span></button>
+      <button class="bt peq" id="bt-recolher">Recolher loja <span>S</span></button>
       <button class="bt primario" id="bt-pronto" data-tip="bt:pronto">Pronto <span>Espaço</span></button>
     </div>
   </footer>
@@ -1675,7 +1687,7 @@ function relatorioLote(R){const med=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:
 const IMG=p=>'tibia-assets/sprites15/'+p;
 const ICO={ouro:IMG('ui/gold.png'),pvp:IMG('ui/arena.png'),pve:IMG('itens/3114.png'),car:IMG('ui/inventario.png'),loot:IMG('ui/loot.png')};
 const CW=352,BX=48,BY=34,BEN_X=(CW-9*TS)/2,BEN_Y=BY+NR*TS+17,CH=BEN_Y+TS+13;      // dimensões lógicas do canvas (px de jogo); as margens laterais abrigam os avatares
-let cv=null,cx=null,Z=2,DPR=1;
+let cv=null,cx=null,Z=2,ZD=2,DPR=1;   // Z = escala de desenho (inteira), ZD = px CSS por px lógico (exibição)
 const UI={estado:'menu',vel:1,acc:0,fimEm:0,C:null,demo:false,prev:null,prevSujo:true,drag:null,mx:0,my:0,hover:null,fxPrep:[],sujo:{},sujoRet:false,
   voc:'knight',timer:30,timerMax:30,fimShow:0,ultPassoReal:0,jogoParado:false,
   espiar:null,fxAv:[],anims:[],voando:{},emotes:{},avHit:{},hoverU:null,tipChave:null,reduz:false,meterAberto:false,meterAba:'d',ultC:null,intro:0,freezeAte:0,shake:null,impIdx:0,stats:null,
@@ -1841,7 +1853,7 @@ function desenharTabuleiro(rt){
 
 /* ---- barra acima da unidade: vida em divisões de 300 (tamanho do tanque), mana azul, estrelas; borda verde (aliado) ou vermelha (inimigo) ---- */
 function desenharBarras(u,px,py,rt,alfa){const f=folhaDe(u.d),altura=f?Math.min(f.h,64):32,off=Math.min(Math.max(altura-30,0)*.55,15);
-  const sx=(BX+px*TS+16)*Z,sy=(BY+py*TS-off-2)*Z,w=Math.round(28*Z),h=Math.max(5,Math.round(3.4*Z)),mh=u.manaM?Math.max(2,Math.round(1.7*Z)):0;
+  const sx=(BX+px*TS+16)*Z,sy=(BY+py*TS-off-2)*Z,w=Math.round(28*Z),h=Math.max(6,Math.round(4*Z)),mh=u.manaM?Math.max(3,Math.round(2*Z)):0;
   const es=(u.b&&u.b.escudo&&u.C&&u.b.escudo.ate>u.C.t&&u.b.escudo.v>0)?u.b.escudo.v:0,tot=Math.max(u.hpM,u.hp+es),hp=clamp(u.hp/u.hpM,0,1),cor=corVida(hp);
   const aliado=u.lado===(ESP?1:0),x0=Math.round(sx-w/2),y0=Math.round(sy),H=h+(mh?mh+1:0);
   cx.save();cx.setTransform(DPR,0,0,DPR,0,0);cx.globalAlpha=alfa===undefined?1:alfa;
@@ -1880,6 +1892,7 @@ function iconesItens(u,X,Y,alfa){const it=u.itens||[];it.forEach((c,i)=>{const i
 function desenharUnidade(u,rt,estatico){const p=estatico?{x:u.x,y:u.y}:posU(u,rt);let ox=0,oy=0;
   if(u.lunge&&!estatico){const a=rt-u.lunge.b;if(a>=0&&a<200){const k=Math.sin(Math.PI*a/200)*4*(ESP?-1:1);ox=u.lunge.dx*k;oy=u.lunge.dy*k;}}
   const X=BX+p.x*TS+ox,Y=BY+p.y*TS+oy;
+  cx.fillStyle='rgba(0,0,0,.38)';cx.beginPath();cx.ellipse(BX+p.x*TS+16,BY+p.y*TS+28,13.5,6,0,0,7);cx.fill();   // sombra escura sob a unidade (contraste)
   cx.fillStyle=u.lado===(ESP?1:0)?'rgba(80,140,255,.30)':'rgba(255,80,70,.30)';cx.beginPath();cx.ellipse(BX+p.x*TS+16,BY+p.y*TS+27,12.5,5,0,0,7);cx.fill();
   if(u.b&&u.C&&u.b.escudo&&u.b.escudo.ate>u.C.t&&u.b.escudo.v>0){cx.strokeStyle='rgba(180,235,255,.7)';cx.lineWidth=1;cx.beginPath();cx.ellipse(BX+p.x*TS+16,BY+p.y*TS+27,14,6,0,0,7);cx.stroke();}
   const furt=!estatico&&u.C&&u.furtivoAte>u.C.t;if(furt)cx.globalAlpha=.42;      // Stealth Ring: invisível nos primeiros segundos
@@ -2032,10 +2045,21 @@ function render(){if(!cx)return;const C=UI.C,rt=C?C.t+UI.acc:performance.now(),n
   if(UI.hoverCel&&!UI.drag&&!UI.demo&&UI.espiar==null){const c=UI.hoverCel;cx.strokeStyle='rgba(255,230,140,.55)';cx.lineWidth=1;
     if(c.onde==='tab')cx.strokeRect(BX+c.x*TS+.5,BY+(c.y+4)*TS+.5,TS-1,TS-1);else if(c.onde==='banco')cx.strokeRect(BEN_X+c.i*TS+.5,BEN_Y+.5,TS-1,TS-1);}
 }
+function sincCombate(){const a=$('app'),cb=UI.fase==='combate'&&!!UI.C&&!UI.demo,c=cb&&!UI.lojaAberta;
+  if(cb&&UI.jog){const o=UI.jog.ouro;$('mini-ouro').textContent=o;$('bt-m-rolar').disabled=o<2;$('bt-m-xp').disabled=o<4||UI.jog.nivel>=9;}
+  a.classList.toggle('combate',cb);if(a.classList.contains('em-combate')===c)return;
+  a.classList.toggle('em-combate',c);ajustarCanvas();clearTimeout(sincCombate.t);sincCombate.t=setTimeout(ajustarCanvas,260);}   // em combate a loja vira uma faixa (ouro, rolar, XP); 'Abrir loja'/S traz tudo de volta
+function alternarLoja(){if(!(UI.fase==='combate'&&UI.C&&!UI.demo))return;UI.lojaAberta=!UI.lojaAberta;sincCombate();}
 function ajustarCanvas(){const box=$('cvbox');if(!box||!cv)return;const w=box.clientWidth-8,h=box.clientHeight-6;
-  const zr=Math.min(w/CW,h/CH);Z=zr>=2?Math.floor(zr):Math.max(.25,Math.floor(zr*16)/16);DPR=Math.min(2,window.devicePixelRatio||1);
-  cv.style.width=Math.round(CW*Z)+'px';cv.style.height=Math.round(CH*Z)+'px';cv.width=Math.round(CW*Z*DPR);cv.height=Math.round(CH*Z*DPR);
-  $('meter').classList.toggle('fora',(box.clientWidth-CW*Z)/2>=236);}   // placar ao lado do tabuleiro quando há espaço; senão sobre ele
+  const zr=Math.min(w/CW,h/CH),zi=Math.round(zr);DPR=Math.min(2,window.devicePixelRatio||1);
+  // render (Z) inteiro: cada pixel de sprite uniforme; exibição (ZD) preenche o espaço; fora de proporção inteira o navegador reduz suave
+  if(zr<1){Z=ZD=Math.max(.25,Math.floor(zr*16)/16);cv.style.imageRendering='';}
+  else if(Math.abs(zr-zi)<.02){Z=ZD=zi;cv.style.imageRendering='';}
+  else{Z=Math.min(4,Math.ceil(zr));ZD=zr;cv.style.imageRendering='auto';}
+  cv.style.width=Math.floor(CW*ZD)+'px';cv.style.height=Math.floor(CH*ZD)+'px';cv.width=Math.round(CW*Z*DPR);cv.height=Math.round(CH*Z*DPR);
+  if(cx)cx.imageSmoothingEnabled=false;   // redimensionar o canvas zera o estado do contexto
+  const livre=(box.clientWidth-CW*ZD)/2,m=$('meter'),fora=livre>=176;
+  m.classList.toggle('fora',fora);m.style.width=fora?Math.min(222,Math.floor(livre-16))+'px':'';}   // placar ao lado do tabuleiro sempre que couber; senão só abre pelo botão/P e sobrepõe
 
 /* =====================================================================================
    Parte 5: INTERFACE (painéis, loja, arrastar/soltar, tooltips, telas, fluxo da partida)
@@ -2096,7 +2120,9 @@ function mostrarTip(html,ev,chave){const t=$('tip');
   if(!(chave&&UI.tipChave===chave&&t.style.display==='block')){t.innerHTML=html;UI.tipChave=chave||null;retratosPend(t);}   // mesma dica: só reposiciona
   t.style.display='block';posTip(ev);}
 function posTip(ev){const t=$('tip');if(t.style.display!=='block')return;const w=t.offsetWidth,h=t.offsetHeight;let x=ev.clientX+16,y=ev.clientY+14;
-  if(x+w>innerWidth-6)x=ev.clientX-w-16;if(y+h>innerHeight-6)y=Math.max(6,innerHeight-h-6);t.style.left=x+'px';t.style.top=y+'px';}
+  if(x+w>innerWidth-6)x=ev.clientX-w-16;if(y+h>innerHeight-6)y=Math.max(6,innerHeight-h-6);
+  if(ev.target===cv){const cr=cv.getBoundingClientRect();   // sobre o tabuleiro: dica ao lado dele, não em cima
+    if(cr.left-w-8>=6){x=cr.left-w-8;y=clamp(ev.clientY-h/2,6,innerHeight-h-6);}else if(cr.right+8+w<=innerWidth-6){x=cr.right+8;y=clamp(ev.clientY-h/2,6,innerHeight-h-6);}}t.style.left=x+'px';t.style.top=y+'px';}
 const esconderTip=()=>{$('tip').style.display='none';UI.tipChave=null;};
 function statUn(inst){const P=UI.prev;let u=null;if(P)u=P.un.find(v=>v.inst===inst&&v.lado===0);
   if(!u){const Ct=criarCombate({un:[{d:U[inst.id],e:inst.e,x:0,y:7,itens:inst.itens}]},{un:[]},{semSalto:true,seed:1});u=Ct.un[0];}return u;}
@@ -2133,8 +2159,15 @@ function cartaHover(slot,forcar){const p=UI.jog;let i=-1;
   UI.hoverCartaI=i;UI.hoverCartaId=i>=0?p.loja[i]:null;
   if(i<0){el.classList.remove('on');return;}
   el.innerHTML=htmlPainelCarta(i);el.classList.add('on');
-  const sr=slot.getBoundingClientRect(),w=el.offsetWidth,h=el.offsetHeight,topC=UI.reduz?sr.top:sr.bottom-24-sr.height*1.12,l=clamp(sr.left+sr.width/2-w/2,6,innerWidth-w-6);
-  el.style.left=Math.round(l)+'px';el.style.top=Math.round(Math.max(6,topC-12-h))+'px';el.style.setProperty('--ax',Math.round(sr.left+sr.width/2-l)+'px');}
+  const sr=slot.getBoundingClientRect(),w=el.offsetWidth,h=el.offsetHeight,topC=UI.reduz?sr.top:sr.bottom-24-sr.height*1.12;let l=clamp(sr.left+sr.width/2-w/2,6,innerWidth-w-6);
+  let t=Math.max(6,topC-12-h),lado=false;
+  const cr=cv.getBoundingClientRect();   // não cobrir o tabuleiro: abaixo dele, senão ao lado (sobre os painéis laterais)
+  if(l<cr.right&&l+w>cr.left&&t<cr.bottom&&t+h>cr.top){
+    if(cr.bottom+6+h<=sr.top-8)t=cr.bottom+6;
+    else if(cr.left-w-6>=6){l=cr.left-w-6;lado=true;}
+    else if(cr.right+6+w<=innerWidth-6){l=cr.right+6;lado=true;}}
+  el.classList.toggle('lado',lado);
+  el.style.left=Math.round(l)+'px';el.style.top=Math.round(t)+'px';el.style.setProperty('--ax',Math.round(clamp(sr.left+sr.width/2-l,14,w-14))+'px');}
 function estadosUnidade(u){if(!u||!u.C)return [];return [['ferida','Ferida','#ed7971','F'],['silencio','Silêncio','#cba5ff','S'],['provocado','Provocado','#f4c978','P']].filter(([k])=>k==='provocado'?!!alvoProvocado(u.C,u):bv(u,k)>0);}
 function tipUnidade(d,e,itens,u){const cl=CLASSES[d.k];const star=d.pve?'':'<span class="est">'+'★'.repeat(e||1)+'</span>';
   const sk=d.pve?'':`<span style="color:${TIER_COR[d.c]}">${d.c} <img src="${ICO.ouro}" style="width:11px;height:11px;vertical-align:-2px"></span>`;
@@ -2622,7 +2655,7 @@ function teclado(ev){if(consultaAtual){
   if(k==='d'){rolarUI();}else if(k==='f'){xpUI();}else if(k==='l'){travarUI();}else if(k===' '){ev.preventDefault();pronto();}
   else if(k==='w'){const h=UI.hover;if(h)venderUI(h);else aviso('Passe o mouse sobre uma unidade sua e aperte W');}
   else if(k==='v'){alternarVel();}else if(k>='1'&&k<='5'){comprarUI(+k-1);}
-  else if(k==='e'){abrirEmotes();}else if(k==='p'){alternarMeter();}else if(k==='tab'){return;}else if(k==='m'){alternarMudo();}
+  else if(k==='s'){alternarLoja();}else if(k==='e'){abrirEmotes();}else if(k==='p'){alternarMeter();}else if(k==='tab'){return;}else if(k==='m'){alternarMudo();}
   else if(k==='escape'){if(UI.espiar!==null)sairEspiar();else pausar();}}
 function alternarVel(){if(Online.ativo)return;UI.vel=UI.vel===1?2:UI.vel===2?4:1;$('bt-vel').textContent=UI.vel+'x';}
 
@@ -2642,7 +2675,7 @@ function pronto(auto){if(UI.estado!=='jogo'||UI.fase!=='prep')return;if(G.info.t
   if(auto===true){if(autoPosicionar(p)){posAcao();}}
   else if(contarTab(p)===0&&todos(p).length>0&&G.info.tipo!=='car'){aviso('Arraste uma unidade do banco para o tabuleiro');return;}
   iniciarCombateUI();}
-function iniciarCombateUI(){if(UI.estado!=='fim')fecharTela();sairEspiar();fecharEmotes();comecarCombate(G);UI.fase='combate';
+function iniciarCombateUI(){UI.lojaAberta=false;if(UI.estado!=='fim')fecharTela();sairEspiar();fecharEmotes();comecarCombate(G);UI.fase='combate';
   if(Online.host)Online.hostLutas();
   if(G.info.tipo==='car'){finalizarRodadaUI();return;}
   if(!G.luta){UI.C=null;UI.prev=null;marcar('jog','btn','topo');banner('Combate','Estágio '+G.info.nome+' · você está eliminado','#e0574a',1300,true);return;}   // espectador (eliminado)
@@ -3192,7 +3225,7 @@ function laco(ts){requestAnimationFrame(laco);const dt=Math.min(100,ts-(UI.ultT|
     if(UI.fase==='prep'&&Online.host){}      // o relógio do anfitrião roda em tiqueHost (setInterval)
     else if(UI.fase==='prep'){UI.timer-=dt/1000;if(UI.timer<=0&&Online.guest)UI.timer=0;else if(UI.timer<=0){if(G.info.tipo==='car'&&!carPronto(G)){let bi=0,bs=-1;G.car.itens.forEach((id,i)=>{if(tierCar(id)>bs){bs=tierCar(id);bi=i;}});carEscolher(G,bi);fecharTela();marcar('itens');}pronto(true);}}
     else if(UI.fase==='resultado'&&!Online.host){UI.resEm-=dt;if(UI.resEm<=0){UI.fase='fila';proximaRodadaUI();}}}
-  if(UI.estado==='jogo'){atualizarSujos();hudTempo();
+  if(UI.estado==='jogo'){atualizarSujos();hudTempo();sincCombate();
     if(UI.fase==='prep'&&G&&G.info.tipo!=='car'){const n=Math.ceil(UI.timer);if(n!==UI.tk){UI.tk=n;if(n>=1&&n<=5)Sons.tique(n);}}}
   // tremor da tela (só no canvas do tabuleiro)
   if(UI.shake&&now<UI.shake.b+UI.shake.dur){const a=UI.shake.amp*(1-(now-UI.shake.b)/UI.shake.dur);cv.style.transform=`translate(${((Math.random()-.5)*2*a).toFixed(1)}px,${((Math.random()-.5)*2*a).toFixed(1)}px)`;}
@@ -3216,7 +3249,7 @@ function iniciar(){cv=$('cv');cx=cv.getContext('2d');ajustarCanvas();addEventLis
   $('cartas').addEventListener('click',e=>{const info=e.target.closest('[data-detalhe]');if(info){mostrarDetalhesCarta(+info.dataset.detalhe);return;}const s=e.target.closest('.cslot');if(s&&!s.querySelector('.vend'))comprarUI(+s.dataset.i);});
   $('cartas').addEventListener('mouseover',e=>{if(!UI.drag)cartaHover(e.target.closest('.cslot'));});
   $('cartas').addEventListener('mouseleave',()=>cartaHover(null));
-  $('bt-forjar').onclick=forjarUI;$('bt-rec').onclick=()=>{if(UI.estado==='jogo')mostrarReceitas(()=>fecharTela());};$('bt-rolar').onclick=rolarUI;$('bt-xp').onclick=xpUI;$('bt-trava').onclick=travarUI;$('bt-pronto').onclick=()=>pronto();$('bt-vel').onclick=alternarVel;$('bt-menu').onclick=pausar;$('logo').onclick=()=>{if(UI.estado==='jogo')pausar();};
+  $('bt-forjar').onclick=forjarUI;$('bt-rec').onclick=()=>{if(UI.estado==='jogo')mostrarReceitas(()=>fecharTela());};$('bt-rolar').onclick=rolarUI;$('bt-m-rolar').onclick=rolarUI;$('bt-m-xp').onclick=xpUI;$('bt-m-loja').onclick=alternarLoja;$('bt-recolher').onclick=alternarLoja;$('bt-xp').onclick=xpUI;$('bt-trava').onclick=travarUI;$('bt-pronto').onclick=()=>pronto();$('bt-vel').onclick=alternarVel;$('bt-menu').onclick=pausar;$('logo').onclick=()=>{if(UI.estado==='jogo')pausar();};
   lerCfg();ligarCfg();addEventListener('pointerdown',somIniciar,{once:true});addEventListener('keydown',somIniciar,{once:true});
   $('jogadores').addEventListener('click',e=>{const r=e.target.closest('.jg');if(r)espiarJog(+r.dataset.id);});
   $('bt-espia-v').onclick=sairEspiar;$('bt-meter').onclick=alternarMeter;
