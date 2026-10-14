@@ -135,7 +135,9 @@ button{font-family:inherit}
 #faixa-rodada .mon canvas{width:100%;height:100%;display:block}
 #faixa-rodada .mon b{position:absolute;right:1px;bottom:0;font:700 10px Cinzel,serif;color:#ffe9a0;text-shadow:0 1px 0 #000,0 0 3px #000}
 #faixa-rodada .drops{display:flex;align-items:center;gap:3px}
-#faixa-rodada .drops img{width:26px;height:26px;background:#07080d;border:1px solid #3a321c;border-radius:2px}
+#faixa-rodada .drops img{width:32px;height:32px;background:#07080d;border:1px solid #3a321c;border-radius:2px}
+#faixa-rodada .drops .ic{margin-left:3px}
+#faixa-rodada .drops .ic img{border:0;background:none}
 #faixa-rodada .bau{width:30px;height:30px;flex:none;filter:drop-shadow(0 1px 2px #000)}
 #faixa-rodada .info{font-size:10.5px;color:#d4cdb4;overflow:hidden;text-overflow:ellipsis}
 #faixa-rodada .info b{font:700 12px Cinzel,serif;color:#f3e6b4}
@@ -190,10 +192,36 @@ button{font-family:inherit}
 /* ---------- base: itens, loja, botões ---------- */
 #base{grid-column:1/4;display:grid;grid-template-columns:204px minmax(0,1fr) 196px;gap:6px}
 #grade-itens{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:3px}
-.slot{width:100%;aspect-ratio:1;max-width:38px;background:#07080d;border:1px solid #2f2a18;border-radius:2px;display:flex;align-items:center;justify-content:center;position:relative}
-.slot img{width:86%;height:86%;cursor:grab}
+.slot{width:100%;aspect-ratio:1;max-width:35px;background:#07080d;border:1px solid #2f2a18;border-radius:2px;display:flex;align-items:center;justify-content:center;position:relative}
 .slot.cheio{border-color:#6b5a2e;background:linear-gradient(#171307,#0b0a05)}
-#itens .dica{margin-top:6px;font-size:9.5px;color:var(--mut);line-height:1.4}
+.slot.alvo{border-color:#6fe27f;box-shadow:0 0 7px #6fe27faa}.slot.alvo.ruim{border-color:#e0574a;box-shadow:0 0 7px #e0574aaa}
+.slot .ic{cursor:grab}
+#itens h3{display:flex;align-items:center;justify-content:space-between;gap:4px}
+#itens h3 .bts{display:flex;gap:3px}#itens h3 .bt{padding:2px 6px;font-size:9px;letter-spacing:.04em}
+#bt-forjar{border-color:#ffd24a;color:#fff1c4;background:linear-gradient(#6b5420,#3a2c0e);animation:respira2 1.4s ease-in-out infinite alternate}
+@keyframes respira2{from{box-shadow:0 0 0 #ffd24a00}to{box-shadow:0 0 9px #ffd24acc}}
+/* ---------- itens: ícone real (32x32, sempre a 1x/2x) com contorno da forja (+1 prata, +2 ouro, +3 prismático) e gema do encantamento ---------- */
+.ic{position:relative;display:inline-block;width:32px;height:32px;flex:none;vertical-align:top}
+.ic img{display:block;width:32px;height:32px;position:relative;z-index:1;image-rendering:pixelated}
+.ic.mini,.ic.mini img{width:16px;height:16px}
+.ic.x2,.ic.x2 img{width:64px;height:64px}
+.ic .gm{position:absolute;z-index:2;right:1px;bottom:1px;width:8px;height:8px;background:var(--g);border:1px solid #000;transform:rotate(45deg);box-shadow:inset 1px 1px 0 #ffffffaa}
+.ic.mini .gm{width:5px;height:5px;right:0;bottom:0}.ic.x2 .gm{width:14px;height:14px;right:3px;bottom:3px}
+.ic .fl{position:absolute;z-index:3;left:-1px;top:-4px;font:700 9px Verdana;color:#fff;text-shadow:0 0 2px #000,0 1px 0 #000,1px 0 0 #000,-1px 0 0 #000}
+.ic.mini .fl{display:none}.ic.x2 .fl{font-size:13px;top:-6px}
+.ic.f1 img{filter:drop-shadow(1px 0 0 #dfe6f5) drop-shadow(-1px 0 0 #dfe6f5) drop-shadow(0 1px 0 #dfe6f5) drop-shadow(0 -1px 0 #dfe6f5) drop-shadow(0 0 3px #9fb8e8cc)}
+.ic.f2 img{filter:drop-shadow(1px 0 0 #ffd24a) drop-shadow(-1px 0 0 #ffd24a) drop-shadow(0 1px 0 #ffd24a) drop-shadow(0 -1px 0 #ffd24a) drop-shadow(0 0 4px #ffb42acc)}
+.ic.f3 img{filter:drop-shadow(1px 0 0 #ff6ad8) drop-shadow(-1px 0 0 #5ff0ff) drop-shadow(0 1px 0 #fff36a) drop-shadow(0 -1px 0 #7dff7a) drop-shadow(0 0 4px #c9a0ffcc)}
+.ic.f3::after{content:'';position:absolute;inset:-3px;z-index:0;border-radius:50%;background:radial-gradient(circle,#ffffff55,#c9a0ff00 70%);animation:prisma 1.8s ease-in-out infinite alternate;pointer-events:none}
+@keyframes prisma{from{opacity:.2}to{opacity:.95}}
+.ic.perg::before{content:'';position:absolute;inset:0;z-index:0;border-radius:3px;background:radial-gradient(circle at 30% 25%,#ecdcaa,#bf9f58 62%,#7d6030);border:1px solid #3d2c0c;box-shadow:inset 0 0 0 1px #ffffff33}
+/* prévia ao arrastar um item ("Sword + Bow -> Arbalest") */
+#previa{position:fixed;z-index:75;display:none;pointer-events:none;padding:6px 10px 7px;background:linear-gradient(180deg,#1f2333,#0d0f17);border:1px solid var(--ouro2);border-radius:4px;box-shadow:0 6px 20px #000d;text-align:center;white-space:nowrap}
+#previa .ln{display:flex;align-items:center;justify-content:center;gap:8px}
+#previa .ln i{font:700 18px Cinzel,serif;font-style:normal;color:var(--ouro)}
+#previa .tx{margin-top:4px;font:700 11px Cinzel,serif;color:#e6d9ab}#previa .tx b{color:#ffe9a0}#previa .tx small{display:block;font:10px Verdana;color:#8fe6a0}
+#previa.ruim{border-color:#e0574a}#previa .ruim{font:700 11px Cinzel,serif;color:#ffb0a0}
+#ghost{position:fixed;z-index:80;pointer-events:none;display:none;transform:translate(-50%,-50%);filter:drop-shadow(0 4px 4px #000a)}
 #loja{display:flex;flex-direction:column;padding:6px}
 #cartas{display:flex;gap:6px;flex:1;min-height:0;padding:0 8px}
 /* cada carta fica num encaixe fixo: o mouse "pertence" ao encaixe, então a carta pode subir sem tremer */
@@ -344,7 +372,7 @@ html.reduz .cslot:hover .carta:not(.vend){transform:translateY(var(--dy,0px)) ro
 .carr{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px}
 .carr .ci{width:112px;padding:8px 4px;border:2px solid var(--tc);background:linear-gradient(180deg,color-mix(in srgb,var(--tc) 18%,#12141d),#0c0d14);border-radius:3px;cursor:pointer;transition:transform .1s,filter .1s}
 .carr .ci:hover{transform:translateY(-3px);filter:brightness(1.3)}
-.carr .ci img{width:48px;height:48px;display:block;margin:0 auto 4px}
+.carr .ci .ic{display:block;margin:0 auto 6px}.carr .ci .ic.x2{margin-bottom:8px}
 .carr .ci b{display:block;font:700 10.5px Cinzel,serif;color:#f1e8cc;min-height:26px}
 .carr .ci span{font-size:9.5px;color:#a9a48f;line-height:1.35;display:block}
 @media (max-width:1100px){#app{grid-template-columns:214px minmax(0,1fr) 190px}#base{grid-template-columns:180px minmax(0,1fr) 170px}.carta .tr{display:none}}
@@ -394,6 +422,22 @@ input{font:12px Verdana,Geneva,sans-serif;user-select:text;-webkit-user-select:t
 #cfg .chk{display:flex;align-items:center;gap:8px;margin:9px 0 0;font-size:10.5px;color:#d4cdb4;cursor:pointer}
 #cfg .chk input{accent-color:#d9b45a;width:14px;height:14px}
 #cfg small{display:block;margin-top:9px;color:var(--mut);font-size:9.5px;line-height:1.4}
+/* ---------- tooltip: itens ---------- */
+#tip .cabi{display:flex;gap:8px;align-items:center;margin-bottom:6px}#tip .cabi h4{display:block;margin:0;flex:1}
+#tip .cabi h4 span{display:block}
+#tip .rcs{display:flex;flex-wrap:wrap;gap:2px;margin-top:2px}#tip .rcs .ic{background:#07080d;border:1px solid #3a321c;box-sizing:content-box}
+#tip .itl{margin-top:6px;display:flex;flex-direction:column;gap:4px}
+#tip .itx{display:flex;gap:7px;align-items:center;padding:2px 4px;background:#0b0d14;border:1px solid #2a2616;border-radius:2px}
+#tip .itx b{color:#f1e3b0;font:700 11px Cinzel,serif}#tip .itx span{display:block;color:#a9a48f;font-size:9.5px;line-height:1.35}#tip .itx em{font-style:normal;font-size:9.5px}
+/* tela de receitas */
+.grd{border-collapse:separate;border-spacing:2px;margin:6px auto 10px}
+.grd th,.grd td{padding:2px;background:#0b0d14;border:1px solid #2f2a18;border-radius:2px;text-align:center;vertical-align:middle;width:38px;height:38px}
+.grd th{background:#171307;border-color:#6b5a2e}.grd td.dg{border-color:#6b5a2e}
+.grd td:hover,.grd td.hl{background:#2a2410;border-color:#d9b45a}.grd .ic{display:block;margin:0 auto}
+.recl{display:grid;grid-template-columns:1fr 1fr;gap:5px 16px;margin:6px 0}
+.recl div{display:flex;align-items:center;gap:8px;text-align:left;font-size:10.5px;line-height:1.35;padding:2px 4px;background:#0b0d14;border:1px solid #2a2616;border-radius:2px}
+.recl b{font:700 11px Cinzel,serif;color:#f1e3b0}
+.forj{display:flex;gap:14px;justify-content:center;align-items:center;margin:6px 0 4px}.forj span{display:flex;align-items:center;gap:6px;font:700 11px Cinzel,serif;color:#e6d9ab}
 /* ---------- tooltip: traços ---------- */
 #tip .nvl{display:flex;gap:7px;align-items:flex-start;padding:2px 4px;border-radius:2px;color:#8f8a78;margin:1px 0}
 #tip .nvl b{flex:none;min-width:17px;text-align:center;font:700 10px Cinzel,serif;border:1px solid #3a321c;border-radius:2px;background:#0b0d14;color:#9a957f}
@@ -469,7 +513,7 @@ input{font:12px Verdana,Geneva,sans-serif;user-select:text;-webkit-user-select:t
 .timef .un canvas{width:100%;height:56px;display:block}
 .timef .un .es{position:absolute;left:0;right:0;top:1px;text-align:center;color:#ffd24a;font-size:10px;letter-spacing:1px;text-shadow:0 1px 0 #000}
 .timef .un .it{position:absolute;left:0;right:0;bottom:1px;display:flex;justify-content:center;gap:1px}
-.timef .un .it img{width:17px;height:17px;background:#07080d;border:1px solid #3a321c}
+.timef .un .it .ic{margin:0 .5px}
 .estat{display:grid;grid-template-columns:1fr 1fr;gap:6px}
 .estat div{background:#0b0d14;border:1px solid #3a321c;border-radius:3px;padding:6px 4px;text-align:center}
 .estat b{display:block;font:700 19px Cinzel,serif;color:#f3e6b4}
@@ -486,7 +530,7 @@ input{font:12px Verdana,Geneva,sans-serif;user-select:text;-webkit-user-select:t
 .jg .nm em{font:700 8px Verdana;font-style:normal;color:#8fe6a0;margin-left:auto}
 .bt.ic.mudo{position:relative}.bt.ic.mudo svg{opacity:.5}.bt.ic.mudo::after{content:'';position:absolute;left:5px;right:5px;top:50%;height:2px;background:#e0574a;transform:rotate(-40deg)}
 html.reduz *,html.reduz *::before,html.reduz *::after{animation-duration:.001s!important;animation-iteration-count:1!important;transition-duration:.001s!important}
-@media (max-width:1100px){.sin .ti{--s:38px}.sin .nm{font-size:12px}.sin .pips .tp{display:none}#faixa-rodada .drops img{width:22px;height:22px}}
+@media (max-width:1100px){.sin .ti{--s:38px}.sin .nm{font-size:12px}.sin .pips .tp{display:none}#faixa-rodada .drops img{width:22px;height:22px}#faixa-rodada .drops .ic img{width:32px;height:32px}}
 </style>
 </head>
 <body>
@@ -519,7 +563,7 @@ html.reduz *,html.reduz *::before,html.reduz *::after{animation-duration:.001s!i
   </main>
   <aside id="dir" class="painel"><h2>Jogadores</h2><div id="jogadores"></div></aside>
   <footer id="base">
-    <div id="itens" class="painel"><h3>Itens</h3><div id="grade-itens"></div><div class="dica">Arraste um item sobre uma unidade (máximo de 3 por unidade).</div></div>
+    <div id="itens" class="painel"><h3><span data-tip="bt:itens">Itens</span><span class="bts"><button class="bt peq" id="bt-forjar" data-tip="bt:forjar" style="display:none">Forjar</button><button class="bt peq" id="bt-rec" data-tip="bt:rec">Receitas</button></span></h3><div id="grade-itens"></div></div>
     <div id="loja" class="painel"><div id="cartas"></div><div id="zona-venda"><div class="vt">Vender por</div><div class="vv"><img src="tibia-assets/sprites15/ui/gold.png" alt=""><span id="venda-v">0</span></div></div></div>
     <div id="botoes" class="painel">
       <div id="odds" data-tip="odds:x"></div>
@@ -535,6 +579,7 @@ html.reduz *,html.reduz *::before,html.reduz *::after{animation-duration:.001s!i
 <div id="cfg" class="painel"></div>
 <div id="tip"></div>
 <div id="cpainel"></div>
+<div id="previa"></div>
 <div id="ghost"></div>
 
 <script async src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
@@ -676,34 +721,130 @@ const QTD_POOL=[0,22,18,16,12,10];
 const TIER_COR=['','#8d8d8d','#4fae4f','#4a86e8','#a55be0','#e0b030'];
 
 /* =====================================================================================
-   ITENS (ícones reais 15.01): efeitos somados na unidade
+   ITENS (ícones reais 15.01). Fase 2: 8 componentes -> 36 itens completos (receitas) -> forja (+1 a +3) -> encantamentos.
+   Um item no inventário ou na unidade é um CÓDIGO inteiro: id + 100000*forja + 1000000*encantamento.
+   Assim ele cabe em JSON, nos snapshots do online e em comparações simples (===); o motor lê tudo por itemInfo(código).
    ===================================================================================== */
+const ITF=100000,ITM=1000000;
+const itId=c=>c%ITF,itFj=c=>Math.floor(c/ITF)%10,itEn=c=>Math.floor(c/ITM);
+const mkIt=(id,fj,en)=>id+(fj||0)*ITF+(en||0)*ITM;
+const FORJA=[1,1.2,1.4,1.65];            // multiplicador dos números do item em cada nível de forja (+0, +1, +2, +3)
+const PERG_CHANCE=.22;                   // chance de um drop (a partir do estágio 2) ser um pergaminho de encantamento
 const ITENS=[
- {id:3264,n:'Sword',t:1,d:'+30% de ataque',atk:.30},
- {id:3350,n:'Bow',t:1,d:'+25% de velocidade de ataque',as:.25},
- {id:3071,n:'Wand of Inferno',t:1,d:'+30% de poder de habilidade',ap:.30},
- {id:3357,n:'Plate Armor',t:1,d:'+25 de armadura',arm:25},
- {id:3425,n:'Dwarven Shield',t:1,d:'+220 de vida',hp:220},
- {id:3098,n:'Ring of Healing',t:1,d:'Regenera 1,5% da vida por segundo',regen:.015},
- {id:268,n:'Mana Potion',t:1,d:'+25 de mana inicial',m0:25},
- {id:3079,n:'Boots of Haste',t:1,d:'+30% de velocidade de movimento e +10% de ataque',mov:.3,as:.10},
- {id:3049,n:'Stealth Ring',t:1,d:'+20% de chance de crítico',crit:.20},
- {id:3050,n:'Power Ring',t:2,d:'+25% de poder de habilidade e +10 de mana inicial',ap:.25,m0:10},
- {id:3271,n:'Spike Sword',t:2,d:'+40% de ataque e 10% de roubo de vida',atk:.40,roubo:.10},
- {id:3370,n:'Knight Armor',t:2,d:'+35 de armadura e +200 de vida',arm:35,hp:200},
- {id:3085,n:'Dragon Necklace',t:2,d:'Recupera 3 de mana por segundo',mreg:3},
- {id:237,n:'Strong Mana Potion',t:2,d:'+40 de mana inicial',m0:40},
- {id:3349,n:'Crossbow',t:2,d:'+40% de velocidade de ataque',as:.40},
- {id:3281,n:'Giant Sword',t:3,d:'+60% de ataque',atk:.60},
- {id:3366,n:'Magic Plate Armor',t:3,d:'+50 de armadura e +250 de vida',arm:50,hp:250},
- {id:3420,n:'Demon Shield',t:3,d:'+500 de vida e +25 de armadura',hp:500,arm:25},
- {id:3386,n:'Dragon Scale Mail',t:3,d:'+45 de armadura e -12% de dano recebido',arm:45,red:.12},
- {id:8092,n:'Wand of Starstorm',t:3,d:'+60% de poder de habilidade',ap:.60},
- {id:7449,n:'Crystal Sword',t:3,d:'+45% de ataque e +15% de crítico',atk:.45,crit:.15},
- {id:3387,n:'Demon Helmet',t:3,d:'+25% de ataque e +25% de poder de habilidade',atk:.25,ap:.25}];
+ // ---- componentes (caem nas rodadas contra monstros e no carrossel; a letra identifica o componente nas receitas) ----
+ {id:3264,n:'Sword',comp:'S',atk:.30},
+ {id:3350,n:'Bow',comp:'B',as:.25},
+ {id:3071,n:'Wand of Inferno',comp:'W',ap:.30},
+ {id:3357,n:'Plate Armor',comp:'P',arm:25},
+ {id:3425,n:'Dwarven Shield',comp:'D',hp:220},
+ {id:268,n:'Mana Potion',comp:'M',m0:25},
+ {id:3079,n:'Boots of Haste',comp:'H',mov:.30,as:.10},
+ {id:3098,n:'Ring of Healing',comp:'R',regen:.015},
+ // ---- itens completos: rec = os dois componentes; tag = papéis a que o item serve (ad = carry de ataque, ap = carry mágico, tk = tanque, su = suporte); fx = nome do efeito marcante ----
+ {id:3281,n:'Giant Sword',rec:'SS',tag:['ad'],fx:'Golpe pesado',atk:.50,pesado:.60},
+ {id:5803,n:'Arbalest',rec:'SB',tag:['ad'],fx:'Atravessa',atk:.15,as:.20,pierce:.60},
+ {id:3280,n:'Fire Sword',rec:'SW',tag:['ad','ap'],fx:'Em brasa',atk:.25,ap:.25,burn:.30},
+ {id:3319,n:'Stonecutter Axe',rec:'SP',tag:['ad','tk'],fx:'Golpe em área',atk:.25,arm:20,cleave:.45},
+ {id:3309,n:'Thunder Hammer',rec:'SD',tag:['ad','tk'],fx:'Trovão',atk:.25,hp:230,stunPct:.15},
+ {id:3288,n:'Magic Sword',rec:'SM',tag:['ad','ap'],fx:'Lâmina arcana',atk:.25,m0:15,manaHit:5},
+ {id:7449,n:'Crystal Sword',rec:'SH',tag:['ad'],fx:'Cristal afiado',atk:.30,crit:.12,mov:.15,critMul:.50},
+ {id:3271,n:'Spike Sword',rec:'SR',tag:['ad','tk'],fx:'Sede de sangue',atk:.30,roubo:.15,regen:.006},
+ {id:3349,n:'Crossbow',rec:'BB',tag:['ad'],fx:'Virote perfurante',as:.40,pen:.25},
+ {id:8030,n:"Elethriel's Elemental Bow",rec:'BW',tag:['ad','ap'],fx:'Chuva elemental',as:.20,ap:.25,chuva:.70},
+ {id:8063,n:'Paladin Armor',rec:'BP',tag:['ad'],fx:'Mira longa',arm:25,as:.18,alc:1},
+ {id:3428,n:'Tower Shield',rec:'BD',tag:['tk','ad'],fx:'Esquiva',hp:340,as:.12,esq:.15},
+ {id:8027,n:'Composite Hornbow',rec:'BM',tag:['ad','ap'],fx:'Mana por flecha',as:.18,m0:15,manaHit:6},
+ {id:3049,n:'Stealth Ring',rec:'BH',tag:['ad'],fx:'Furtivo',as:.10,crit:.15,furtivo:4000},
+ {id:3052,n:'Life Ring',rec:'BR',tag:['ad','su'],fx:'Vida roubada',as:.15,regen:.010,killHeal:.20},
+ {id:8092,n:'Wand of Starstorm',rec:'WW',tag:['ap'],fx:'Tempestade de estrelas',ap:.50,magCrit:.25},
+ {id:3387,n:'Demon Helmet',rec:'WP',tag:['ap','tk'],fx:'Aura infernal',ap:.25,arm:15,aura:1.3},
+ {id:3423,n:'Blessed Shield',rec:'WD',tag:['tk','su'],fx:'Escudo abençoado',hp:300,rm:20,escIni:.32},
+ {id:5903,n:"Ferumbras' Hat",rec:'WM',tag:['ap'],fx:'Magia dupla',ap:.28,m0:20,eco:.40},
+ {id:3073,n:'Wand of Cosmic Energy',rec:'WH',tag:['ap'],fx:'Energia cósmica',ap:.30,mov:.15,manaRed:.15},
+ {id:3066,n:'Snakebite Rod',rec:'WR',tag:['ap','su'],fx:'Veneno de serpente',ap:.30,regen:.008,veneno:.50},
+ {id:3366,n:'Magic Plate Armor',rec:'PP',tag:['tk'],fx:'Barreira de meia-vida',arm:42,hp:260,escMeio:.18},
+ {id:3386,n:'Dragon Scale Mail',rec:'PD',tag:['tk'],fx:'Escamas de dragão',arm:30,hp:220,red:.08,resFogo:.25},
+ {id:3370,n:'Knight Armor',rec:'PM',tag:['tk'],fx:'Mana na batalha',arm:28,hp:150,m0:15,manaHurt:4},
+ {id:3554,n:'Steel Boots',rec:'PH',tag:['tk','ad'],fx:'Passo firme',arm:22,hp:200,mov:.15,stunRed:.50,semLento:1},
+ {id:3360,n:'Golden Armor',rec:'PR',tag:['tk'],fx:'Reflexo dourado',arm:32,regen:.010,refl:.25},
+ {id:3420,n:'Demon Shield',rec:'DD',tag:['tk'],fx:'Espelho demoníaco',hp:420,arm:12,rm:18,reflMag:.20},
+ {id:3414,n:'Mastermind Shield',rec:'DM',tag:['su','tk'],fx:'Barreira da magia',hp:240,m0:15,mreg:3,escLanca:.16},
+ {id:3392,n:'Royal Helmet',rec:'DH',tag:['tk','su'],fx:'Comando real',hp:300,arm:22,mov:.12,auraArm:20},
+ {id:3057,n:'Amulet of Loss',rec:'DR',tag:['tk','ad','ap'],fx:'Ressurreição',hp:180,regen:.008,revive:.28},
+ {id:3050,n:'Power Ring',rec:'MM',tag:['ap','su'],fx:'Mana renovada',ap:.22,m0:30,manaRet:.25},
+ {id:3549,n:'Soft Boots',rec:'MH',tag:['su','ap'],fx:'Passos suaves',mov:.15,mreg:4,regen:.008},
+ {id:3085,n:'Dragon Necklace',rec:'MR',tag:['su','ap'],fx:'Cura potente',m0:15,mreg:3,regen:.008,curaPlus:.30},
+ {id:31617,n:'Winged Boots',rec:'HH',tag:['ad'],fx:'Voo rasante',mov:.35,as:.10,salta:1},
+ {id:3053,n:'Time Ring',rec:'HR',tag:['ad'],fx:'Aceleração',as:.12,regen:.010,hasteIni:.55},
+ {id:9302,n:'Sacred Tree Amulet',rec:'RR',tag:['su','tk'],fx:'Árvore sagrada',hp:140,regen:.012,auraCura:.06}];
+/* encantamentos (imbuements): 1 por item completo, sem ocupar vaga. Chegam como pergaminhos (pid); o ícone é o item que o Tibia usa em cada um */
+const ENCANTOS=[
+ {k:'vamp',n:'Vampirismo',pid:90001,ico:9685,cor:'#d4163c',roubo:.10,rouboM:.10,d:'10% de roubo de vida (golpes e magias)'},
+ {k:'void',n:'Void',pid:90002,ico:11492,cor:'#8a3ad8',manaHit:4,queima:4,d:'rouba 4 de mana do alvo a cada golpe'},
+ {k:'strike',n:'Strike',pid:90003,ico:11444,cor:'#ffd23a',crit:.15,d:'+15% de chance de crítico'},
+ {k:'scorch',n:'Scorch',pid:90004,ico:9636,cor:'#ff8a1e',conv:{el:'fire',f:.15},d:'15% do dano vira fogo'},
+ {k:'venom',n:'Venom',pid:90005,ico:9686,cor:'#4fd13a',conv:{el:'earth',f:.15},d:'15% do dano vira terra'},
+ {k:'frost',n:'Frost',pid:90006,ico:9661,cor:'#6fd8ff',conv:{el:'ice',f:.15},d:'15% do dano vira gelo'},
+ {k:'electrify',n:'Electrify',pid:90007,ico:18993,cor:'#7a86ff',conv:{el:'energy',f:.15},d:'15% do dano vira energia'},
+ {k:'lich',n:'Lich Shroud',pid:90008,ico:11466,cor:'#b8a8d0',res:{death:.20},d:'-20% de dano de morte'},
+ {k:'snake',n:'Snake Skin',pid:90009,ico:17823,cor:'#a07a3a',res:{earth:.20},d:'-20% de dano de terra'},
+ {k:'dragon',n:'Dragon Hide',pid:90010,ico:5877,cor:'#e8402a',res:{fire:.20},d:'-20% de dano de fogo'},
+ {k:'quara',n:'Quara Scale',pid:90011,ico:11491,cor:'#27b59a',res:{ice:.20},d:'-20% de dano de gelo'},
+ {k:'feather',n:'Featherweight',pid:90012,ico:25694,cor:'#f4f0ff',as:.12,mov:.25,d:'+12% de vel. de ataque e +25% de vel. de movimento'}];
 /* itens que dão vida acompanham o fator global de vida */
-ITENS.forEach(i=>{if(i.hp){i.hp=Math.round(i.hp*HPG);i.d=i.d.replace(/\+\d+ de vida/,'+'+i.hp+' de vida');}});
+ITENS.forEach(i=>{if(i.hp)i.hp=Math.round(i.hp*HPG);});
 const ITEM={};ITENS.forEach(i=>ITEM[i.id]=i);
+ENCANTOS.forEach((e,k)=>{ITEM[e.pid]={id:e.pid,n:'Pergaminho de '+e.n,perg:1,imb:k+1,ico:e.ico,enc:e};});
+/* receitas: toda dupla de componentes (36 combinações, incluindo dois iguais) vira um item completo */
+const COMPS=ITENS.filter(i=>i.comp).map(i=>i.id),CID={};ITENS.filter(i=>i.comp).forEach(i=>CID[i.comp]=i.id);
+const RECEITA={};
+ITENS.filter(i=>i.rec).forEach(i=>{const a=CID[i.rec[0]],b=CID[i.rec[1]];i.pa=a;i.pb=b;RECEITA[a+'_'+b]=RECEITA[b+'_'+a]=i.id;});
+(function(){let n=0;COMPS.forEach(a=>COMPS.forEach(b=>{if(a<=b&&!RECEITA[a+'_'+b])throw new Error('receita faltando '+a+' '+b);else if(a<=b)n++;}));if(n!==36)throw new Error('esperava 36 receitas');})();
+const ICO_NOVOS=new Set([3057,3288,3309,3319,3423,3549,5903,8030,9661,9686,11491,17823,18993,25694,31617]);   // ícones gerados do cliente (tactics-assets/gerar_icones_itens.py); os demais vêm de tibia-assets/sprites15/itens
+const icoItem=id=>(ICO_NOVOS.has(id)?'tactics-assets/itens/':'tibia-assets/sprites15/itens/')+id+'.png';
+/* estatísticas somadas (ST) e efeitos (FX) de um item; tudo que é número escala com a forja (menos o que está em NAOESC) */
+const ST_ORD=['atk','as','ap','arm','hp','regen','m0','mov','crit','roubo','rouboM','mreg','red','rm','esq','pen','queima'];
+const FX_ORD=['pesado','pierce','burn','cleave','stunPct','manaHit','critMul','chuva','alc','hasteIni','killHeal','magCrit','eco','aura','escIni','escMeio','resFogo','manaHurt','stunRed','semLento','refl','reflMag','escLanca','auraArm','revive','manaRet','curaPlus','salta','auraCura','furtivo','veneno','manaRed'];
+const NAOESC={alc:1,semLento:1,salta:1,furtivo:1},INTK={hp:1,arm:1,m0:1,manaHit:1,mreg:1,auraArm:1,queima:1,rm:1,alc:1,semLento:1,salta:1,furtivo:1};
+const P0=v=>Math.round(v*100),P1=v=>(Math.round(v*1000)/10).toString().replace('.',',');
+const ST_LIN={atk:['Ataque',v=>'+'+P0(v)+'%'],as:['Vel. de ataque',v=>'+'+P0(v)+'%'],ap:['Poder de habilidade',v=>'+'+P0(v)+'%'],arm:['Armadura',v=>'+'+v],hp:['Vida',v=>'+'+v],
+  regen:['Regeneração',v=>P1(v)+'% da vida por s'],m0:['Mana inicial',v=>'+'+v],mov:['Vel. de movimento',v=>'+'+P0(v)+'%'],crit:['Crítico',v=>'+'+P0(v)+'%'],roubo:['Roubo de vida',v=>P0(v)+'%'],
+  rouboM:['Roubo de vida (magias)',v=>P0(v)+'%'],mreg:['Mana por segundo',v=>'+'+v],red:['Dano recebido',v=>'-'+P0(v)+'%'],rm:['Resist. mágica',v=>'+'+v],esq:['Esquiva',v=>P0(v)+'%'],
+  pen:['Ignora armadura',v=>P0(v)+'%'],queima:['Queima de mana',v=>v+' por golpe']};
+const FX_TXT={pesado:v=>`O 3º golpe causa +${P0(v)}% de dano`,pierce:v=>`Os golpes atravessam o alvo: o inimigo logo atrás sofre ${P0(v)}% do dano`,
+  burn:v=>`Os golpes queimam o alvo: ${P0(v)}% do ataque por segundo durante 3 s`,cleave:v=>`Os golpes causam ${P0(v)}% do dano aos inimigos em volta do alvo`,
+  stunPct:v=>`${P0(v)}% de chance de atordoar o alvo por 1 s ao golpear`,manaHit:v=>`+${v} de mana a cada golpe`,critMul:v=>`Os críticos causam +${P0(v)}% de dano`,
+  chuva:v=>`A cada 4 golpes, flechas extras acertam 2 outros inimigos (${P0(v)}% do dano)`,alc:v=>`+${v} de alcance (para quem ataca à distância)`,
+  hasteIni:v=>`+${P0(v)}% de vel. de ataque nos primeiros 6 s da luta`,killHeal:v=>`Ao abater um inimigo, cura ${P0(v)}% da vida máxima`,
+  magCrit:v=>`As magias podem causar crítico (${P0(v)}% de chance, +50% de dano)`,eco:v=>`A magia sai 2 vezes: o eco causa ${P0(v)}% do dano`,
+  aura:v=>`Aura infernal: queima os inimigos adjacentes a cada segundo`,escIni:v=>`Escudo de ${P0(v)}% da vida máxima no início da luta (8 s)`,
+  escMeio:v=>`Abaixo de 50% de vida, ganha um escudo de ${P0(v)}% da vida (uma vez)`,resFogo:v=>`${P0(v)}% de resistência a fogo`,manaHurt:v=>`+${v} de mana ao ser atingido`,
+  stunRed:v=>`-${P0(Math.min(.9,v))}% de duração de atordoamento`,semLento:v=>`Imune a lentidão`,refl:v=>`Reflete ${P0(v)}% do dano dos golpes corpo a corpo`,
+  reflMag:v=>`Reflete ${P0(v)}% do dano mágico recebido`,escLanca:v=>`Ao lançar a habilidade, ganha um escudo de ${P0(v)}% da vida (4 s)`,
+  auraArm:v=>`Aliados adjacentes no início da luta ganham +${v} de armadura`,revive:v=>`Ressuscita uma vez com ${P0(v)}% da vida`,manaRet:v=>`Devolve ${P0(v)}% da mana ao lançar a habilidade`,
+  curaPlus:v=>`As curas lançadas curam +${P0(v)}%`,salta:v=>`Salta para a retaguarda inimiga no início da luta`,auraCura:v=>`A cada 2 s cura o aliado mais ferido por perto (${P0(v)}% da vida do portador)`,
+  furtivo:v=>`Invisível nos primeiros ${v/1000} s: os inimigos o ignoram enquanto houver outro alvo`,veneno:v=>`As magias envenenam: ${P0(v)}% do dano em 4 s`,
+  manaRed:v=>`-${P0(v)}% de mana máxima (a habilidade sai mais rápido)`};
+const ITCACHE={};
+/* informações de um código de item: nome, estatísticas já escaladas pela forja e somadas ao encantamento, textos para os tooltips */
+function itemInfo(code){let r=ITCACHE[code];if(r!==undefined)return r;
+  const id=itId(code),B=ITEM[id];if(!B)return ITCACHE[code]=null;
+  const fj=itFj(code),en=B.perg?0:itEn(code),m=FORJA[fj]||1,E=en?ENCANTOS[en-1]:null,s={};
+  [...ST_ORD,...FX_ORD].forEach(k=>{if(B[k]!==undefined){let v=B[k]*(NAOESC[k]?1:m);s[k]=INTK[k]?Math.round(v):Math.round(v*1000)/1000;}});
+  if(E)ST_ORD.concat(FX_ORD).forEach(k=>{if(E[k]!==undefined)s[k]=(s[k]||0)+E[k];});
+  r={code,id,fj,en,n:B.n+(fj?' +'+fj:''),base:B,comp:!!B.comp,rec:!!B.rec,perg:!!B.perg,s,res:E&&E.res||null,conv:E&&E.conv||null,enc:E,ico:B.ico||id,encD:B.perg?B.enc:null,cor:E?E.cor:(B.perg?B.enc.cor:null)};
+  r.lin=ST_ORD.filter(k=>s[k]).map(k=>[ST_LIN[k][0],ST_LIN[k][1](s[k])]);
+  r.fxt=B.rec?FX_ORD.filter(k=>s[k]&&B[k]!==undefined).map(k=>FX_TXT[k](s[k])):[];
+  r.encTxt=E?E.n+': '+E.d:'';
+  r.d=B.perg?B.enc.d:r.lin.map(x=>x[0].toLowerCase()+' '+x[1]).join('; ');
+  r.curta=B.perg?'Encantamento: '+B.enc.d:B.comp?r.lin.map(x=>x[0]+' '+x[1]).join(', '):(B.fx||'');
+  return ITCACHE[code]=r;}
+const nomeItem=c=>{const i=itemInfo(c);return i?i.n:'?';};
+/* operações puras sobre códigos (usadas por execCmd, pela interface e pelos bots) */
+const ehComp=c=>{const i=ITEM[itId(c)];return !!(i&&i.comp);},ehPerg=c=>{const i=ITEM[itId(c)];return !!(i&&i.perg);},ehCompleto=c=>{const i=ITEM[itId(c)];return !!(i&&i.rec);};
+const codCombinar=(a,b)=>(ehComp(a)&&ehComp(b)&&RECEITA[itId(a)+'_'+itId(b)])||0;
+const codForjar=(a,b)=>(ehCompleto(a)&&itId(a)===itId(b)&&itFj(a)===itFj(b)&&itFj(a)<3)?mkIt(itId(a),itFj(a)+1,itEn(a)||itEn(b)):0;
+const codEncantar=(item,perg)=>(ehCompleto(item)&&!itEn(item)&&ehPerg(perg))?mkIt(itId(item),itFj(item),ITEM[itId(perg)].imb):0;
 
 /* =====================================================================================
    MONSTROS PvE (sprites reais do SPR15.criaturas). Estatísticas "de partida"; f = fator da onda
@@ -762,20 +903,34 @@ function criarCombate(eqA,eqB,o){o=o||{};
     eq.un.forEach(s=>novoUnit(C,s,lado));});
   aplicarTracos(C);
   C.un.forEach(u=>{u.hp=u.hpM;});
+  // efeitos de itens que valem desde o início da luta: escudo (Blessed Shield), furtividade (Stealth Ring) e aura de armadura (Royal Helmet)
+  C.un.forEach(u=>{const ie=u.ie;
+    if(ie.escIni){darEscudo(C,u,u.hpM*ie.escIni,8000);fx(C,'magic_blue',u.x,u.y);}
+    if(ie.furtivo)u.furtivoAte=ie.furtivo;
+    if(ie.auraArm)C.un.forEach(v=>{if(v!==u&&v.lado===u.lado&&cheb(u,v)<=1)v.arm+=ie.auraArm;});});
   return C;}
 
+/* soma as estatísticas de um item (já com forja e encantamento) na unidade; os efeitos marcantes ficam em u.ie e são lidos pelo motor */
+const EFK=FX_ORD.concat(['pen']);
+function aplicarItem(u,code){const it=itemInfo(code);if(!it||it.perg)return;const S=it.s;
+  if(S.atk)u.atk=Math.round(u.atk*(1+S.atk));if(S.as)u.asB+=S.as;if(S.ap)u.ap+=S.ap;if(S.arm)u.arm+=S.arm;
+  if(S.hp){u.hp+=S.hp;u.hpM+=S.hp;}if(S.regen)u.regen+=S.regen;if(S.m0)u.mana=Math.min(u.manaM||999,u.mana+S.m0);
+  if(S.mov)u.mov+=S.mov;if(S.crit)u.crit+=S.crit;if(S.roubo)u.roubo+=S.roubo;if(S.rouboM)u.rouboM+=S.rouboM;if(S.mreg)u.mreg+=S.mreg;
+  if(S.red)u.recMul=Math.max(.5,u.recMul*(1-S.red));if(S.rm)u.rm+=S.rm;if(S.esq)u.esq=Math.min(.6,u.esq+S.esq);if(S.queima)u.queima+=S.queima;
+  if(S.alc&&u.al>=2)u.al=Math.min(u.d.al+1,u.al+S.alc);if(S.resFogo)u.res.fire=(u.res.fire||0)+S.resFogo;if(S.salta)u.salta=true;
+  EFK.forEach(k=>{if(S[k])u.ie[k]=(u.ie[k]||0)+S[k];});
+  if(it.res)for(const e in it.res)u.res[e]=(u.res[e]||0)+it.res[e];
+  if(it.conv)(u.convs=u.convs||[]).push(it.conv);}
 function novoUnit(C,s,lado){const d=s.d,e=s.e||1,st=statsDe(d,e);
   const u={uid:++C.uid,d,e,lado,x:s.x,y:s.y,fx:s.x,fy:s.y,t0:-99999,dur:0,andaDesde:0,dir:lado===0?0:2,hp:st.hp,hpM:st.hp,atk:st.atk,sk:st.sk,arm:d.arm,al:d.al,as:d.as,
-    mov:1,mana:d.m0||0,manaM:d.hab?d.mana:0,ap:0,asB:0,dmgB:0,crit:0,esq:0,roubo:0,regen:0,mreg:0,recMul:1,rm:15,res:{},armMul:1,hab:d.hab,
+    mov:1,mana:d.m0||0,manaM:d.hab?d.mana:0,ap:0,asB:0,dmgB:0,crit:0,esq:0,roubo:0,rouboM:0,ie:{},convs:null,nAt:0,furtivoAte:0,regen:0,mreg:0,recMul:1,rm:15,res:{},armMul:1,hab:d.hab,
     vivo:true,alvo:null,prox:0,livreEm:0,stunAte:0,b:{},dots:[],itens:s.itens||[],inv:!!s.inv,el:d.el||'phys',
     C,queima:0,estunaChance:0,fatEsp:0,orcFuria:0,furia:false,morteFogo:0,nome:d.nome,lunge:null,pve:!!d.pve,inst:s.inst||null,st:{d:0,r:0,c:0}};   // st = placar: dano causado, recebido e cura feita
   if(d.pve&&d.mana===undefined){u.manaM=d.hab?60:0;u.mana=d.hab?20:0;}
   if(d.pve&&d.hab)u.manaM=70;
-  // itens
-  (u.itens).forEach(id=>{const it=ITEM[id];if(!it)return;
-    if(it.atk)u.atk=Math.round(u.atk*(1+it.atk));if(it.as)u.asB+=it.as;if(it.ap)u.ap+=it.ap;if(it.arm)u.arm+=it.arm;
-    if(it.hp){u.hp+=it.hp;u.hpM+=it.hp;}if(it.regen)u.regen+=it.regen;if(it.m0)u.mana=Math.min(u.manaM||999,u.mana+it.m0);
-    if(it.mov)u.mov+=it.mov;if(it.crit)u.crit+=it.crit;if(it.roubo)u.roubo+=it.roubo;if(it.mreg)u.mreg+=it.mreg;if(it.red)u.recMul*=1-it.red;});
+  // itens (receitas, forja e encantamentos): as estatísticas vêm de itemInfo(código)
+  u.itens.forEach(c=>aplicarItem(u,c));
+  if(u.ie.manaRed&&u.manaM){u.manaM=Math.max(20,Math.round(u.manaM*(1-Math.min(.5,u.ie.manaRed))));u.mana=Math.min(u.mana,u.manaM);}
   if(s.hpMul){u.hp=u.hpM=Math.round(u.hpM*s.hpMul);u.atk=Math.round(u.atk*(s.atMul||s.hpMul));u.sk=Math.round(u.sk*(s.atMul||s.hpMul));}
   C.un.push(u);C.map[u.uid]=u;C.occ[u.y*NC+u.x]=u.uid;C.vivos[lado]++;return u;}
 
@@ -798,7 +953,7 @@ function aplicarTracos(C){
     if((n=L('elfo'))>=0){const v=[.20,.35][n];mem('elfo',u=>{u.esq+=v;});}
     if((n=L('morto'))>=0){const v=[.2,.4,.6][n];inim.forEach(u=>{u.armMul*=1-v;});}
     if((n=L('fera'))>=0){const a=[.20,.40][n],b=[.15,.30][n];mem('fera',u=>{u.asB+=a;u.dmgB+=b;});}
-    if((n=L('dragao'))>=0){const v=[.20,.30,.40][n],x=[1.5,2.5,3.5][n];mem('dragao',u=>{u.res.fire=v;u.morteFogo=x;});}
+    if((n=L('dragao'))>=0){const v=[.20,.30,.40][n],x=[1.5,2.5,3.5][n];mem('dragao',u=>{u.res.fire=(u.res.fire||0)+v;u.morteFogo=x;});}
     if((n=L('demonio'))>=0){const v=[15,30][n];mem('demonio',u=>{u.queima+=v;});}
     if((n=L('elemental'))>=0){const v=[.15,.35][n];mem('elemental',u=>{u.dmgB+=v;u.ap+=v;});}
     if((n=L('gigante'))>=0){const v=[.12,.22][n];mem('gigante',u=>{u.estunaChance=v;});}
@@ -826,15 +981,24 @@ function agendar(C,ms,f){C.ev.push({t:C.t+ms,f});C.ev.sort((a,b)=>a.t-b.t);}
 
 /* ---- cálculo de atributos dinâmicos ---- */
 const bv=(u,n,C)=>{const b=u.b[n];return b&&b.ate>u.C.t?b.v:0;};
-function asEff(u){let a=u.as*(1+u.asB+bv(u,'as'));if(u.furia)a*=1+u.orcFuria;a*=1-bv(u,'lento');return Math.max(.2,a);}
+function asEff(u){let a=u.as*(1+u.asB+bv(u,'as'));if(u.furia)a*=1+u.orcFuria;
+  if(u.ie.hasteIni&&u.C.t<6000)a*=1+u.ie.hasteIni;            // Time Ring: arrancada nos primeiros 6 s
+  if(!u.ie.semLento)a*=1-bv(u,'lento');return Math.max(.2,a);}
 const armEff=u=>u.arm*u.armMul*(1-bv(u,'armR'));
-const movEff=u=>Math.max(.4,u.mov*(1-bv(u,'lento')));
+const movEff=u=>Math.max(.4,u.mov*(u.ie.semLento?1:1-bv(u,'lento')));
 
 /* ---- dano, cura, morte ---- */
+/* fator de mitigação de um elemento no alvo (armadura para físico; resistência mágica e resistência elemental para o resto) */
+function fatorEl(u,el,pen){if(el==='phys')return 100/(100+Math.max(-60,armEff(u)*(1-(pen||0))));return 100/(100+u.rm)*(1-Math.min(.6,u.res[el]||0));}
+function darEscudo(C,u,v,dur){v=Math.round(v);if(v<=0)return;const es=u.b.escudo;if(es&&es.ate>C.t&&es.v>0){es.v+=v;es.ate=Math.max(es.ate,C.t+dur);}else u.b.escudo={ate:C.t+dur,v};}
 function causar(C,src,u,bruto,el,o){o=o||{};if(!u.vivo)return 0;
   if(o.basico&&u.esq>0&&C.r()<u.esq){fx(C,'dodge',u.x,u.y);txt(C,u.x,u.y,'esquivou','#7fe6ff');return 0;}
   let d=bruto*(C.sd?1+C.sd*.08:1);
-  if(el==='phys')d*=100/(100+Math.max(-60,armEff(u)));else{d*=100/(100+u.rm);if(u.res[el])d*=1-u.res[el];}
+  if(o.hab&&src&&src.ie.magCrit&&C.r()<src.ie.magCrit){d*=1.5;o.crit=true;fx(C,'critical_damage',u.x,u.y);}   // Wand of Starstorm: magia crítica
+  let fe=fatorEl(u,el,src&&el==='phys'?src.ie.pen:0);                          // Crossbow: ignora parte da armadura
+  if(src&&src.convs&&!o.sem){let f=0,ac=0;src.convs.forEach(c=>{if(c.el!==el){f+=c.f;ac+=c.f*fatorEl(u,c.el,0);}});   // encantamento elemental: parte do dano vira o elemento (e conta com a resistência dele)
+    if(f>0){if(f>.6){ac*=.6/f;f=.6;}fe=(1-f)*fe+ac;}}
+  d*=fe;
   d*=u.recMul;if(src)d*=1-bv(src,'fraco');
   d=Math.max(1,Math.round(d));
   const es=u.b.escudo;if(es&&es.ate>C.t&&es.v>0){const ab=Math.min(es.v,d);es.v-=ab;d-=ab;if(d<=0){txt(C,u.x,u.y,'absorveu','#9fe8a0');return 0;}}
@@ -844,19 +1008,30 @@ function causar(C,src,u,bruto,el,o){o=o||{};if(!u.vivo)return 0;
   if(C.vis&&o.crit&&d>=450&&d>=u.hpM*.15)imp(C,'crit');
   if(u.manaM)u.mana=Math.min(u.manaM,u.mana+Math.min(15,d/10));
   if(src&&src.roubo&&o.basico)curar(C,src,d*src.roubo,true);
+  if(src&&src.rouboM&&o.hab)curar(C,src,d*src.rouboM,true);                      // Vampirismo também cura nas magias
+  if(u.ie.manaHurt&&u.manaM)u.mana=Math.min(u.manaM,u.mana+u.ie.manaHurt);      // Knight Armor: mana ao apanhar
+  if(src&&src!==u&&!o.refl&&src.vivo){                                           // reflexo: Golden Armor (golpes corpo a corpo) e Demon Shield (dano mágico)
+    if(o.basico&&u.ie.refl&&cheb(src,u)<=1){fx(C,'blockhit',src.x,src.y);causar(C,u,src,d*u.ie.refl,'phys',{refl:true,sem:true});}
+    else if(o.magia&&u.ie.reflMag&&!o.sem){fx(C,'blockhit',src.x,src.y);causar(C,u,src,d*u.ie.reflMag,el,{refl:true,sem:true,magia:true});}}
+  if(u.ie.escMeio&&!u.escMeioUsado&&u.hp>0&&u.hp<u.hpM*.5){u.escMeioUsado=true;darEscudo(C,u,u.hpM*u.ie.escMeio,6000);fx(C,'magic_blue',u.x,u.y);txt(C,u.x,u.y,'barreira','#9fe8a0');}   // Magic Plate Armor
   if(u.orcFuria&&!u.furia&&u.hp<u.hpM*.5&&u.hp>0){u.furia=true;fx(C,'magic_red',u.x,u.y);txt(C,u.x,u.y,'Fúria!','#ff6a4a');}
   if(u.hp<=0)morrer(C,u,src);
   return d;}
 function curar(C,u,v,mudo,fonte){if(!u.vivo)return 0;v=Math.round(Math.min(v,u.hpM-u.hp));if(v<=0)return 0;u.hp+=v;C.cura[u.lado]+=v;(fonte||u).st.c+=v;if(!mudo)txt(C,u.x,u.y,'+'+v,EL.cura.cor);return v;}
-function morrer(C,u,src){if(!u.vivo)return;u.vivo=false;u.hp=0;if(C.occ[u.y*NC+u.x]===u.uid)C.occ[u.y*NC+u.x]=0;C.vivos[u.lado]--;if(C.vivos[u.lado]<=0)imp(C,'final');
+function morrer(C,u,src){if(!u.vivo)return;
+  if(u.ie.revive&&!u.revivido){u.revivido=true;u.hp=Math.max(1,Math.round(u.hpM*u.ie.revive));u.dots.length=0;u.stunAte=Math.max(u.stunAte,C.t+300);   // Amulet of Loss: volta uma vez
+    fx(C,'holyarea',u.x,u.y);fx(C,'hearts',u.x,u.y,150);txt(C,u.x,u.y,'Ressuscitou!','#ffe680',true);return;}
+  u.vivo=false;u.hp=0;if(C.occ[u.y*NC+u.x]===u.uid)C.occ[u.y*NC+u.x]=0;C.vivos[u.lado]--;if(C.vivos[u.lado]<=0)imp(C,'final');
   C.mortos.push({u,t:C.t,x:u.x,y:u.y});fx(C,'poff',u.x,u.y);
   if(u.morteFogo){const inimigos=C.un.filter(v=>v.vivo&&v.lado!==u.lado&&cheb(v,u)<=1);fx(C,'firearea',u.x,u.y);
-    inimigos.forEach(v=>{fx(C,'firearea',v.x,v.y);causar(C,u,v,u.atk*u.morteFogo,'fire',{magia:true});});}}
+    inimigos.forEach(v=>{fx(C,'firearea',v.x,v.y);causar(C,u,v,u.atk*u.morteFogo,'fire',{magia:true});});}
+  if(src&&src!==u&&src.vivo&&src.ie.killHeal){curar(C,src,src.hpM*src.ie.killHeal);fx(C,'green_rings',src.x,src.y);}}
 
 /* ---- escolha de alvo / movimento ---- */
-function escolherAlvo(C,u){let melhor=null,md=1e9,n=0;
-  for(const v of C.un){if(!v.vivo||v.lado===u.lado)continue;const d=cheb(u,v)*100+dist2(u,v);
-    if(d<md){md=d;melhor=v;n=1;}else if(d===md){n++;if(C.r()<1/n)melhor=v;}}
+function escolherAlvo(C,u){let melhor=null;
+  for(let passe=0;passe<2&&!melhor;passe++){let md=1e9,n=0;      // 1º passe ignora quem está furtivo (Stealth Ring); se só sobrar furtivo, ataca mesmo assim
+    for(const v of C.un){if(!v.vivo||v.lado===u.lado||(passe===0&&v.furtivoAte>C.t))continue;const d=cheb(u,v)*100+dist2(u,v);
+      if(d<md){md=d;melhor=v;n=1;}else if(d===md){n++;if(C.r()<1/n)melhor=v;}}}
   return melhor;}
 function passoBFS(C,u,t){const ini=u.y*NC+u.x,prev=new Int16Array(NC*NR).fill(-1);prev[ini]=ini;const fila=[ini],ds=embaralhar(DIR8.slice(),C.r);
   for(let h=0;h<fila.length;h++){const c=fila[h],cx=c%NC,cy=(c/NC)|0;
@@ -872,38 +1047,65 @@ function mover(C,u,t){const p=passoBFS(C,u,t);if(p<0)return false;const nx=p%NC,
 /* ---- ataque básico ---- */
 function atacar(C,u,t){u.prox=C.t+Math.round(1000/asEff(u));u.dir=dirPara(u,t);
   if(u.manaM)u.mana=Math.min(u.manaM,u.mana+10);
-  let b=u.atk*(.92+C.r()*.16)*(1+u.dmgB+bv(u,'dmg'));let crit=false;
-  if(u.crit>0&&C.r()<u.crit){b*=1.5;crit=true;}
+  const ie=u.ie,n=++u.nAt;
+  let b=u.atk*(.92+C.r()*.16)*(1+u.dmgB+bv(u,'dmg'));let crit=false,pes=false;
+  if(u.crit>0&&C.r()<u.crit){b*=1.5+(ie.critMul||0);crit=true;}
+  if(ie.pesado&&n%3===0){b*=1+ie.pesado;pes=true;}                              // Giant Sword: o 3º golpe é pesado
   const ranged=u.al>1,a=u.d.atq||(ranged?AR:null);let atraso=130;
   if(ranged)atraso=tiro(C,a.t,u,t);
   u.lunge={b:C.t,dx:Math.sign(t.x-u.x),dy:Math.sign(t.y-u.y)};
   const hitN=a?a.hit:u.d.hit||'drawblood',el=u.el;
   agendar(C,atraso,()=>{if(!t.vivo)return;
-    fx(C,hitN,t.x,t.y);if(crit)fx(C,'critical_damage',t.x,t.y);
+    fx(C,hitN,t.x,t.y);if(crit)fx(C,'critical_damage',t.x,t.y);if(pes)fx(C,'explosionhit',t.x,t.y);
     const d=causar(C,u,t,b,el,{basico:true,crit,magia:el!=='phys'});
     if(d>0){if(u.queima&&t.manaM)t.mana=Math.max(0,t.mana-u.queima);
-      if(u.estunaChance&&t.vivo&&C.r()<u.estunaChance)atordoar(C,t,1000);}});}
-function atordoar(C,u,ms){if(!u.vivo)return;const f=u.stunAte;u.stunAte=Math.max(u.stunAte,C.t+ms);fx(C,'stun',u.x,u.y-0.3);if(f<C.t)txt(C,u.x,u.y,'atordoado','#ffe680');}
+      if(u.estunaChance&&t.vivo&&C.r()<u.estunaChance)atordoar(C,t,1000);
+      if(u.vivo)efeitosGolpe(C,u,t,b,el,n);}});}
+/* efeitos marcantes dos itens que disparam quando o golpe acerta (tudo determinístico: só usa C.r e a ordem de C.un) */
+function efeitosGolpe(C,u,t,b,el,n){const ie=u.ie;
+  if(ie.manaHit&&u.manaM)u.mana=Math.min(u.manaM,u.mana+ie.manaHit);
+  if(ie.stunPct&&t.vivo&&C.r()<ie.stunPct){atordoar(C,t,1000);fx(C,'energyhit',t.x,t.y);}                       // Thunder Hammer
+  if(ie.burn&&t.vivo){const dd=u.atk*ie.burn,q=t.dots.find(x=>x.tag==='brasa'&&x.src===u);                        // Fire Sword
+    if(q){q.n=3;q.d=Math.max(q.d,dd);}else t.dots.push({src:u,el:'fire',d:dd,n:3,prox:C.t+1000,ef:'hitbyfire',tag:'brasa'});}
+  if(ie.cleave)C.un.forEach(v=>{if(v.vivo&&v.lado!==u.lado&&v!==t&&cheb(v,t)<=1){fx(C,'hitarea',v.x,v.y);causar(C,u,v,b*ie.cleave,el,{sem:true,magia:el!=='phys'});}});   // Stonecutter Axe
+  if(ie.pierce){const x=t.x+Math.sign(t.x-u.x),y=t.y+Math.sign(t.y-u.y);                                           // Arbalest: o inimigo logo atrás
+    if(dentro(x,y)){const vid=C.occ[y*NC+x],v=vid&&C.map[vid];if(v&&v.vivo&&v.lado!==u.lado){fx(C,'hitarea',x,y);causar(C,u,v,b*ie.pierce,el,{sem:true,magia:el!=='phys'});}}}
+  if(ie.chuva&&n%4===0){const ra=u.d.atq||AR;                                                                      // Elethriel's Elemental Bow
+    C.un.filter(v=>v.vivo&&v.lado!==u.lado&&v!==t).sort((p,q)=>dist2(p,t)-dist2(q,t)||p.uid-q.uid).slice(0,2).forEach(v=>{
+      const dl=tiro(C,ra.t,u,v);agendar(C,dl,()=>{if(!v.vivo)return;fx(C,'hitarea',v.x,v.y);causar(C,u,v,b*ie.chuva,el,{sem:true,magia:el!=='phys'});});});}}
+function atordoar(C,u,ms){if(!u.vivo)return;ms=Math.round(ms*(1-Math.min(.9,u.ie.stunRed||0)));const f=u.stunAte;u.stunAte=Math.max(u.stunAte,C.t+ms);fx(C,'stun',u.x,u.y-0.3);if(f<C.t)txt(C,u.x,u.y,'atordoado','#ffe680');}
 
 /* =====================================================================================
    HABILIDADES: cada tipo toca o efeito real em cada tile atingido
    ===================================================================================== */
 const habDano=(u,m)=>m*u.sk*(1+u.ap)*(u.d.pve?1:1);
+const habCura=(u,m)=>habDano(u,m)*(1+(u.ie.curaPlus||0));                  // Dragon Necklace: curas maiores
+const ECO_OK={alvo:1,onda:1,self:1,pos:1,cura:1,curaAmigo:1,curaArea:1};      // tipos de habilidade que o eco do Ferumbras' Hat repete
+function escalaHab(h,k){const c=Object.assign({},h);if(c.m)c.m*=k;if(c.dot)c.dot=Object.assign({},c.dot,{m:c.dot.m*k});return c;}
+function venenar(C,u,v,raw){v.dots.push({src:u,el:'earth',d:raw*u.ie.veneno/4,n:4,prox:C.t+1000,ef:'hitbypoison',tag:'veneno'});}   // Snakebite Rod
+function auraInfernal(C,u){const dd=(u.atk*.5+u.sk*.15)*(1+u.ap)*u.ie.aura;                                                         // Demon Helmet
+  C.un.forEach(v=>{if(v.vivo&&v.lado!==u.lado&&cheb(u,v)<=1){fx(C,'hitbyfire',v.x,v.y);causar(C,u,v,dd,'fire',{magia:true,sem:true});}});}
+function auraCura(C,u){let a=null,mp=.98;                                                                                           // Sacred Tree Amulet
+  C.un.forEach(v=>{if(!v.vivo||v.lado!==u.lado||cheb(u,v)>2)return;const p=v.hp/v.hpM;if(p<mp){mp=p;a=v;}});
+  if(a){fx(C,'green_rings',a.x,a.y);curar(C,a,u.hpM*u.ie.auraCura,false,u);}}
 function podeLancar(C,u,t){const h=u.hab;if(!h)return false;const tp=h.t==='seq'?h.seq[0].t:h.t;
   if(tp==='cura')return u.hp<u.hpM*.9;
   if(tp==='curaAmigo'||tp==='curaArea')return C.un.some(v=>v.vivo&&v.lado===u.lado&&v.hp<v.hpM*.85&&(tp==='curaAmigo'||cheb(u,v)<=(h.raio||2)))||(h.t==='seq'&&t&&cheb(u,t)<=u.al);
   if(tp==='invocar'||tp==='buff')return !!t&&cheb(u,t)<=Math.max(u.al,3)+ (tp==='buff'?1:3);
   return !!t&&cheb(u,t)<=u.al;}
-function lancar(C,u,h){const t=u.alvo;u.mana=0;if(C.vis&&!u.pve&&!u.inv&&u.d.c===5)imp(C,'hab5');u.livreEm=Math.max(u.livreEm,C.t+500);u.prox=Math.max(u.prox,C.t+700);
+function lancar(C,u,h){const t=u.alvo;u.mana=u.ie.manaRet?Math.round(u.manaM*Math.min(.9,u.ie.manaRet)):0;if(u.mana>0)txt(C,u.x,u.y,'+mana','#6fa8ff');if(C.vis&&!u.pve&&!u.inv&&u.d.c===5)imp(C,'hab5');u.livreEm=Math.max(u.livreEm,C.t+500);u.prox=Math.max(u.prox,C.t+700);
   if(t)u.dir=dirPara(u,t);
   fala(C,u,h.p);
   const seq=h.t==='seq'?h.seq:[h];
-  seq.forEach(s=>{const at=s.atraso||0;if(at>0)agendar(C,at,()=>{if(u.vivo)acaoHab(C,u,s,u.alvo&&u.alvo.vivo?u.alvo:t);});else acaoHab(C,u,s,t);});}
+  seq.forEach(s=>{const at=s.atraso||0;if(at>0)agendar(C,at,()=>{if(u.vivo)acaoHab(C,u,s,u.alvo&&u.alvo.vivo?u.alvo:t);});else acaoHab(C,u,s,t);});
+  if(u.ie.escLanca){darEscudo(C,u,u.hpM*u.ie.escLanca,4000);fx(C,'magic_blue',u.x,u.y);}              // Mastermind Shield
+  if(u.ie.eco){const k=u.ie.eco;agendar(C,850,()=>{if(!u.vivo)return;const al=u.alvo&&u.alvo.vivo?u.alvo:t;   // Ferumbras' Hat: a magia sai de novo
+    fx(C,'purpleenergy',u.x,u.y);txt(C,u.x,u.y,'eco','#c9a0ff');seq.forEach(s=>{if(ECO_OK[s.t])acaoHab(C,u,escalaHab(s,k),al);});});}}
 function areaTiles(h,cx,cy,dir){if(h.area)return tilesArea(h.area,cx,cy,dir);const r=h.raio||1,o=[];for(let y=-r;y<=r;y++)for(let x=-r;x<=r;x++)o.push([cx+x,cy+y]);return o;}
 function danoArea(C,u,h,tiles,el,mult,efNome,tempoEscalonado){let n=0;
   tiles.forEach(([x,y],i)=>{if(!dentro(x,y))return;if(efNome)fx(C,efNome,x,y,tempoEscalonado?(i%5)*40:0);
     const vid=C.occ[y*NC+x];if(!vid)return;const v=C.map[vid];if(!v||!v.vivo||v.lado===u.lado)return;
-    const crit=false;causar(C,u,v,habDano(u,mult),el,{magia:true,crit});n++;
+    const raw=habDano(u,mult);causar(C,u,v,raw,el,{magia:true,hab:true});n++;if(u.ie.veneno&&v.vivo)venenar(C,u,v,raw);
     if(h.stun)atordoar(C,v,h.stun);if(h.deb)aplicarDeb(C,v,h.deb);if(h.dot)aplicarDot(C,u,v,h.dot);
     if(h.drena)curar(C,u,habDano(u,mult)*h.drena*.6);});
   return n;}
@@ -912,15 +1114,15 @@ function aplicarDot(C,u,v,dot){v.dots.push({src:u,el:dot.el,d:habDano(u,dot.m)/d
 function acaoHab(C,u,h,t){const el=h.el||'phys',dir=t?dirPara(u,t):(u.lado===0?0:2);
   switch(h.t){
     case 'alvo':{if(!t||!t.vivo)return;const d=h.tiro?tiro(C,h.tiro,u,t):80,dano=habDano(u,h.m);
-      agendar(C,d,()=>{if(!t.vivo)return;fx(C,h.ef,t.x,t.y);const r=causar(C,u,t,dano,el,{magia:true});if(h.stun)atordoar(C,t,h.stun);if(h.deb)aplicarDeb(C,t,h.deb);if(h.dot&&t.vivo)aplicarDot(C,u,t,h.dot);if(h.drena&&r)curar(C,u,r*h.drena);});break;}
+      agendar(C,d,()=>{if(!t.vivo)return;fx(C,h.ef,t.x,t.y);const r=causar(C,u,t,dano,el,{magia:true,hab:true});if(u.ie.veneno&&t.vivo)venenar(C,u,t,dano);if(h.stun)atordoar(C,t,h.stun);if(h.deb)aplicarDeb(C,t,h.deb);if(h.dot&&t.vivo)aplicarDot(C,u,t,h.dot);if(h.drena&&r)curar(C,u,r*h.drena);});break;}
     case 'onda':{if(t&&h.tiro)tiro(C,h.tiro,u,t);danoArea(C,u,h,tilesArea(h.area,u.x,u.y,dir),el,h.m,h.ef,true);break;}
     case 'self':{const tl=areaTiles(h,u.x,u.y,dir).filter(([x,y])=>!(x===u.x&&y===u.y));danoArea(C,u,h,tl,el,h.m,h.ef,false);break;}
     case 'pos':{if(!t)return;const d=h.tiro?tiro(C,h.tiro,u,t):60,cx=t.x,cy=t.y;
       agendar(C,d,()=>{danoArea(C,u,h,areaTiles(h,cx,cy,0),el,h.m,h.ef,false);});break;}
-    case 'cura':{fx(C,h.ef||'magic_blue',u.x,u.y);curar(C,u,habDano(u,h.m));break;}
+    case 'cura':{fx(C,h.ef||'magic_blue',u.x,u.y);curar(C,u,habCura(u,h.m));break;}
     case 'curaAmigo':{let a=null,mp=2;C.un.forEach(v=>{if(!v.vivo||v.lado!==u.lado)return;const p=v.hp/v.hpM;if(p<mp){mp=p;a=v;}});if(!a)return;
-      fx(C,h.ef||'magic_blue',a.x,a.y);curar(C,a,habDano(u,h.m),false,u);if(a!==u)fx(C,'magic_green',u.x,u.y);break;}
-    case 'curaArea':{const r=h.raio||2;fx(C,'magic_green',u.x,u.y);C.un.forEach(v=>{if(!v.vivo||v.lado!==u.lado||cheb(u,v)>r)return;fx(C,h.ef||'magic_blue',v.x,v.y);curar(C,v,habDano(u,h.m),false,u);});break;}
+      fx(C,h.ef||'magic_blue',a.x,a.y);curar(C,a,habCura(u,h.m),false,u);if(a!==u)fx(C,'magic_green',u.x,u.y);break;}
+    case 'curaArea':{const r=h.raio||2;fx(C,'magic_green',u.x,u.y);C.un.forEach(v=>{if(!v.vivo||v.lado!==u.lado||cheb(u,v)>r)return;fx(C,h.ef||'magic_blue',v.x,v.y);curar(C,v,habCura(u,h.m),false,u);});break;}
     case 'invocar':{const n=h.n||1,molde=U[h.id],mul=(C.invMul&&C.invMul[u.lado])||1;let k=0;
       const livres=[];for(const [dx,dy] of embaralhar(DIR8.slice(),C.r)){const x=u.x+dx,y=u.y+dy;if(dentro(x,y)&&!C.occ[y*NC+x])livres.push([x,y]);}
       if(livres.length<n){for(let r=2;r<=3&&livres.length<n;r++)for(let y=-r;y<=r;y++)for(let x=-r;x<=r;x++){const xx=u.x+x,yy=u.y+y;if(Math.max(Math.abs(x),Math.abs(y))===r&&dentro(xx,yy)&&!C.occ[yy*NC+xx])livres.push([xx,yy]);}}
@@ -943,8 +1145,9 @@ function passo(C){if(C.fim)return;C.t+=100;C.tk++;
   if(C.t>C.tempoMax){C.sd=(C.t-C.tempoMax)/1000;if(C.t%1000===0)C.un.forEach(u=>{if(!u.vivo)return;const d=Math.round(u.hpM*(.02+.006*C.sd));u.hp-=d;txt(C,u.x,u.y,''+d,'#ff4040');if(u.hp<=0)morrer(C,u,null);});}
   // efeitos por segundo / por 2 segundos
   if(C.t%1000===0)C.un.forEach(u=>{if(!u.vivo)return;
-    if(u.regen)curar(C,u,u.hpM*u.regen,false);if(u.mreg&&u.manaM)u.mana=Math.min(u.manaM,u.mana+u.mreg);
-    for(let i=u.dots.length-1;i>=0;i--){const dt=u.dots[i];if(dt.prox<=C.t){fx(C,dt.ef||'hitbypoison',u.x,u.y);causar(C,dt.src,u,dt.d,dt.el,{magia:true});if(!u.vivo)break;dt.prox+=1000;if(--dt.n<=0)u.dots.splice(i,1);}}});
+    if(u.regen)curar(C,u,u.hpM*u.regen,false);if(u.mreg&&u.manaM)u.mana=Math.min(u.manaM,u.mana+u.mreg);if(u.ie.aura)auraInfernal(C,u);
+    for(let i=u.dots.length-1;i>=0;i--){const dt=u.dots[i];if(!dt)continue;if(dt.prox<=C.t){fx(C,dt.ef||'hitbypoison',u.x,u.y);causar(C,dt.src,u,dt.d,dt.el,{magia:true,sem:true});if(!u.vivo)break;dt.prox+=1000;if(--dt.n<=0)u.dots.splice(i,1);}}});
+  if(C.t%2000===0)C.un.forEach(u=>{if(u.vivo&&u.ie.auraCura)auraCura(C,u);});
   if(C.curaTime&&C.t%2000===0)for(let l=0;l<2;l++)if(C.curaTime[l])C.un.forEach(u=>{if(u.vivo&&u.lado===l){const v=curar(C,u,u.hpM*C.curaTime[l]);if(v)fx(C,'green_rings',u.x,u.y);}});
   // reiteração do efeito de atordoamento
   if(C.vis&&C.t%500===0)C.un.forEach(u=>{if(u.vivo&&u.stunAte>C.t)fx(C,'stun',u.x,u.y-.3);});
@@ -976,7 +1179,7 @@ function simular(C){let n=0;while(!C.fim&&n++<2000)passo(C);if(!C.fim)finalizar(
 const NOMES_BOT=['Eruaran','Kaz Mortis','Dreadbane','Sir Galthor','Mystara','Lord Kharn','Thalion','Bakhra','Elara Nightwind','Gorbash','Vexilla','Ser Marden','Zul Karath','Hrothgar','Ildrin','Morgrim','Sylvaris','Dun Thorik','Nyx','Oswin Darkblade','Fenris','Aldric','Ravenna','Brokk','Tibaldo','Kharazim','Lyssandra','Urgath','Valdemar','Isolde'];
 const ODDS=[null,[100,0,0,0,0],[100,0,0,0,0],[75,25,0,0,0],[55,30,15,0,0],[45,33,20,2,0],[25,40,30,5,0],[19,30,35,15,1],[15,20,35,25,5],[15,20,35,22,8]];
 const NEED={3:6,4:10,5:20,6:36,7:48,8:80};
-const MAX_BANCO=9,MAX_ITENS=10,TAB_Y=4;                  // TAB_Y: primeira linha do lado de baixo da arena
+const MAX_BANCO=9,MAX_ITENS=15,TAB_Y=4;                  // TAB_Y: primeira linha do lado de baixo da arena
 const VOCS=['knight','paladin','sorcerer','druid'];
 
 function infoRodada(i){if(i<3)return {est:1,n:i+1,tipo:'pve',nome:'1-'+(i+1)};const k=i-3,est=2+Math.floor(k/6),n=k%6+1;
@@ -1014,6 +1217,11 @@ const vagaBanco=p=>p.banco.indexOf(null);
 const copias=(p,id,e)=>todos(p).filter(L=>L.inst.id===id&&L.inst.e===(e||1)).length;
 const novoInst=(G,id)=>({uid:++G.uid,id,e:1,itens:[]});
 const valorVenda=inst=>U[inst.id].c*Math.pow(3,inst.e-1);
+/* dois componentes que combinam viram o item completo (usado quando as unidades se fundem e os itens vão todos para a mesma) */
+function autoCombinarLista(l){l=l.slice();let mudou=true;
+  while(mudou){mudou=false;const ci=[];l.forEach((c,i)=>{if(ehComp(c))ci.push(i);});
+    for(let a=0;a<ci.length&&!mudou;a++)for(let b=a+1;b<ci.length&&!mudou;b++){const r=codCombinar(l[ci[a]],l[ci[b]]);if(r){l[ci[a]]=r;l.splice(ci[b],1);mudou=true;}}}
+  return l;}
 function devolverItens(p,inst){inst.itens.forEach(id=>{if(p.itens.length<MAX_ITENS)p.itens.push(id);});inst.itens=[];}
 /* fusão automática: 3 iguais viram 1 de estrela acima (banco + tabuleiro) */
 function fundir(G,p){let mudou=true,n=0,fundiu=[];
@@ -1021,7 +1229,7 @@ function fundir(G,p){let mudou=true,n=0,fundiu=[];
     todos(p).forEach(L=>{const k=L.inst.id+'|'+L.inst.e;(g[k]=g[k]||[]).push(L);});
     for(const k in g){const l=g[k];if(l.length>=3&&l[0].inst.e<3){
       l.sort((a,b)=>(a.onde==='tab'?0:1)-(b.onde==='tab'?0:1));const tres=l.slice(0,3),alvo=tres[0];
-      const it=[].concat(...tres.map(L=>L.inst.itens));tres.slice(1).forEach(L=>remover(p,L));
+      const it=autoCombinarLista([].concat(...tres.map(L=>L.inst.itens)));tres.slice(1).forEach(L=>remover(p,L));
       alvo.inst.e++;alvo.inst.itens=it.slice(0,3);it.slice(3).forEach(id=>{if(p.itens.length<MAX_ITENS)p.itens.push(id);});
       fundiu.push(alvo.inst);mudou=true;break;}}}
   if(fundiu.length)p.fusoes=(p.fusoes||[]).concat(fundiu);
@@ -1055,6 +1263,20 @@ function moverUn(p,de,para,emCombate){
   if(de.onde==='banco'){p.banco[de.i]=dest||null;}else p.tab[de.y][de.x]=dest||null;
   if(para.onde==='banco'){p.banco[para.i]=orig;}else p.tab[para.y][para.x]=orig;
   return true;}
+/* combinar (2 componentes), forjar (2 itens completos iguais) e encantar (pergaminho + item completo). Operandos: a = índice no inventário (ca = o código esperado);
+   o outro lado é b (outro item do inventário, cb) OU un + slot (um item que a unidade já carrega). Devolve null se deu certo, texto de aviso se falhou, 'x' se for inválido. */
+function opItem(p,c){const t=c.t;
+  if(!ehInt(c.a,0,MAX_ITENS-1)||p.itens[c.a]===undefined||p.itens[c.a]!==c.ca)return 'x';
+  const ca=p.itens[c.a];let cb,inst=null,slot=-1;
+  if(c.un===undefined){if(t==='encantar'||!ehInt(c.b,0,MAX_ITENS-1)||c.b===c.a||p.itens[c.b]===undefined||p.itens[c.b]!==c.cb)return 'x';cb=p.itens[c.b];}
+  else{const L=unidadeDe(p,locOk(c.un,p));if(!L||!ehInt(c.slot,0,2)||L.inst.itens[c.slot]===undefined)return 'x';inst=L.inst;slot=c.slot;cb=inst.itens[slot];}
+  let r=0;
+  if(t==='combinar'){r=codCombinar(ca,cb);if(!r)return 'Esses itens não combinam';}
+  else if(t==='forjar'){r=codForjar(ca,cb);if(!r)return itFj(ca)>=3||itFj(cb)>=3?'Esse item já está forjado ao máximo (+3)':'Só dá para forjar dois itens completos iguais';}
+  else{if(!inst)return 'x';r=codEncantar(cb,ca);if(!r)return !ehCompleto(cb)?'O encantamento só vale em itens completos':itEn(cb)?'Esse item já tem um encantamento':'x';}
+  if(inst){inst.itens[slot]=r;p.itens.splice(c.a,1);}
+  else{const lo=Math.min(c.a,c.b),hi=Math.max(c.a,c.b);p.itens[lo]=r;p.itens.splice(hi,1);}
+  return null;}
 function equipar(p,iItem,inst){if(inst.itens.length>=3||!p.itens[iItem])return false;inst.itens.push(p.itens[iItem]);p.itens.splice(iItem,1);return true;}
 
 /* =====================================================================================
@@ -1077,17 +1299,19 @@ function execCmd(G,p,c){if(!p||!p.vivo)return 'Você foi eliminado';if(!c||typeo
       if(de.onde==='banco'&&de.i>=p.banco.length)return 'x';
       if(!moverUn(p,de,pa,!prep))return pa.onde==='tab'?(!prep?'Só é possível reposicionar na preparação':'Limite de unidades do nível atingido'):'x';return null;}
     case 'vender':{const L=unidadeDe(p,locOk(c.de,p));if(!L)return 'x';if(L.onde==='tab'&&!prep)return 'Não é possível vender em combate';venderInst(G,p,L);return null;}
-    case 'equipar':{const L=unidadeDe(p,locOk(c.un,p));if(!L||!ehInt(c.item,0,MAX_ITENS)||!ITEM[c.id]||p.itens[c.item]!==c.id)return 'x';
+    case 'equipar':{const L=unidadeDe(p,locOk(c.un,p));if(!L||!ehInt(c.item,0,MAX_ITENS-1)||!ITEM[itId(c.id)]||p.itens[c.item]!==c.id)return 'x';
+      if(ehPerg(c.id))return 'O pergaminho se usa sobre um item completo da unidade';
       if(L.inst.itens.length>=3)return 'A unidade já carrega 3 itens';equipar(p,c.item,L.inst);return null;}
+    case 'combinar':case 'forjar':case 'encantar':return opItem(p,c);
     case 'pronto':{if(!prep)return 'x';if(G.info.tipo==='car'&&!carPronto(G))return 'x';
       if(contarTab(p)===0&&todos(p).length>0&&G.info.tipo!=='car')return 'Arraste uma unidade do banco para o tabuleiro';p.pronto=true;return null;}
     case 'carrossel':{if(!G.car||!ehInt(c.i,0,G.car.itens.length-1))return 'x';return carEscolher(G,c.i,p)?null:'Não é a sua vez';}
   }return 'x';}
 
 /* ---------- itens: sorteio por estágio ---------- */
-function sortearItem(est){const w=pesoItem(est);
-  let r=rnd(),t=1;for(let i=0;i<3;i++){r-=w[i];if(r<0){t=i+1;break;}t=3;}
-  return pick(ITENS.filter(i=>i.t===t)).id;}
+/* drop: um componente sorteado; a partir do estágio 2 também podem cair pergaminhos de encantamento */
+function sortearItem(est){if(est>=2&&rnd()<PERG_CHANCE)return pick(ENCANTOS).pid;return pick(COMPS);}
+const tierCar=id=>ITEM[id]&&ITEM[id].perg?2:1;
 
 /* =====================================================================================
    Equipes para o combate (coordenadas da arena)
@@ -1125,7 +1349,7 @@ function agirBot(G,p){const r=G.info;
   fundir(G,p);
   // vende o excesso do banco (o mais fraco fora da estratégia)
   while(vagaBanco(p)<0||todos(p).length>MAX_BANCO+p.nivel){const L=todos(p).filter(L=>L.onde==='banco').sort((a,b)=>potUn(a.inst)-potUn(b.inst))[0];if(!L)break;venderInst(G,p,L);if(vagaBanco(p)>=0)break;}
-  posicionarBot(p);equiparBot(p);}
+  posicionarBot(p);equiparBot(G,p);}
 function posicionarBot(p){const L=todos(p),N=p.nivel;
   // devolve tudo à lista e escolhe os N melhores com ganho marginal de sinergia
   const rest=L.slice(),sel=[];
@@ -1147,14 +1371,45 @@ function autoPosicionar(p){let mudou=false;const cols=[3,4,2,5,1,6,0,7];
     for(const y of ordem){for(const x of cols){if(!p.tab[y][x]){p.tab[y][x]=L.inst;p.banco[L.i]=null;ok=true;break;}}if(ok)break;}
     if(!ok)break;mudou=true;}
   return mudou;}
-function equiparBot(p){const ls=todos(p).filter(L=>L.onde==='tab');if(!ls.length)return;
-  for(let k=p.itens.length-1;k>=0;k--){const it=ITEM[p.itens[k]];if(!it)continue;
-    const ad=!!(it.atk||it.as||it.crit||it.roubo),ap=!!(it.ap||it.m0||it.mreg),tank=!!(it.hp||it.arm||it.red||it.regen);
-    const alvos=ls.filter(L=>L.inst.itens.length<3);if(!alvos.length)break;
-    const nota=L=>{const d=U[L.inst.id];let s=potUn(L.inst)*.2+rnd()*.3;
-      if(ad&&(d.k==='atirador'||d.k==='assassino'||d.k==='guerreiro'))s+=2;if(ap&&(d.k==='mago'||d.k==='curandeiro'||d.k==='invocador'))s+=2;
-      if(tank&&d.al===1&&(d.k==='guardiao'||d.k==='guerreiro'))s+=2;s-=L.inst.itens.length*.8;return s;};
-    alvos.sort((a,b)=>nota(b)-nota(a));alvos[0].inst.itens.push(p.itens[k]);p.itens.splice(k,1);}}
+/* ---- itens dos bots: combinam componentes, forjam, encantam e equipam conforme o papel de cada unidade (carry de ataque, carry mágico, tanque, suporte) ---- */
+const PAPEL={guardiao:'tk',guerreiro:'ad',atirador:'ad',assassino:'ad',mago:'ap',invocador:'ap',curandeiro:'su'};
+const AFIN={ad:{ad:3,ap:.4,tk:.7,su:0},ap:{ad:.2,ap:3,tk:.3,su:1.5},tk:{ad:.6,ap:.3,tk:3,su:1.2},su:{ad:0,ap:1.4,tk:1,su:3}};   // AFIN[papel do item][papel da unidade]
+const afinidade=(it,papel)=>{let m=0;(it.base.tag||[]).forEach((t,i)=>{m=Math.max(m,AFIN[t][papel]-i*.15);});return m;};
+const NOTA_ENC={vamp:{ad:3,ap:1.6,tk:2,su:1},void:{ad:.8,ap:3,tk:.3,su:2},strike:{ad:3,ap:.6,tk:0,su:0},scorch:{ad:2,ap:2,tk:.4,su:.4},venom:{ad:2,ap:2,tk:.4,su:.4},
+  frost:{ad:2,ap:2,tk:.4,su:.4},electrify:{ad:2,ap:2,tk:.4,su:.4},lich:{ad:.8,ap:.8,tk:2.2,su:1.6},snake:{ad:.8,ap:.8,tk:2.2,su:1.6},dragon:{ad:.8,ap:.8,tk:2.2,su:1.6},
+  quara:{ad:.8,ap:.8,tk:2.2,su:1.6},feather:{ad:2.5,ap:.8,tk:.5,su:.5}};
+const papelDe=inst=>PAPEL[U[inst.id].k]||'ad';
+/* faz UMA melhoria de itens (pergaminho, forja ou combinação) por chamada, sempre pelos mesmos comandos que um humano usa; devolve false quando não há mais o que fazer */
+function passoItemBot(G,p){const ls=todos(p).filter(L=>L.onde==='tab');if(!ls.length)return false;const inv=p.itens,est=G.info.est,pot=L=>potUn(L.inst);
+  // 1) pergaminho de encantamento: no item completo (ainda sem encantamento) mais adequado do tabuleiro
+  const ip=inv.findIndex(ehPerg);
+  if(ip>=0){const en=ITEM[itId(inv[ip])].enc;let mel=null,ms=-9;
+    ls.forEach(L=>{const pa=papelDe(L.inst);L.inst.itens.forEach((c,k)=>{if(!ehCompleto(c)||itEn(c))return;
+      const sc=NOTA_ENC[en.k][pa]*1.5+afinidade(itemInfo(c),pa)*.5+pot(L)*.3+rnd()*.3;if(sc>ms){ms=sc;mel={L,k};}});});
+    if(mel&&execCmd(G,p,{t:'encantar',a:ip,ca:inv[ip],un:locDe(mel.L),slot:mel.k})===null)return true;}
+  // 2) forja no lugar: a unidade já usa o item e há outro igual no inventário
+  for(const L of ls)for(let k=0;k<L.inst.itens.length;k++){const c=L.inst.itens[k];if(!ehCompleto(c)||itFj(c)>=3)continue;
+    const i=inv.indexOf(c);if(i<0)continue;
+    if((L.inst.itens.length>=3||est>=3)&&execCmd(G,p,{t:'forjar',a:i,ca:c,un:locDe(L),slot:k})===null)return true;}
+  // 3) forja no inventário: dois completos iguais para os quais não sobram vagas boas
+  for(let i=0;i<inv.length;i++){const c=inv[i];if(!ehCompleto(c)||itFj(c)>=3)continue;const j=inv.indexOf(c,i+1);if(j<0)continue;
+    const it=itemInfo(c);let livres=0;ls.forEach(L=>{if(afinidade(it,papelDe(L.inst))>=1.5)livres+=3-L.inst.itens.length;});
+    if((livres<2||inv.length>=MAX_ITENS-3)&&execCmd(G,p,{t:'forjar',a:i,ca:c,b:j,cb:c})===null)return true;}
+  // 4) combina dois componentes no melhor item completo e o equipa na unidade que mais se beneficia
+  const ci=[];inv.forEach((c,i)=>{if(ehComp(c))ci.push(i);});
+  if(ci.length>=2){let mel=null,ms=-9;
+    for(let x=0;x<ci.length;x++)for(let y=x+1;y<ci.length;y++){const r=codCombinar(inv[ci[x]],inv[ci[y]]),it=itemInfo(r);
+      ls.forEach(L=>{if(L.inst.itens.length>=3)return;
+        const sc=afinidade(it,papelDe(L.inst))*2+pot(L)*.35-L.inst.itens.length*1.1-(L.inst.itens.includes(r)?1.5:0)+rnd()*.25;
+        if(sc>ms){ms=sc;mel={a:ci[x],b:ci[y],r,L};}});}
+    if(mel&&(ms>=4.5||ci.length>=4||est>=3||inv.length>=MAX_ITENS-4)&&execCmd(G,p,{t:'combinar',a:mel.a,ca:inv[mel.a],b:mel.b,cb:inv[mel.b]})===null){
+      execCmd(G,p,{t:'equipar',item:Math.min(mel.a,mel.b),id:mel.r,un:locDe(mel.L)});return true;}}
+  // 5) itens completos soltos no inventário (resultado de forja, unidades vendidas): equipa
+  for(let i=0;i<inv.length;i++){const c=inv[i];if(!ehCompleto(c))continue;const it=itemInfo(c);let mel=null,ms=-9;
+    ls.forEach(L=>{if(L.inst.itens.length>=3)return;const sc=afinidade(it,papelDe(L.inst))*2+pot(L)*.35-L.inst.itens.length*1.1+rnd()*.25;if(sc>ms){ms=sc;mel=L;}});
+    if(mel&&execCmd(G,p,{t:'equipar',item:i,id:c,un:locDe(mel)})===null)return true;}
+  return false;}
+function equiparBot(G,p){let g=0;while(g++<40&&passoItemBot(G,p));}
 
 /* =====================================================================================
    Fluxo das rodadas
@@ -1186,7 +1441,7 @@ function abrirCarrossel(G){const v=vivosDe(G),est=G.info.est,lista=[];for(let i=
 function carAvancar(G){const c=G.car;if(!c)return;
   while(c.idx<c.ordem.length){const p=c.ordem[c.idx];if(p.humano)return;   // espera a escolha do humano
     // bot: pega o melhor item que ainda sobra
-    let bi=0,bs=-1;c.itens.forEach((id,i)=>{const it=ITEM[id],s=it.t*2+rnd();if(s>bs){bs=s;bi=i;}});
+    let bi=0,bs=-1;c.itens.forEach((id,i)=>{const s=tierCar(id)*2+rnd()*2;if(s>bs){bs=s;bi=i;}});
     const id=c.itens.splice(bi,1)[0];c.esc[p.id]=id;if(p.itens.length<MAX_ITENS)p.itens.push(id);c.idx++;}}
 function carEscolher(G,iItem,quem){const c=G.car;if(!c||c.idx>=c.ordem.length)return false;const p=c.ordem[c.idx];if(!p.humano||(quem&&quem!==p))return false;
   const id=c.itens.splice(clamp(iItem,0,c.itens.length-1),1)[0];c.esc[p.id]=id;if(p.itens.length<MAX_ITENS)p.itens.push(id);c.idx++;carAvancar(G);return true;}
@@ -1251,14 +1506,22 @@ function rodadaAuto(G){comecarCombate(G);fecharRodada(G);if(!G.fim)iniciarRodada
    Simulação em lote (modo de teste: ?sim=N no navegador, ou o harness em node):
    N partidas bot x bot sem render. Devolve estatísticas de equilíbrio.
    ===================================================================================== */
-function simularLote(N,seed0){const R={jogos:0,erros:0,travas:0,rodadas:0,lutas:0,lados:[0,0,0],sd:0,tesg:0,ticks:[],tr:{},estr:{},pve:{},pveN:{},msgErros:[]};
+/* retrato dos itens de um jogador (para as estatísticas): o carry é a unidade do tabuleiro com mais itens */
+function snapItens(p){const ls=todos(p).filter(L=>L.onde==='tab');let carry=null,cs=-1;
+  ls.forEach(L=>{const sc=L.inst.itens.length*10+potUn(L.inst);if(sc>cs){cs=sc;carry=L.inst;}});
+  return {carry:carry?carry.itens.slice():[],todos:[].concat(...ls.map(L=>L.inst.itens)),inv:p.itens.length,comp:p.itens.filter(ehComp).length};}
+function simularLote(N,seed0){const R={jogos:0,erros:0,travas:0,rodadas:0,lutas:0,lados:[0,0,0],sd:0,tesg:0,ticks:[],tr:{},estr:{},pve:{},pveN:{},msgErros:[],item:{},fj:[0,0,0,0],enc:{},inv:0,invN:0,comp:0,jogItens:0};
   for(let g=0;g<N;g++){semente((seed0||1)*1000+g);
-    try{const G=novoJogo({humano:false});let r=0;while(!G.fim&&r++<150)rodadaAuto(G);
+    try{const G=novoJogo({humano:false});let r=0;while(!G.fim&&r++<150){comecarCombate(G);G.jog.forEach(p=>{if(p.vivo)p.snapIt=snapItens(p);});fecharRodada(G);if(!G.fim)iniciarRodada(G);}   // = rodadaAuto, guardando o estado dos itens de cada jogador
       if(!G.fim)R.travas++;R.jogos++;R.rodadas+=G.rodada;const e=G.est;
       e.ladoV.forEach((v,i)=>R.lados[i]+=v);R.lutas+=e.lutas;R.sd+=e.sd;R.tesg+=e.tempoEsg;e.ticks.forEach(t=>R.ticks.push(t));
       for(const t in e.tr){const o=R.tr[t]||(R.tr[t]={w:0,n:0});o.w+=e.tr[t].w;o.n+=e.tr[t].n;}
       for(const k in e.pveV){R.pve[k]=(R.pve[k]||0)+e.pveV[k];R.pveN[k]=(R.pveN[k]||0)+e.pveN[k];}
-      G.jog.forEach(p=>{p.estrat.tr.forEach(t=>{(R.estr[t]=R.estr[t]||[]).push(p.colocacao||8);});});
+      G.jog.forEach(p=>{p.estrat.tr.forEach(t=>{(R.estr[t]=R.estr[t]||[]).push(p.colocacao||8);});
+        const sn=p.snapIt;if(!sn)return;const col=p.colocacao||8,vistos=new Set();R.jogItens++;R.inv+=sn.inv;R.invN++;R.comp+=sn.comp;
+        sn.todos.forEach(c=>{if(!ehCompleto(c))return;const id=itId(c),o=R.item[id]||(R.item[id]={n:0,s:0,pn:0,ps:0,cn:0,cs:0});o.n++;o.s+=col;if(!vistos.has(id)){vistos.add(id);o.pn++;o.ps+=col;}
+          R.fj[itFj(c)]++;if(itEn(c))R.enc[itEn(c)]=(R.enc[itEn(c)]||0)+1;});
+        sn.carry.forEach(c=>{if(!ehCompleto(c))return;const o=R.item[itId(c)];o.cn++;o.cs+=col;});});
     }catch(err){R.erros++;if(R.msgErros.length<5)R.msgErros.push(String(err&&err.stack||err));}}
   R.ticks.sort((a,b)=>a-b);return R;}
 function relatorioLote(R){const med=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:0,L=[],t=R.ticks,tot=R.lados[0]+R.lados[1]+R.lados[2]||1;
@@ -1267,6 +1530,11 @@ function relatorioLote(R){const med=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:
   L.push(`duração: mediana ${((t[t.length>>1]||0)/10).toFixed(1)}s, p90 ${((t[Math.floor(t.length*.9)]||0)/10).toFixed(1)}s, máx ${((t[t.length-1]||0)/10).toFixed(1)}s | com morte súbita ${(100*R.sd/Math.max(1,R.lutas)).toFixed(1)}% | tempo esgotado ${R.tesg}`);
   L.push('vitória por sinergia dominante (PvP):');Object.entries(R.tr).sort((a,b)=>b[1].n-a[1].n).forEach(([k,o])=>L.push(`  ${k.padEnd(11)} ${(100*o.w/o.n).toFixed(1).padStart(5)}%  n=${o.n}`));
   L.push('colocação média por sinergia de estratégia (1 = melhor):');Object.entries(R.estr).sort((a,b)=>med(a[1])-med(b[1])).forEach(([k,a])=>L.push(`  ${k.padEnd(11)} ${med(a).toFixed(2)}  n=${a.length}`));
+  const it=Object.keys(R.item).map(id=>({id:+id,nome:ITEM[id].n,...R.item[id]})).sort((a,b)=>(a.cn?a.cs/a.cn:9)-(b.cn?b.cs/b.cn:9));
+  L.push(`itens completos nos tabuleiros finais dos bots (${R.jogItens} jogadores; inventário médio no fim ${(R.inv/Math.max(1,R.invN)).toFixed(1)}, componentes soltos ${(R.comp/Math.max(1,R.invN)).toFixed(1)}):`);
+  L.push('  '+'item'.padEnd(26)+'uso(jog.)'.padStart(10)+'cópias'.padStart(8)+'coloc.geral'.padStart(13)+'  no carry: n / coloc.');
+  it.forEach(o=>L.push('  '+o.nome.padEnd(26)+(100*o.pn/Math.max(1,R.jogItens)).toFixed(0).padStart(8)+'% '+String(o.n).padStart(6)+(o.n?(o.s/o.n).toFixed(2):'-').padStart(13)+'  '+String(o.cn).padStart(6)+' / '+(o.cn?(o.cs/o.cn).toFixed(2):'-')));
+  L.push(`forja: +0 ${R.fj[0]} | +1 ${R.fj[1]} | +2 ${R.fj[2]} | +3 ${R.fj[3]} | encantamentos: `+(Object.keys(R.enc).map(k=>ENCANTOS[k-1].n+' '+R.enc[k]).join(', ')||'nenhum'));
   L.push('vitória dos bots nos PvE:');Object.keys(R.pve).forEach(k=>L.push(`  ${k} ${(100*R.pve[k]/R.pveN[k]).toFixed(0)}%`));
   return L.join('\n');}
 
@@ -1292,7 +1560,7 @@ function precarregar(cb){const L=new Set();
   VOCS.forEach(v=>{const f=SPR.roupas[v][3];if(f)L.add(f.src);});
   Object.values(CB.efeitos).forEach(f=>L.add(f.src));Object.values(CB.tiros).forEach(f=>L.add(f.src));
   LISTA_U.forEach(id=>{const c=cadDe(U[id]);if(c)L.add(c.src);});Object.keys(MON).forEach(id=>{const c=cadDe({spr:id});if(c)L.add(c.src);});   // só os cadáveres que o jogo usa
-  Object.values(ICO).forEach(s=>L.add(s));Object.keys(TRACOS).forEach(k=>L.add(icoTraco(k)));ITENS.forEach(i=>L.add(IMG('itens/'+i.id+'.png')));L.add('tactics-assets/chao.png');BIOMAS.forEach(b=>L.add('tactics-assets/chao_'+b+'.png'));
+  Object.values(ICO).forEach(s=>L.add(s));Object.keys(TRACOS).forEach(k=>L.add(icoTraco(k)));ITENS.forEach(i=>L.add(icoItem(i.id)));ENCANTOS.forEach(e=>L.add(icoItem(e.ico)));L.add('tactics-assets/chao.png');BIOMAS.forEach(b=>L.add('tactics-assets/chao_'+b+'.png'));
   const arr=[...L];let n=0;
   // as sprites de criaturas e os ícones são obrigatórios; o resto carrega em segundo plano
   const obrig=arr.filter(s=>/criaturas|roupas|itens|icones|ui\/|chao|combate_/.test(s));
@@ -1432,8 +1700,9 @@ function desenharTabuleiro(rt){
       if(dr.ok&&c.onde==='tab'){const al=U[dr.inst.id].al,ox=c.x,oy=c.y+4;   // alcance: as casas que a unidade atinge de onde vai cair
         for(let y=Math.max(0,oy-al);y<=Math.min(NR-1,oy+al);y++)for(let x=Math.max(0,ox-al);x<=Math.min(NC-1,ox+al);x++){if(x===ox&&y===oy)continue;
           const X=BX+x*TS,Y=BY+y*TS;cx.fillStyle='rgba(255,196,70,.17)';cx.fillRect(X,Y,TS,TS);cx.strokeStyle='rgba(255,210,100,.55)';cx.lineWidth=.8;cx.strokeRect(X+.5,Y+.5,TS-1,TS-1);}}}}
-  if(dr&&dr.tipo==='item'){const p=UI.jog;
-    todos(p).forEach(L=>{if(L.inst.itens.length>=3)return;cx.fillStyle='rgba(240,215,110,.14)';
+  if(dr&&dr.tipo==='item'){const p=UI.jog;                                                         // casas onde o item serve: dourado = equipar, verde = combinar/forjar, roxo = encantar
+    const cor=pl=>pl.tipo==='equipar'?'rgba(240,215,110,.15)':pl.tipo==='encantar'?'rgba(190,120,255,.28)':'rgba(110,230,160,.28)';
+    todos(p).forEach(L=>{const pl=planoSobreUn(p,dr.idx,L);if(!pl||pl.erro)return;cx.fillStyle=cor(pl);
       if(L.onde==='tab')cx.fillRect(BX+L.x*TS+1,BY+(L.y+4)*TS+1,TS-2,TS-2);else cx.fillRect(BEN_X+L.i*TS+1,BEN_Y+1,TS-2,TS-2);});
     if(dr.alvo){const a=dr.alvo;cx.fillStyle=dr.ok?'rgba(240,215,110,.34)':'rgba(230,90,70,.30)';
       if(a.onde==='tab')cx.fillRect(BX+a.x*TS,BY+(a.y+4)*TS,TS,TS);else cx.fillRect(BEN_X+a.i*TS,BEN_Y,TS,TS);}}
@@ -1468,7 +1737,12 @@ function desenharTextos(C,rt){
     cx.globalAlpha=age>1300?1-(age-1300)/400:1;cx.font='bold '+Math.round(3.4*Z+2)+'px Verdana';cx.lineWidth=3.2;cx.strokeStyle='#000';cx.strokeText(f.t,sx,sy);cx.fillStyle='#ffe14a';cx.fillText(f.t,sx,sy);}
   cx.restore();}
 
-function iconesItens(u,X,Y,alfa){const it=u.itens||[];it.forEach((id,i)=>{const im=folhaImg(IMG('itens/'+id+'.png'));if(im){cx.globalAlpha=alfa;cx.drawImage(im,X+1+i*8,Y+23,9,9);cx.globalAlpha=1;}});}
+const FJ_COR=['','#dfe6f5','#ffd24a','#ff6ad8'];
+function iconesItens(u,X,Y,alfa){const it=u.itens||[];it.forEach((c,i)=>{const inf=itemInfo(c);if(!inf)return;const im=folhaImg(icoItem(inf.ico));if(!im)return;const x=X+1+i*8,y=Y+23;
+  cx.globalAlpha=alfa;cx.drawImage(im,x,y,9,9);
+  if(inf.fj){cx.strokeStyle=FJ_COR[inf.fj];cx.lineWidth=1;cx.strokeRect(x-.5,y-.5,10,10);}                       // forja: contorno na cor do nível
+  if(inf.enc){cx.fillStyle=inf.enc.cor;cx.fillRect(x+6,y+6,3,3);cx.fillStyle='#000';cx.fillRect(x+5,y+9,5,1);cx.fillRect(x+9,y+5,1,5);}   // encantamento: gema
+  cx.globalAlpha=1;});}
 
 /* ---- desenha uma unidade (combate ou pré-visualização) ---- */
 function desenharUnidade(u,rt,estatico){const p=estatico?{x:u.x,y:u.y}:posU(u,rt);let ox=0,oy=0;
@@ -1476,7 +1750,8 @@ function desenharUnidade(u,rt,estatico){const p=estatico?{x:u.x,y:u.y}:posU(u,rt
   const X=BX+p.x*TS+ox,Y=BY+p.y*TS+oy;
   cx.fillStyle=u.lado===(ESP?1:0)?'rgba(80,140,255,.30)':'rgba(255,80,70,.30)';cx.beginPath();cx.ellipse(BX+p.x*TS+16,BY+p.y*TS+27,12.5,5,0,0,7);cx.fill();
   if(u.b&&u.C&&u.b.escudo&&u.b.escudo.ate>u.C.t&&u.b.escudo.v>0){cx.strokeStyle='rgba(180,235,255,.7)';cx.lineWidth=1;cx.beginPath();cx.ellipse(BX+p.x*TS+16,BY+p.y*TS+27,14,6,0,0,7);cx.stroke();}
-  const f=pintarSprite(u.d,ESP&&!estatico?(u.dir+2)%4:u.dir,X,Y,rt,estatico?null:u);
+  const furt=!estatico&&u.C&&u.furtivoAte>u.C.t;if(furt)cx.globalAlpha=.42;      // Stealth Ring: invisível nos primeiros segundos
+  const f=pintarSprite(u.d,ESP&&!estatico?(u.dir+2)%4:u.dir,X,Y,rt,estatico?null:u);if(furt)cx.globalAlpha=1;
   if(!f){cx.fillStyle='#a33';cx.fillRect(X+8,Y+8,16,20);}
   return p;}
 
@@ -1722,7 +1997,8 @@ function tipUnidade(d,e,itens,u){const cl=CLASSES[d.k];const star=d.pve?'':'<spa
     if(u.manaM)h+=L('Mana',Math.round(u.mana)+' / '+u.manaM);
     if(u.crit)h+=L('Crítico',Math.round(u.crit*100)+'%');if(u.ap)h+=L('Poder de habilidade','+'+Math.round(u.ap*100)+'%');if(u.esq)h+=L('Esquiva',Math.round(u.esq*100)+'%');if(u.roubo)h+=L('Roubo de vida',Math.round(u.roubo*100)+'%');}
   h+=`<div class="hab"><b style="color:#d9b45a">Habilidade</b><br>${descHab(d,e)}</div>`;
-  if(itens&&itens.length)h+='<div class="its">'+itens.map(i=>`<img src="${IMG('itens/'+i+'.png')}">`).join('')+'</div>'+itens.map(i=>`<div class="sb" style="margin:2px 0 0">${esc(ITEM[i].n)}: ${esc(ITEM[i].d)}</div>`).join('');
+  if(itens&&itens.length)h+='<div class="itl">'+itens.map(c=>{const it=itemInfo(c);if(!it)return '';
+    return `<div class="itx">${htmlItem(c,{tip:false})}<div><b>${esc(it.n)}</b>${it.enc?` <em style="color:${it.enc.cor}">· ${esc(it.enc.n)}</em>`:''}<span>${it.rec?`<u style="text-decoration:none;color:#d9b45a">${esc(it.base.fx)}</u>: `:''}${esc(it.d)}</span></div></div>`;}).join('')+'</div>';
   return h;}
 /* ícone de traço: item real do Tibia (32x32 a 1x) num brasão (origem = hexágono, classe = escudo); o aro mostra o nível:
    -1 apagado (cinza), 0 bronze, 1 prata, 2 ouro, 3 prismático (nível máximo do traço). O mesmo ícone aparece na carta, no tooltip e no painel. */
@@ -1749,7 +2025,7 @@ function previaCompra(p,id){const d=U[id],n1=copias(p,id,1),n2=copias(p,id,2),up
 const LTIP=(a,b)=>`<div class="lin"><span>${a}</span><b>${b}</b></div>`;
 function htmlTip(k){const [t,a]=k.split(':'),p=UI.jog;
   if(t==='sin')return tipTraco(a);
-  if(t==='item'){const id=a==='slot'?null:+a;const it=ITEM[id];if(!it)return null;return `<h4><span>${esc(it.n)}</span><span class="est" style="font-size:10px">${'I'.repeat(it.t)}</span></h4><div class="sb">${esc(it.d)}</div><div class="sb" style="margin:0">Arraste sobre uma unidade (máx. 3 itens).</div>`;}
+  if(t==='item')return htmlTipItem(+a);
   if(t==='jog'){const q=G.jog[+a],hs=(q.hist||[]);return `<h4><span>${esc(q.nome)}</span></h4>`+LTIP('Vida',Math.max(0,q.hp))+LTIP('Nível',q.nivel)+LTIP('Sequência',q.seq>0?q.seq+' vitórias':q.seq<0?(-q.seq)+' derrotas':'-')+
     (hs.length?LTIP('Últimas rodadas',hs.map(r=>({v:'V',d:'D',e:'E'}[r])).join(' ')):'')+(q.vivo?`<div class="sb" style="margin:4px 0 0">${q===p?'Clique para voltar ao seu tabuleiro':'Clique para ver o tabuleiro'}</div>`:`<div class="sb">Eliminado em ${ROMANO(q.colocacao)} lugar</div>`);}
   if(t==='ouro'){const juros=Math.min(5,Math.floor(p.ouro/10)),sq=bonusSeq(p.seq),tot=5+juros+sq;
@@ -1757,17 +2033,18 @@ function htmlTip(k){const [t,a]=k.split(':'),p=UI.jog;
     h+=`<div class="sb" style="margin:5px 0 0">Mais +2 de XP por rodada.${juros<5?' Guarde '+(10*(juros+1)-p.ouro)+' de ouro para +1 de juros.':' Juros no máximo.'}</div>`;return h;}
   if(t==='odds'){const o=ODDS[p.nivel];return `<h4><span>Chances da loja · nível ${p.nivel}</span></h4><div class="sb">Probabilidade de cada carta ser de cada custo.</div>`+o.map((v,i)=>`<div class="lin"><span style="color:${TIER_COR[i+1]}">Custo ${i+1}</span><b>${v}%</b></div>`).join('');}
   if(t==='mon'){const w=ondaPvE(G.info.est,G.info.n);return tipUnidade(monDef(a,w?w.f:1),1,null,null);}
-  if(t==='drops'){const di=dropsInfo(G.info.est,G.info.n),nm=['','comuns','raros','épicos'];return `<h4><span>Butim da onda</span></h4><div class="sb">Só se você vencer a onda.</div>`+(di.ouro?LTIP('Ouro','+'+di.ouro):'')+LTIP('Itens',di.q)+di.tiers.map(x=>LTIP('Chance de item '+nm[x.t],Math.round(x.w*100)+'%')).join('');}
-  if(t==='bt'){return {rolar:'<h4><span>Rolar a loja</span></h4><div class="sb">Custa 2 de ouro. Atalho: D</div>',xp:'<h4><span>Comprar experiência</span></h4><div class="sb">Custa 4 de ouro por +4 de XP. Mais nível = mais unidades no tabuleiro e melhores cartas. Atalho: F</div>',trava:'<h4><span>Travar a loja</span></h4><div class="sb">Mantém as cartas atuais na próxima rodada. Atalho: L</div>',pronto:'<h4><span>Pronto</span></h4><div class="sb">Começa o combate sem esperar o relógio. Atalho: Espaço</div>'}[a];}
+  if(t==='drops'){const di=dropsInfo(G.info.est,G.info.n);return `<h4><span>Butim da onda</span></h4><div class="sb">Só se você vencer a onda.</div>`+(di.ouro?LTIP('Ouro','+'+di.ouro):'')+LTIP('Itens',di.q+(di.q>1?' componentes':' componente'))+
+    `<div class="sb" style="margin:5px 0 0">Cada item é um dos 8 componentes (Sword, Bow, Wand of Inferno, Plate Armor, Dwarven Shield, Mana Potion, Boots of Haste, Ring of Healing). Dois componentes viram um item completo.</div>`+
+    (di.perg?LTIP('Chance de pergaminho de encantamento',Math.round(di.perg*100)+'%'):`<div class="sb" style="margin:5px 0 0">Pergaminhos de encantamento passam a cair no estágio 2.</div>`);}
+  if(t==='bt'){return {itens:'<h4><span>Inventário de itens</span></h4><div class="sb">Arraste um componente sobre outro (ou sobre uma unidade que já tenha um componente) para combiná-los em um item completo. Itens completos iguais podem ser forjados (+1 a +3). Pergaminhos encantam um item completo de uma unidade.</div>',forjar:'<h4><span>Forjar</span></h4><div class="sb">Funde dois itens completos iguais no mesmo item +1 (até +3): +20% / +40% / +65% nos números.</div>',rec:'<h4><span>Receitas</span></h4><div class="sb">Mostra o que cada duplo de componentes forma, a forja e os encantamentos.</div>',rolar:'<h4><span>Rolar a loja</span></h4><div class="sb">Custa 2 de ouro. Atalho: D</div>',xp:'<h4><span>Comprar experiência</span></h4><div class="sb">Custa 4 de ouro por +4 de XP. Mais nível = mais unidades no tabuleiro e melhores cartas. Atalho: F</div>',trava:'<h4><span>Travar a loja</span></h4><div class="sb">Mantém as cartas atuais na próxima rodada. Atalho: L</div>',pronto:'<h4><span>Pronto</span></h4><div class="sb">Começa o combate sem esperar o relógio. Atalho: Espaço</div>'}[a];}
   return null;}
 
 /* ---------- topo, trilha de rodadas, faixa da rodada ---------- */
 const FLAME='<svg viewBox="0 0 12 16"><path fill="currentColor" d="M6 0C6 4 11 5.5 11 10a5 5 0 0 1-10 0C1 7 3 6 3.6 3.4 4.6 4.6 5.4 3 6 0z"/><path fill="#fff" opacity=".55" d="M6 7.5c0 1.8 2.4 2.4 2.4 4.2a2.4 2.4 0 0 1-4.8 0C3.6 10 6 9.3 6 7.5z"/></svg>';
 const TIPOS_ROD=est=>est===1?['pve','pve','pve']:['pvp','pvp','pvp','pvp','car','pve'];
 const NOME_ROD={pvp:'Jogador x Jogador',pve:'Monstros',car:'Carrossel de itens'};
-const pesoItem=est=>est<=2?[.8,.2,0]:est===3?[.4,.5,.1]:est===4?[.2,.5,.3]:est===5?[.1,.4,.5]:[0,.3,.7];
 /* o que uma rodada PvE pode dar (mesmas regras de fecharRodada): ouro, quantidade de itens e os níveis de item possíveis */
-function dropsInfo(est,n){const w=pesoItem(est);return {ouro:est===1?[0,2,3][n-1]:3+est,q:est===1?1:2,tiers:[1,2,3].map((t,i)=>({t,w:w[i]})).filter(x=>x.w>0).sort((a,b)=>b.w-a.w)};}
+function dropsInfo(est,n){return {ouro:est===1?[0,2,3][n-1]:3+est,q:est===1?1:2,perg:est>=2?PERG_CHANCE:0};}
 function oponenteLocal(){const p=UI.jog;if(!G||!p)return null;const i=G.opoDe&&G.opoDe[p.id];return i>=0?G.jog[i]:null;}
 function hudTopo(){if(!G)return;const r=G.info,p=UI.jog;$('est-n').textContent=r.nome;
   let tx=r.tipo==='pvp'?'Jogador x Jogador':r.tipo==='pve'?'Monstros':'Carrossel';
@@ -1784,9 +2061,9 @@ function hudTopo(){if(!G)return;const r=G.info,p=UI.jog;$('est-n').textContent=r
 /* faixa acima do tabuleiro: monstros e butim da próxima onda (PvE), adversário e suas sinergias (PvP) ou aviso do carrossel */
 function hudStrip(){const el=$('faixa-rodada');if(!el)return;if(!G||!UI.jog){el.innerHTML='';return;}const r=G.info,p=UI.jog;let h='';
   if(r.tipo==='pve'){const ser=(G.opoEq&&G.opoEq[p.id])||[],cont={};ser.forEach(s=>{cont[s.mon]=(cont[s.mon]||0)+1;});
-    const di=dropsInfo(r.est,r.n),ic=[];di.tiers.forEach(x=>ITENS.filter(i=>i.t===x.t).forEach(i=>ic.push(i)));
+    const di=dropsInfo(r.est,r.n),ic=ITENS.filter(i=>i.comp);
     h=`<span class="rt">${UI.fase==='prep'?'Próxima onda':'Onda'}</span><div class="mons">${Object.keys(cont).map(id=>`<div class="mon" data-tip="mon:${id}"><canvas width="34" height="34" data-mon="${id}"></canvas><b>${cont[id]>1?'×'+cont[id]:''}</b></div>`).join('')}</div>
-      <span class="sep"></span><img class="bau" src="${ICO.loot}" alt="" data-tip="drops:x"><div class="info" data-tip="drops:x"><b>Butim</b><br>${di.ouro?'+'+di.ouro+' ouro · ':''}${di.q} ${di.q>1?'itens':'item'}</div><div class="drops" data-tip="drops:x">${ic.slice(0,9).map(i=>`<img src="${IMG('itens/'+i.id+'.png')}" alt="">`).join('')}</div>`;}
+      <span class="sep"></span><img class="bau" src="${ICO.loot}" alt="" data-tip="drops:x"><div class="info" data-tip="drops:x"><b>Butim</b><br>${di.ouro?'+'+di.ouro+' ouro · ':''}${di.q} ${di.q>1?'itens':'item'}</div><div class="drops" data-tip="drops:x">${ic.map(i=>`<img src="${icoItem(i.id)}" alt="">`).join('')}${di.perg?htmlItem(ENCANTOS[0].pid,{tip:false}):''}</div>`;}
   else if(r.tipo==='pvp'){const op=oponenteLocal();
     if(op){const c=contarTracos(idsEm(op,'tab')),ls=Object.keys(c).map(t=>({t,niv:nivelTraco(t,c[t])})).filter(o=>o.niv>=0).sort((a,b)=>b.niv-a.niv);
       h=`<span class="rt">Adversário</span><div class="av"><canvas width="34" height="34" data-av="${op.voc}"></canvas></div><div class="info"><b>${esc(op.nome)}</b><br>Vida ${Math.max(0,op.hp)} · Nível ${op.nivel}</div><span class="sep"></span><div class="trs">${ls.slice(0,7).map(o=>iconeTraco(o.t,o.niv)).join('')||'<span class="info">sem sinergias ativas</span>'}</div>`;}
@@ -1843,7 +2120,91 @@ function hudLoja(){const p=UI.jog;if(!p)return;
   const k=UI.hoverCartaI;if(k>=0){const sl=$('cartas').children[k];if(sl&&p.loja[k]&&p.loja[k]===UI.hoverCartaId)cartaHover(sl,true);else cartaHover(null);}}   // o painel acompanha a carta sob o mouse
 function hudOdds(){const p=UI.jog;if(!p)return;const el=$('odds');if(el._nv===p.nivel)return;el._nv=p.nivel;const o=ODDS[p.nivel];
   el.innerHTML=`<div class="oh"><span>Chances da loja</span><b>Nv ${p.nivel}</b></div><div class="ob">${o.map((v,i)=>v?`<i style="width:${v}%;background:${TIER_COR[i+1]}"></i>`:'').join('')}</div><div class="on_">${o.map((v,i)=>`<b class="${v?'':'z'}" style="color:${TIER_COR[i+1]}">${v}%</b>`).join('')}</div>`;}
-function hudItens(){const p=UI.jog;if(!p)return;let h='';for(let i=0;i<MAX_ITENS;i++){const id=p.itens[i];h+=`<div class="slot ${id?'cheio':''}">${id?`<img src="${IMG('itens/'+id+'.png')}" data-slot="${i}" data-tip="item:${id}" draggable="false">`:''}</div>`;}$('grade-itens').innerHTML=h;}
+/* =====================================================================================
+   Itens na interface (Fase 2): inventário, combinar, forjar, encantar, prévia, receitas
+   ===================================================================================== */
+/* o ícone de um item: contorno da forja, gema do encantamento; o pergaminho tem fundo de pergaminho. o: {slot, tip:false, mini, x2} */
+function htmlItem(code,o){o=o||{};const it=itemInfo(code);if(!it)return '';
+  const cls='ic'+(it.fj?' f'+it.fj:'')+(it.perg?' perg':'')+(o.mini?' mini':'')+(o.x2?' x2':''),gem=it.cor;
+  return `<span class="${cls}"${o.slot!==undefined?` data-slot="${o.slot}"`:''}${o.tip===false?'':` data-tip="item:${code}"`}><img src="${icoItem(it.ico)}" alt="" draggable="false">${gem?`<i class="gm" style="--g:${gem}"></i>`:''}${it.fj?`<b class="fl">+${it.fj}</b>`:''}</span>`;}
+function htmlTipItem(c){const it=itemInfo(c);if(!it)return null;const B=it.base;
+  const tipo=it.perg?'Pergaminho de encantamento':it.comp?'Componente':'Item completo';
+  let h=`<div class="cabi">${htmlItem(c,{tip:false})}<h4><span>${esc(it.n)}</span><span class="sb" style="margin:0">${tipo}</span></h4></div>`;
+  if(it.perg){h+=`<div class="hab" style="margin-top:0;border:0;padding:0"><b style="color:${B.enc.cor}">${esc(B.enc.n)}</b><br>${esc(B.enc.d)}.</div><div class="sb" style="margin:6px 0 0">Arraste sobre uma unidade: vale no primeiro item completo dela que ainda não tem encantamento (1 por item, sem ocupar vaga).</div>`;return h;}
+  it.lin.forEach(x=>{h+=LTIP(x[0],x[1]);});
+  if(it.fxt.length)h+=`<div class="hab"><b style="color:#d9b45a">${esc(B.fx)}</b><br>${it.fxt.map(esc).join('<br>')}</div>`;
+  if(it.enc)h+=`<div class="hab"><b style="color:${it.enc.cor}">Encantamento: ${esc(it.enc.n)}</b><br>${esc(it.enc.d)}</div>`;
+  if(it.comp){h+='<div class="sb" style="margin:6px 0 2px">Combinando com cada componente:</div><div class="rcs">'+COMPS.map(o=>{const r=ITEM[RECEITA[B.id+'_'+o]];return `<span class="ic" title="${esc(B.n+' + '+ITEM[o].n+' = '+r.n)}"><img src="${icoItem(r.id)}" alt="" draggable="false"></span>`;}).join('')+'</div>';}
+  else{h+=`<div class="sb" style="margin:6px 0 0">Receita: ${esc(ITEM[B.pa].n)} + ${esc(ITEM[B.pb].n)}</div>`;
+    h+=it.fj<3?`<div class="sb" style="margin:2px 0 0">Forja: 2 iguais viram +${it.fj+1} (+${[20,40,65][it.fj]}% nos números)</div>`:`<div class="sb" style="margin:2px 0 0;color:#ffd24a">Forjado ao máximo (+3, +65% nos números)</div>`;}
+  return h;}
+/* o que acontece ao soltar o item de índice idx do inventário sobre uma unidade (L) ou sobre outro item (j): {tipo, a, b, r, cmd} ou {erro} */
+function planoSobreUn(p,idx,L){const ca=p.itens[idx];if(ca===undefined||!L)return null;const inst=L.inst,un=locDe(L);
+  if(ehPerg(ca)){const k=inst.itens.findIndex(c=>ehCompleto(c)&&!itEn(c));
+    if(k<0)return {erro:inst.itens.some(ehCompleto)?'Todos os itens completos da unidade já têm encantamento':'A unidade precisa de um item completo para receber o encantamento'};
+    const cb=inst.itens[k];return {tipo:'encantar',a:ca,b:cb,r:codEncantar(cb,ca),cmd:{t:'encantar',a:idx,ca,un,slot:k}};}
+  if(ehComp(ca)){const k=inst.itens.findIndex(c=>ehComp(c)&&codCombinar(ca,c));
+    if(k>=0){const cb=inst.itens[k];return {tipo:'combinar',a:ca,b:cb,r:codCombinar(ca,cb),cmd:{t:'combinar',a:idx,ca,un,slot:k}};}}
+  else{const k=inst.itens.findIndex(c=>codForjar(ca,c));
+    if(k>=0){const cb=inst.itens[k];return {tipo:'forjar',a:ca,b:cb,r:codForjar(ca,cb),cmd:{t:'forjar',a:idx,ca,un,slot:k}};}}
+  if(inst.itens.length>=3)return {erro:'A unidade já carrega 3 itens'};
+  return {tipo:'equipar',a:ca,cmd:{t:'equipar',item:idx,id:ca,un}};}
+function planoSobreItem(p,idx,j){const ca=p.itens[idx],cb=p.itens[j];if(ca===undefined||cb===undefined||idx===j)return null;
+  const rc=codCombinar(ca,cb);if(rc)return {tipo:'combinar',a:ca,b:cb,r:rc,cmd:{t:'combinar',a:idx,ca,b:j,cb}};
+  const rf=codForjar(ca,cb);if(rf)return {tipo:'forjar',a:ca,b:cb,r:rf,cmd:{t:'forjar',a:idx,ca,b:j,cb}};
+  if(ehCompleto(ca)&&ehCompleto(cb)&&itId(ca)===itId(cb))return {erro:itFj(ca)>=3||itFj(cb)>=3?'Esse item já está forjado ao máximo (+3)':'Só dá para forjar itens com o mesmo nível de forja'};
+  return null;}
+function acharParForja(p){for(let i=0;i<p.itens.length;i++){const c=p.itens[i];if(!ehCompleto(c)||itFj(c)>=3)continue;const j=p.itens.indexOf(c,i+1);if(j>=0)return {a:i,b:j,c};}return null;}
+function mostrarPrevia(ev,pl){const el=$('previa');if(!pl){el.style.display='none';return;}
+  let h;
+  if(pl.erro)h=`<div class="ruim">${esc(pl.erro)}</div>`;
+  else if(pl.tipo==='equipar')h=`<div class="tx">Equipar <b>${esc(nomeItem(pl.a))}</b></div>`;
+  else{const ex=pl.tipo==='forjar'?`<small>Forja: +${itFj(pl.r)} (+${[0,20,40,65][itFj(pl.r)]}% nos números)</small>`:pl.tipo==='encantar'?`<small>Encantamento: ${esc(ITEM[itId(pl.a)].enc.n)}</small>`:'';
+    h=`<div class="ln">${htmlItem(pl.a,{tip:false})}<i>+</i>${htmlItem(pl.b,{tip:false})}<i>&rarr;</i>${htmlItem(pl.r,{tip:false})}</div><div class="tx">${esc(nomeItem(pl.a))} + ${esc(nomeItem(pl.b))} &rarr; <b>${esc(nomeItem(pl.r))}</b>${ex}</div>`;}
+  el.className=pl.erro?'ruim':'';el.innerHTML=h;el.style.display='block';
+  const w=el.offsetWidth,hh=el.offsetHeight;el.style.left=Math.round(clamp(ev.clientX-w/2,6,innerWidth-w-6))+'px';el.style.top=Math.round(clamp(ev.clientY-hh-34,6,innerHeight-hh-6))+'px';}
+const esconderPrevia=()=>{const el=$('previa');if(el)el.style.display='none';};
+/* posição (em tiles do canvas) de uma unidade do tabuleiro ou do banco, para os efeitos do COMB15 */
+const tilePos=L=>L.onde==='banco'?{x:(BEN_X+L.i*TS-BX)/TS,y:(BEN_Y-BY)/TS}:{x:L.x,y:L.y+4};
+/* efeito do COMB15 sobre um elemento da página (inventário): lista de [nome do efeito, atraso em ms] */
+function fxSobreEl(el,lista,esc2){if(UI.reduz||!el||!document.body)return;const r=el.getBoundingClientRect(),S=128,c=document.createElement('canvas');c.width=S;c.height=S;
+  c.style.cssText=`position:fixed;left:${Math.round(r.left+r.width/2-S/2)}px;top:${Math.round(r.top+r.height/2-S/2)}px;width:${S}px;height:${S}px;z-index:90;pointer-events:none;image-rendering:pixelated`;
+  document.body.appendChild(c);const g=c.getContext('2d');g.imageSmoothingEnabled=false;const t0=performance.now(),es=lista.map(([n,at])=>({id:E(n),at}));
+  const tick=()=>{const t=performance.now()-t0;g.clearRect(0,0,S,S);let vivo=false;
+    es.forEach(e=>{const f=CB.efeitos[e.id];if(!f)return;if(f._tot===undefined)f._tot=f.ms.reduce((a,b)=>a+b,0);if(t-e.at<f._tot)vivo=true;fxCanvas(g,e.id,S/2,S/2+8,t-e.at,esc2||2);});
+    if(vivo||t<250)requestAnimationFrame(tick);else c.remove();};
+  requestAnimationFrame(tick);setTimeout(()=>c.remove(),3000);}
+/* executa um plano pelos comandos (execCmd local ou envio ao anfitrião) e toca os efeitos; ctx: {L} unidade alvo, {slot,slot2} itens do inventário */
+function usarPlano(pl,ctx){if(!pl)return false;if(pl.erro){aviso(pl.erro);return false;}
+  const els=[...document.querySelectorAll('#grade-itens .slot')];
+  if(!acaoLocal(pl.cmd))return false;
+  const t=pl.tipo,L=ctx&&ctx.L,pos=L?tilePos(L):null,agora=performance.now();
+  const sobreUn=nome=>{if(pos)UI.fxPrep.push({id:E(nome),x:pos.x,y:pos.y,b:agora});};
+  if(t==='equipar'){Sons.equipar();sobreUn('magic_green');}
+  else if(t==='combinar'){Sons.combinar();aviso(`${nomeItem(pl.a)} + ${nomeItem(pl.b)} → ${nomeItem(pl.r)}`,2800);sobreUn('magic_blue');sobreUn('sparkling');
+    if(ctx&&ctx.slot2!==undefined)fxSobreEl(els[Math.min(ctx.slot,ctx.slot2)],[['magic_blue',0],['sparkling',120]],2);}
+  else if(t==='forjar'){Sons.forja();aviso(`Forja: ${nomeItem(pl.r)}!`,2800);if(pos){UI.fxPrep.push({id:E('yellow_rings'),x:pos.x,y:pos.y,b:agora});UI.fxPrep.push({id:E('firework_yellow'),x:pos.x,y:pos.y-.3,b:agora+150});}
+    if(ctx&&ctx.slot2!==undefined)fxSobreEl(els[Math.min(ctx.slot,ctx.slot2)],[['yellow_rings',0],['firework_yellow',160]],2);}
+  else{Sons.encanta();aviso(`${nomeItem(pl.b)} → ${nomeItem(pl.r)}`,2800);sobreUn('purpleenergy');sobreUn('magic_red');}
+  posAcao();return true;}
+function forjarUI(){const p=UI.jog;if(!p||UI.estado!=='jogo')return;const par=acharParForja(p);if(!par){aviso('Você precisa de dois itens completos iguais');return;}
+  usarPlano({tipo:'forjar',a:par.c,b:par.c,r:codForjar(par.c,par.c),cmd:{t:'forjar',a:par.a,ca:par.c,b:par.b,cb:par.c}},{slot:par.a,slot2:par.b});}
+function hudItens(){const p=UI.jog;if(!p)return;let h='';
+  for(let i=0;i<MAX_ITENS;i++){const c=p.itens[i];h+=`<div class="slot ${c!==undefined?'cheio':''}" data-s="${i}">${c!==undefined?htmlItem(c,{slot:i}):''}</div>`;}
+  $('grade-itens').innerHTML=h;const f=$('bt-forjar');if(f)f.style.display=acharParForja(p)?'':'none';}
+/* ---------- tela de receitas: grade 8x8 de componentes, forja e encantamentos ---------- */
+function htmlGradeReceitas(){let h='<table class="grd"><tr><th></th>'+COMPS.map(c=>`<th>${htmlItem(c)}</th>`).join('')+'</tr>';
+  COMPS.forEach(a=>{h+=`<tr><th>${htmlItem(a)}</th>`+COMPS.map(b=>`<td class="${a===b?'dg':''}" data-pa="${a}" data-pb="${b}">${htmlItem(RECEITA[a+'_'+b])}</td>`).join('')+'</tr>';});
+  return h+'</table>';}
+function htmlExplicaItens(){return `<p>Os 8 componentes caem nas rodadas contra monstros e no carrossel. <b>Dois componentes quaisquer</b> (inclusive dois iguais) formam um item completo com um efeito marcante: arraste um componente sobre outro no inventário, ou sobre uma unidade que já carrega um componente, e o resultado aparece numa prévia antes de soltar. Cada unidade leva até 3 itens.</p>${htmlGradeReceitas()}
+  <h3>Forja (Exaltation Forge)</h3><p>Dois itens completos <b>iguais</b> viram o mesmo item <b>+1</b>; dois +1 viram +2; dois +2 viram +3 (máximo). Cada nível aumenta os números do item (e a força do efeito) em +20%, +40% e +65%. Arraste um sobre o outro, sobre a unidade que já o usa, ou clique em "Forjar" quando houver um par no inventário. O contorno do ícone mostra o nível:</p>
+  <div class="forj"><span>${htmlItem(mkIt(3281,1),{tip:false})} +1 prata</span><span>${htmlItem(mkIt(3281,2),{tip:false})} +2 ouro</span><span>${htmlItem(mkIt(3281,3),{tip:false})} +3 prismático</span></div>
+  <h3>Encantamentos (imbuements)</h3><p>Pergaminhos caem nas rodadas contra monstros (a partir do estágio 2) e no carrossel. Arraste um sobre uma unidade: ele encanta o primeiro item completo dela que ainda não tem encantamento. É 1 por item e não ocupa vaga; o ícone do item ganha uma gema da cor do encantamento.</p>
+  <div class="recl">${ENCANTOS.map(e=>`<div>${htmlItem(e.pid)}<span><b>${esc(e.n)}</b><br>${esc(e.d)}</span></div>`).join('')}</div>`;}
+function ligarGradeReceitas(raiz){raiz.querySelectorAll('.grd td').forEach(td=>{td.onmouseenter=()=>{raiz.querySelectorAll('.grd td.hl').forEach(x=>x.classList.remove('hl'));
+  const m=raiz.querySelector(`.grd td[data-pa="${td.dataset.pb}"][data-pb="${td.dataset.pa}"]`);if(m&&m!==td)m.classList.add('hl');};});}
+function mostrarReceitas(volta){telaHTML(`<div class="painel modal" style="width:min(780px,96vw)"><h2>Receitas</h2><div class="txt">${htmlExplicaItens()}</div><div class="menu" style="margin-top:12px"><button class="bt" id="b-v">Fechar</button></div></div>`,true);
+  ligarGradeReceitas($('tela'));$('b-v').onclick=volta||(()=>{fecharTela();});}
 function hudBotoes(){const p=UI.jog;if(!p)return;const fase=UI.fase,car=G.info.tipo==='car';
   $('bt-rolar').disabled=p.ouro<2;$('bt-xp').disabled=p.ouro<4||p.nivel>=9;
   $('bt-trava').classList.toggle('on',!!p.travada);$('bt-pronto').disabled=fase!=='prep'||car||!!(Online.ativo&&(p.pronto||!p.vivo));
@@ -1925,7 +2286,7 @@ function espiarJog(id){if(!G||!UI.jog||UI.estado!=='jogo'||UI.pausado)return;con
   if(UI.fase!=='prep'||UI.C){aviso('Só dá para espiar tabuleiros na preparação');return;}
   UI.espiar=id;UI.prevSujo=true;$('espia-nome').textContent=q.nome;$('espia').classList.add('on');cancelarArrasto();marcar('jog');}
 function sairEspiar(){if(UI.espiar===null)return;UI.espiar=null;UI.prevSujo=true;$('espia').classList.remove('on');marcar('jog');}
-function cancelarArrasto(){UI.pd=null;if(UI.drag){UI.drag=null;$('ghost').style.display='none';$('zona-venda').classList.remove('on','sobre');}}
+function cancelarArrasto(){UI.pd=null;esconderPrevia();if(UI.drag){UI.drag=null;$('ghost').style.display='none';$('zona-venda').classList.remove('on','sobre');}}
 
 /* ---------- emotes (tecla E): balão amarelo, como a fala do Tibia; online vai para os outros ---------- */
 const EMOTES=['gg','!','?',':)','hihi'];
@@ -2000,18 +2361,25 @@ function celAt(ev){const r=cv.getBoundingClientRect(),lx=(ev.clientX-r.left)/r.w
 function unidadeCombateEm(cel,rt){const C=UI.C;if(!C||cel.onde==='banco'||cel.onde==='fora')return null;const cx_=cel.x,cy_=cel.onde==='tab'?cel.y+4:cel.y;
   return C.un.find(u=>{if(!u.vivo)return false;const p=posU(u,rt);return Math.round(p.x)===cx_&&Math.round(p.y)===cy_;})||null;}
 function iniciarArrasto(d,ev){UI.drag=d;const g=$('ghost');g.style.display='block';g.style.left=ev.clientX+'px';g.style.top=ev.clientY+'px';
-  if(d.tipo==='un'){g.innerHTML='<canvas width="56" height="56"></canvas>';pintarRetrato(g.firstChild,d.inst.id,0);}else g.innerHTML=`<img src="${IMG('itens/'+d.id+'.png')}" width="40" height="40" style="image-rendering:pixelated">`;
+  if(d.tipo==='un'){g.innerHTML='<canvas width="56" height="56"></canvas>';pintarRetrato(g.firstChild,d.inst.id,0);}else g.innerHTML=htmlItem(d.id,{tip:false});
   esconderTip();cartaHover(null);UI.hoverTr=null;if(d.tipo==='un'){$('venda-v').textContent=valorVenda(d.inst);$('zona-venda').classList.add('on');}Sons.pegar();}
 function pointerDownCv(ev){if(UI.atq&&ev.button===0)pularAtaque();if(UI.estado!=='jogo'||ev.button!==0||UI.espiar!==null||UI.pausado)return;const cel=celAt(ev);if(!cel)return;const L=unidadeEm(cel);if(!L)return;
   if(L.onde==='tab'&&UI.fase!=='prep')return;UI.pd={tipo:'un',de:L,inst:L.inst,x:ev.clientX,y:ev.clientY};}
-function pointerDownItem(ev){const img=ev.target.closest('img[data-slot]');if(!img||ev.button!==0||UI.estado!=='jogo')return;ev.preventDefault();const idx=+img.dataset.slot;UI.pd={tipo:'item',idx,id:UI.jog.itens[idx],x:ev.clientX,y:ev.clientY};}
+function pointerDownItem(ev){const el=ev.target.closest('[data-slot]');if(!el||ev.button!==0||UI.estado!=='jogo'||UI.pausado)return;ev.preventDefault();const idx=+el.dataset.slot;UI.pd={tipo:'item',idx,id:UI.jog.itens[idx],x:ev.clientX,y:ev.clientY};}
 function pointerMove(ev){UI.mx=ev.clientX;UI.my=ev.clientY;const p=UI.jog;
   if(!UI.drag){const tg=ev.target.closest?ev.target:null;cartaHover(tg&&tg.closest('.cslot'));const tr=tg&&tg.closest('[data-tr]');UI.hoverTr=tr?tr.dataset.tr:null;}   // acende no tabuleiro e no banco as unidades da carta/traço sob o mouse
   if(UI.pd&&!UI.drag&&Math.hypot(ev.clientX-UI.pd.x,ev.clientY-UI.pd.y)>5){iniciarArrasto(UI.pd,ev);}
   if(UI.drag){const g=$('ghost');g.style.left=ev.clientX+'px';g.style.top=ev.clientY+'px';const d=UI.drag,cel=celAt(ev);$('zona-venda').classList.toggle('sobre',d.tipo==='un'&&!!(ev.target.closest&&ev.target.closest('#base')));
     if(d.tipo==='un'){d.cel=cel&&(cel.onde==='tab'||cel.onde==='banco')?cel:null;d.ok=false;
       if(d.cel){const dest=unidadeEm(d.cel);d.ok=d.cel.onde==='banco'||(UI.fase==='prep'&&(dest||d.de.onde==='tab'||contarTab(p)<p.nivel));}}
-    else{d.alvo=cel&&(cel.onde==='tab'||cel.onde==='banco')?cel:null;d.ok=false;if(d.alvo){const L=unidadeEm(d.alvo);d.ok=!!L&&L.inst.itens.length<3;}}
+    else{d.pl=null;d.alvo=null;d.ok=false;d.slotAlvo=-1;                                                       // item: sobre outro item do inventário ou sobre uma unidade
+      if(p.itens[d.idx]===d.id){const el=document.elementFromPoint(ev.clientX,ev.clientY),sl=el&&el.closest&&el.closest('#grade-itens .slot');
+        if(sl){const j=+sl.dataset.s;if(p.itens[j]!==undefined&&j!==d.idx){d.pl=planoSobreItem(p,d.idx,j);d.slotAlvo=j;}}
+        else if(cel&&(cel.onde==='tab'||cel.onde==='banco')){d.alvo=cel;const L=unidadeEm(cel);if(L)d.pl=planoSobreUn(p,d.idx,L);}
+        d.ok=!!(d.pl&&!d.pl.erro);}
+      mostrarPrevia(ev,d.pl);
+      document.querySelectorAll('#grade-itens .slot.alvo').forEach(e=>e.classList.remove('alvo','ruim'));
+      if(d.slotAlvo>=0&&d.pl){const e=document.querySelector(`#grade-itens .slot[data-s="${d.slotAlvo}"]`);if(e)e.classList.add('alvo');if(e&&d.pl.erro)e.classList.add('ruim');}}
     return;}
   // hover: tooltip das unidades no canvas
   if(ev.target===cv&&UI.estado==='jogo'){const cel=celAt(ev);UI.hoverCel=cel;const rt=UI.C?UI.C.t+UI.acc:performance.now();let html=null;UI.hoverU=null;
@@ -2023,7 +2391,7 @@ function pointerMove(ev){UI.mx=ev.clientX;UI.my=ev.clientY;const p=UI.jog;
     if(html)mostrarTip(html,ev);else esconderTip();return;}
   if(ev.target===cv)return;UI.hoverCel=null;UI.hover=null;UI.hoverU=null;
   const el=ev.target.closest&&ev.target.closest('[data-tip]');
-  if(el&&UI.estado==='jogo'){const k=el.dataset.tip;if(UI.tipChave===k&&$('tip').style.display==='block')posTip(ev);else{const h=htmlTip(k);if(h)mostrarTip(h,ev,k);else esconderTip();}}else esconderTip();}
+  if(el&&(UI.estado==='jogo'||/^(item|rec):/.test(el.dataset.tip))){const k=el.dataset.tip;if(UI.tipChave===k&&$('tip').style.display==='block')posTip(ev);else{const h=htmlTip(k);if(h)mostrarTip(h,ev,k);else esconderTip();}}else esconderTip();}
 function pointerUp(ev){const pd=UI.pd,d=UI.drag;UI.pd=null;if(!d)return;UI.drag=null;$('ghost').style.display='none';$('zona-venda').classList.remove('on','sobre');const p=UI.jog;
   if(d.tipo==='un'){const el=document.elementFromPoint(ev.clientX,ev.clientY);
     if(el&&el.closest('#base')){const L=unidadeEm(d.de.onde==='banco'?{onde:'banco',i:d.de.i}:{onde:'tab',x:d.de.x,y:d.de.y});if(L&&L.inst===d.inst)venderUI(L);return;}
@@ -2031,9 +2399,12 @@ function pointerUp(ev){const pd=UI.pd,d=UI.drag;UI.pd=null;if(!d)return;UI.drag=
     const para=cel.onde==='tab'?{onde:'tab',x:cel.x,y:cel.y}:{onde:'banco',i:cel.i};
     acaoLocal({t:'mover',de:locDe(d.de),para});
     posAcao();}
-  else{const cel=celAt(ev);if(!cel)return;const L=unidadeEm(cel);if(!L){return;}
-    if(L.inst.itens.length>=3){aviso('A unidade já carrega 3 itens');return;}
-    const idx=p.itens.indexOf(d.id);if(idx>=0&&acaoLocal({t:'equipar',item:idx,id:d.id,un:locDe(L)})){Sons.equipar();UI.fxPrep.push({id:E('magic_green'),x:L.onde==='tab'?L.x:-9,y:L.onde==='tab'?L.y+4:-9,b:performance.now()});posAcao();}}}
+  else{esconderPrevia();document.querySelectorAll('#grade-itens .slot.alvo').forEach(e=>e.classList.remove('alvo','ruim'));
+    if(p.itens[d.idx]!==d.id)return;                                                     // o inventário mudou durante o arrasto (snapshot do anfitrião)
+    const el=document.elementFromPoint(ev.clientX,ev.clientY),sl=el&&el.closest&&el.closest('#grade-itens .slot');
+    if(sl){const j=+sl.dataset.s;if(j!==d.idx&&p.itens[j]!==undefined)usarPlano(planoSobreItem(p,d.idx,j),{slot:d.idx,slot2:j});return;}
+    const cel=celAt(ev);if(!cel)return;const L=unidadeEm(cel);if(!L)return;
+    usarPlano(planoSobreUn(p,d.idx,L),{L});}}
 function teclado(ev){if(UI.estado!=='jogo'||UI.pausado||ev.ctrlKey||ev.metaKey||ev.altKey)return;const k=ev.key.toLowerCase();
   if(UI.atq&&(k===' '||k==='enter')){pularAtaque();ev.preventDefault();return;}
   if(UI.emoteAberto){if(k>='1'&&k<='5'){enviarEmote(+k-1);return;}if(k==='e'||k==='escape'){fecharEmotes();return;}}
@@ -2072,7 +2443,7 @@ function descResultado(f,p,r){
   if(!f)return {t:'Rodada encerrada',s:'Você está eliminado',cor:'#cfc9b4',sm:'',v:null,dano:0};
   let t,s,cor,sm='',vv=null,dn=0,dop=0;
   if(f.pve){const v=f.C.venc===0;vv=v?'v':'d';t=v?'Vitória':'Derrota';cor=v?'#e6c25a':'#e0574a';
-    if(v&&p.drop){const pt=[];if(p.drop.ouro)pt.push('+'+p.drop.ouro+' de ouro');p.drop.itens.forEach(i=>pt.push(ITEM[i].n));s=pt.length?'Butim: '+pt.join(', '):'Monstros derrotados';}else s='Os monstros resistiram: sem recompensas';}
+    if(v&&p.drop){const pt=[];if(p.drop.ouro)pt.push('+'+p.drop.ouro+' de ouro');p.drop.itens.forEach(i=>pt.push(nomeItem(i)));s=pt.length?'Butim: '+pt.join(', '):'Monstros derrotados';}else s='Os monstros resistiram: sem recompensas';}
   else{const meu=f.b===p?1:0,w=f.C.venc,outro=meu?f.a:f.b;vv=w<0?'e':w===meu?'v':'d';if(vv==='d')dn=f.dano||0;if(vv==='v'&&!f.fant)dop=f.dano||0;   // dop: dano causado ao adversário (o convidado usa para tocar o ataque do avatar)
     if(w<0){t='Empate';cor='#cfc9b4';s='Ninguém perde vida';}
     else if(w===meu){t='Vitória';cor='#e6c25a';s=f.fant?'Você derrotou uma sombra de '+outro.nome:`${outro.nome} perdeu ${f.dano} de vida`;}
@@ -2115,7 +2486,7 @@ function mostrarFim(){UI.estado='fim';fecharIntro();fecharEmotes();const p=UI.jo
   const fmt=n=>n>=10000?Math.round(n/1000)+'k':n>=1000?(n/1000).toFixed(1).replace('.',',')+'k':''+n;
   const parcial=!G.fim;
   const dg=(q,n)=>q?`<div class="dg p${n} ani ${q===p?'eu':''}"><div class="pj"><canvas width="64" height="64" data-av="${q.voc}"></canvas></div><div class="nm">${esc(q.nome)}${q===p?' (você)':''}</div><div class="deg">${n}</div><div class="pt">${q.vivo?'vida '+Math.max(0,q.hp):'eliminado'}</div></div>`:'';
-  const unid=times.map(i=>`<div class="un"><span class="es">${'★'.repeat(i.e)}</span><canvas width="64" height="56" data-ret="${i.id}"></canvas><div class="it">${i.itens.map(t=>`<img src="${IMG('itens/'+t+'.png')}" alt="">`).join('')}</div></div>`).join('')||'<span class="vazio">Sem unidades no tabuleiro.</span>';
+  const unid=times.map(i=>`<div class="un"><span class="es">${'★'.repeat(i.e)}</span><canvas width="64" height="56" data-ret="${i.id}"></canvas><div class="it">${i.itens.map(t=>htmlItem(t,{tip:false,mini:true})).join('')}</div></div>`).join('')||'<span class="vazio">Sem unidades no tabuleiro.</span>';
   telaHTML(`<div class="painel modal fim"><div class="sub" style="margin-bottom:4px">Fim de partida${parcial?' · parcial':''}</div><div class="colocacao" style="color:${cor};text-shadow:0 0 24px ${cor}66,0 3px 0 #000">${ROMANO(col)} lugar</div>
     <div style="font:700 14px Cinzel,serif;color:#f3e6b4;margin-bottom:10px">${msg}</div>
     <div class="podio">${dg(top[1],2)}${dg(top[0],1)}${dg(top[2],3)}</div>
@@ -2134,14 +2505,14 @@ function abrirCarrosselUI(){const c=G.car;if(!c||UI.pausado||UI.estado!=='jogo')
   if(Online.ativo){if(!p.vivo||c.esc[p.id]!==undefined||carPronto(G)){fecharTela();return;}}   // online: quem já escolheu só espera os outros
   else if(carPronto(G)){iniciarCombateUI();return;}
   const vez=c.ordem[c.idx],minha=!Online.ativo||vez===p;
-  const cards=c.itens.map((id,i)=>{const it=ITEM[id],tc=TIER_COR[it.t+1];return `<div class="ci ${minha?'':'bloq'}" data-i="${i}" style="--tc:${tc}"><img src="${IMG('itens/'+id+'.png')}"><b>${esc(it.n)}</b><span>${esc(it.d)}</span></div>`;}).join('');
+  const cards=c.itens.map((id,i)=>{const it=itemInfo(id),tc=it.perg?it.cor:TIER_COR[2];return `<div class="ci ${minha?'':'bloq'}" data-i="${i}" style="--tc:${tc}">${htmlItem(id,{tip:false,x2:true})}<b>${esc(it.n)}</b><span>${esc(it.perg?it.curta:it.d)}</span></div>`;}).join('');
   telaHTML(`<div class="painel modal" style="width:min(720px,94vw)"><h2>Carrossel</h2><div class="txt" style="text-align:center">${minha?'Os jogadores com menos vida escolhem primeiro. Escolha um item para o seu time.':'Aguardando '+esc(vez.nome)+' escolher. Os jogadores com menos vida escolhem primeiro.'}</div><div class="carr">${cards}</div></div>`,true);
   document.querySelectorAll('.ci').forEach(el=>el.onclick=()=>{if(!minha)return;if(!acaoLocal({t:'carrossel',i:+el.dataset.i}))return;fecharTela();marcar('itens');aviso('Item adicionado ao seu inventário');
     if(!Online.ativo)setTimeout(()=>{if(UI.fase==='prep'&&G.info.tipo==='car')pronto(true);},900);});}
 
 /* ---------- telas ---------- */
-function telaHTML(h,leve){const t=$('tela');t.innerHTML=h;t.className='on'+(leve?' leve':'');}
-function fecharTela(){const t=$('tela');t.className='';t.innerHTML='';}
+function telaHTML(h,leve){esconderTip();const t=$('tela');t.innerHTML=h;t.className='on'+(leve?' leve':'');}
+function fecharTela(){esconderTip();const t=$('tela');t.className='';t.innerHTML='';}
 function mostrarMenu(){UI.estado='menu';fecharTela();iniciarDemo();$('app').style.visibility='visible';$('app').classList.add('menu');
   telaHTML(`<div class="painel modal"><h1>Tibia Tactics</h1><div class="sub">Auto-battler de Tibia</div>
     <div class="herois">${VOCS.map(v=>`<div class="heroi ${UI.voc===v?'sel':''}" data-v="${v}"><canvas width="56" height="56" data-av="${v}"></canvas>${{knight:'Knight',paladin:'Paladin',sorcerer:'Sorcerer',druid:'Druid'}[v]}</div>`).join('')}</div>
@@ -2162,16 +2533,16 @@ function mostrarComoJogar(volta){
     <h3>Unidades e estrelas</h3><p>Compre cartas na loja e arraste as unidades do banco para as suas 4 linhas de baixo. Três cópias iguais fundem em 2 estrelas (x1,8 de vida e dano); três de 2 estrelas viram 3 estrelas (x3,2). Arraste uma unidade para a loja para vender.</p>
     <h3>Sinergias</h3><p>Cada unidade tem uma origem (hexágono) e uma classe (escudo), cada uma com o ícone de um item do Tibia: o mesmo ícone aparece na carta, no tooltip e no painel da esquerda. Reunir unidades diferentes com o mesmo traço ativa bônus (2/4/6). O aro do ícone mostra o nível: cinza = inativo, bronze, prata, ouro e prismático no nível máximo. Passe o mouse num traço para acender no tabuleiro e no banco as unidades que o têm.</p>
     <h3>Cartas da loja</h3><p>As cartas ficam em leque; passe o mouse em uma para levantá-la e ver o painel com atributos, habilidade e sinergias (contagem atual e depois da compra). Cartas de unidades que você já tem ganham uma borda dourada; se a compra forma 2 ou 3 estrelas, a carta ganha um brilho suave e o selo ★★ ou ★★★. As unidades iguais no banco e no tabuleiro também se acendem.</p>
-    <h3>Itens</h3><p>Monstros e o carrossel dão itens do Tibia. Arraste o item sobre uma unidade (até 3 por unidade).</p>
+    <h3>Itens, receitas, forja e encantamentos</h3>${htmlExplicaItens()}
     <h3>Jogar online</h3><p>Em "Jogar online" um jogador cria a sala e passa o código de 4 letras aos amigos (2 a 8 jogadores); as vagas que sobrarem viram bots. O anfitrião roda a partida: se ele sair, a partida acaba; se um convidado cair, um bot assume e ele pode voltar com o mesmo código e nome. Online não há pausa nem velocidade 2x/4x; a preparação termina quando todos apertam Pronto ou o relógio zera.</p>
     <h3>Fim da luta</h3><p>Quando uma luta entre jogadores termina, o avatar de quem venceu corre até o do perdedor e lança a magia da vocação (Knight: exori; Paladin: exori san; Sorcerer: sudden death; Druid: avalanche). O dano aparece sobre o avatar atingido e a vida desce na lista da direita. É só visual e dura cerca de 1,5 s; clique no tabuleiro ou aperte <kbd>Espaço</kbd> para pular. Contra monstros, se você perder, o monstro mais forte que sobrou ataca o seu avatar.</p>
     <h3>Espiar e placar</h3><p>Clique num jogador da lista da direita para ver o tabuleiro dele na preparação (só leitura); clique de novo, em "Voltar" ou aperte <kbd>Esc</kbd> para sair. O botão "Placar" (ou <kbd>Tab</kbd>) mostra o dano causado, o dano recebido e a cura de cada unidade na luta atual ou na última. Na preparação, a faixa acima do tabuleiro mostra a próxima onda e o butim (PvE) ou o adversário e as sinergias dele (PvP).</p>
     <h3>Atalhos</h3><p><kbd>D</kbd> rolar &nbsp; <kbd>F</kbd> comprar XP &nbsp; <kbd>L</kbd> travar loja &nbsp; <kbd>1</kbd>-<kbd>5</kbd> comprar carta &nbsp; <kbd>W</kbd> vender a unidade sob o mouse &nbsp; <kbd>Espaço</kbd> pronto &nbsp; <kbd>V</kbd> velocidade do combate &nbsp; <kbd>E</kbd> emotes &nbsp; <kbd>Tab</kbd> placar da luta &nbsp; <kbd>M</kbd> mudo &nbsp; <kbd>Esc</kbd> pausa</p>
-    </div><div class="menu" style="margin-top:16px"><button class="bt" id="b-v">Voltar</button></div></div>`);$('b-v').onclick=volta||mostrarMenu;}
+    </div><div class="menu" style="margin-top:16px"><button class="bt" id="b-v">Voltar</button></div></div>`);ligarGradeReceitas($('tela'));$('b-v').onclick=volta||mostrarMenu;}
 function pausar(){if(UI.estado!=='jogo'||UI.pausado)return;UI.pausado=true;const on=Online.ativo;   // online: o jogo NÃO pausa, é só um menu
-  telaHTML(`<div class="painel modal" style="width:min(380px,94vw)"><h2>${on?'Menu':'Pausa'}</h2><div class="menu"><button class="bt primario" id="b-c">Continuar</button><button class="bt" id="b-h">Como jogar</button><button class="bt" id="b-a">${on?'Sair da partida':'Abandonar partida'}</button></div></div>`,true);
+  telaHTML(`<div class="painel modal" style="width:min(380px,94vw)"><h2>${on?'Menu':'Pausa'}</h2><div class="menu"><button class="bt primario" id="b-c">Continuar</button><button class="bt" id="b-h">Como jogar</button><button class="bt" id="b-r">Receitas</button><button class="bt" id="b-a">${on?'Sair da partida':'Abandonar partida'}</button></div></div>`,true);
   const sai=()=>{UI.pausado=false;fecharTela();if(UI.fase==='prep'&&G.info.tipo==='car')abrirCarrosselUI();};
-  $('b-c').onclick=sai;$('b-h').onclick=()=>mostrarComoJogar(()=>{UI.pausado=false;pausar();});$('b-a').onclick=()=>{UI.pausado=false;if(on){if(Online.guest&&Online.tr)Online.tr.paraHost({t:'bye'});voltarMenu();}else mostrarFimAbandono();};}
+  $('b-c').onclick=sai;$('b-h').onclick=()=>mostrarComoJogar(()=>{UI.pausado=false;pausar();});$('b-r').onclick=()=>mostrarReceitas(()=>{UI.pausado=false;pausar();});$('b-a').onclick=()=>{UI.pausado=false;if(on){if(Online.guest&&Online.tr)Online.tr.paraHost({t:'bye'});voltarMenu();}else mostrarFimAbandono();};}
 function mostrarFimAbandono(){const p=UI.jog;p.colocacao=p.colocacao||vivosDe(G).length;UI.estado='jogo';mostrarFim();}
 
 /* ---------- demonstração no menu (luta de bots no canvas) ---------- */
@@ -2185,7 +2556,7 @@ function iniciarDemo(){UI.demoBioma=BIOMAS[Math.floor(Math.random()*BIOMAS.lengt
    Camada de rede com dois transportes de mesma interface: PeerJS (WebRTC, real) e BroadcastChannel (?rede=local, duas abas).
    Mensagens JSON {t:tipo,...}; o handshake leva a versão do protocolo.
    ===================================================================================== */
-const PROTO=3;   // 2: pub/rodada/res levam tb (tabuleiros públicos) e hh (histórico); mensagem 'emote'; desc do resultado ganha v e dano. 3: desc ganha dop (dano causado ao adversário) para o convidado tocar o ataque do avatar
+const PROTO=4;   // 4 (Fase 2): itens viram códigos inteiros (id + forja + encantamento); comandos novos combinar, forjar e encantar; inventário de 15 vagas; o equipar não aceita mais pergaminho. Antes: 2: pub/rodada/res levam tb (tabuleiros públicos) e hh (histórico); mensagem 'emote'; desc do resultado ganha v e dano. 3: desc ganha dop (dano causado ao adversário) para o convidado tocar o ataque do avatar
 const MODO_REDE=(()=>{try{return new URLSearchParams(location.search).get('rede')==='local'?'local':'peerjs';}catch(e){return 'peerjs';}})();
 const ALFA_SALA='ABCDEFGHJKMNPQRSTUVWXYZ23456789';           // sem letras que confundem (I, L, O, 0, 1)
 const novoCodigo=()=>{let c='';for(let i=0;i<4;i++)c+=ALFA_SALA[Math.floor(Math.random()*ALFA_SALA.length)];return c;};
@@ -2361,7 +2732,7 @@ Online.hostRes=function(r){Online.resFim=agoraMs()+UI.resEm;
 Online.carMudou=function(){paraHumanos(cl=>enviarSnapCl(cl,'snap'));if(UI.fase==='prep'&&G.info.tipo==='car')abrirCarrosselUI();};
 /* relógio do anfitrião: roda por setInterval (não depende do requestAnimationFrame, que para em aba escondida) */
 function hostFimPrep(timeout){const car=G.info.tipo==='car';
-  if(timeout&&car){while(G.car&&!carPronto(G)){const q=G.car.ordem[G.car.idx];let bi=0,bs=-1;G.car.itens.forEach((id,i)=>{if(ITEM[id].t>bs){bs=ITEM[id].t;bi=i;}});carEscolher(G,bi,q);}}
+  if(timeout&&car){while(G.car&&!carPronto(G)){const q=G.car.ordem[G.car.idx];let bi=0,bs=-1;G.car.itens.forEach((id,i)=>{if(tierCar(id)>bs){bs=tierCar(id);bi=i;}});carEscolher(G,bi,q);}}
   G.jog.filter(q=>q.vivo&&q.humano&&(car||(timeout&&!q.pronto))).forEach(q=>{if(autoPosicionar(q)&&q.local)posAcao();});
   paraHumanos(cl=>enviarSnapCl(cl,'snap',{force:true}));       // posições finais (a auto-posição pode ter mexido no tabuleiro deles)
   iniciarCombateUI();}
@@ -2546,6 +2917,9 @@ const Sons={
   nivel(){[392,494,587,784].forEach((f,i)=>tom(f,f,.3,'triangle',.18,i*.08));tom(1568,1568,.4,'sine',.1,.3);},
   fundir(){[523,659,784,988,1319,1568].forEach((f,i)=>tom(f,f,.5,'sine',.12,i*.06));ruidoSom(.5,.12,2000,8000,2,'highpass');},
   equipar(){tom(330,660,.1,'triangle',.14);tom(990,990,.12,'sine',.1,.08);},
+  combinar(){tom(523,784,.09,'triangle',.14);tom(1047,1568,.16,'sine',.12,.07);},
+  forja(){ruidoSom(.18,.2,700,2500,2,'bandpass');[392,523,659,880,1175].forEach((f,i)=>tom(f,f,.4,'triangle',.11,.12+i*.06));tom(1760,1760,.5,'sine',.08,.45);},
+  encanta(){[784,988,1175,1568].forEach((f,i)=>tom(f,f*1.01,.35,'sine',.1,i*.07));ruidoSom(.3,.08,3000,9000,2,'highpass',.1);},
   pegar(){tom(660,880,.05,'triangle',.06);},
   emote(){tom(900,1200,.07,'sine',.08);},
   intro(){tom(90,45,.55,'sine',.55);ruidoSom(.55,.28,300,3000,.7,'lowpass');},
@@ -2604,7 +2978,7 @@ function laco(ts){requestAnimationFrame(laco);const dt=Math.min(100,ts-(UI.ultT|
     if(UI.C.fim){UI.acc=0;UI.fimEm+=dt;if(UI.demo){if(UI.fimEm>2500)iniciarDemo();}else if(UI.fimEm>1500&&!Online.ativo)finalizarRodadaUI();}}
   else if(UI.estado==='jogo'&&!pausa){
     if(UI.fase==='prep'&&Online.host){}      // o relógio do anfitrião roda em tiqueHost (setInterval)
-    else if(UI.fase==='prep'){UI.timer-=dt/1000;if(UI.timer<=0&&Online.guest)UI.timer=0;else if(UI.timer<=0){if(G.info.tipo==='car'&&!carPronto(G)){let bi=0,bs=-1;G.car.itens.forEach((id,i)=>{if(ITEM[id].t>bs){bs=ITEM[id].t;bi=i;}});carEscolher(G,bi);fecharTela();marcar('itens');}pronto(true);}}
+    else if(UI.fase==='prep'){UI.timer-=dt/1000;if(UI.timer<=0&&Online.guest)UI.timer=0;else if(UI.timer<=0){if(G.info.tipo==='car'&&!carPronto(G)){let bi=0,bs=-1;G.car.itens.forEach((id,i)=>{if(tierCar(id)>bs){bs=tierCar(id);bi=i;}});carEscolher(G,bi);fecharTela();marcar('itens');}pronto(true);}}
     else if(UI.fase==='resultado'&&!Online.host){UI.resEm-=dt;if(UI.resEm<=0){UI.fase='fila';proximaRodadaUI();}}}
   if(UI.estado==='jogo'){atualizarSujos();hudTempo();
     if(UI.fase==='prep'&&G&&G.info.tipo!=='car'){const n=Math.ceil(UI.timer);if(n!==UI.tk){UI.tk=n;if(n>=1&&n<=5)Sons.tique(n);}}}
@@ -2630,7 +3004,7 @@ function iniciar(){cv=$('cv');cx=cv.getContext('2d');ajustarCanvas();addEventLis
   $('cartas').addEventListener('click',e=>{const s=e.target.closest('.cslot');if(s&&!s.querySelector('.vend'))comprarUI(+s.dataset.i);});
   $('cartas').addEventListener('mouseover',e=>{if(!UI.drag)cartaHover(e.target.closest('.cslot'));});
   $('cartas').addEventListener('mouseleave',()=>cartaHover(null));
-  $('bt-rolar').onclick=rolarUI;$('bt-xp').onclick=xpUI;$('bt-trava').onclick=travarUI;$('bt-pronto').onclick=()=>pronto();$('bt-vel').onclick=alternarVel;$('bt-menu').onclick=pausar;$('logo').onclick=()=>{if(UI.estado==='jogo')pausar();};
+  $('bt-forjar').onclick=forjarUI;$('bt-rec').onclick=()=>{if(UI.estado==='jogo')mostrarReceitas(()=>fecharTela());};$('bt-rolar').onclick=rolarUI;$('bt-xp').onclick=xpUI;$('bt-trava').onclick=travarUI;$('bt-pronto').onclick=()=>pronto();$('bt-vel').onclick=alternarVel;$('bt-menu').onclick=pausar;$('logo').onclick=()=>{if(UI.estado==='jogo')pausar();};
   lerCfg();ligarCfg();addEventListener('pointerdown',somIniciar,{once:true});addEventListener('keydown',somIniciar,{once:true});
   $('jogadores').addEventListener('click',e=>{const r=e.target.closest('.jg');if(r)espiarJog(+r.dataset.id);});
   $('bt-espia-v').onclick=sairEspiar;$('bt-meter').onclick=alternarMeter;
