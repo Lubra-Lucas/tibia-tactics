@@ -13,7 +13,7 @@
 html,body{margin:0;height:100%;overflow:hidden;background:radial-gradient(ellipse at 50% 30%,#141824 0%,#07080c 70%);color:var(--txt);font:11px Verdana,Geneva,sans-serif;user-select:none;-webkit-user-select:none}
 img,canvas{image-rendering:pixelated}
 button{font-family:inherit}
-#app{display:grid;grid-template-columns:226px minmax(0,1fr) 236px;grid-template-rows:60px minmax(0,1fr) 176px;gap:6px;padding:6px;height:100vh}
+#app{display:grid;grid-template-columns:250px minmax(0,1fr) 236px;grid-template-rows:60px minmax(0,1fr) 176px;gap:6px;padding:6px;height:100vh}
 .painel{background:linear-gradient(180deg,var(--pn1),var(--pn2));border:1px solid #6b5a2e;box-shadow:inset 0 0 0 1px #05060a,inset 0 0 0 2px #2b2616,0 2px 10px #000a;border-radius:3px;padding:8px;position:relative;min-height:0}
 .painel h2,.painel h3{font:700 12px Cinzel,'Palatino Linotype',serif;color:var(--ouro);letter-spacing:.1em;text-transform:uppercase;margin:0 0 7px;padding-bottom:5px;border-bottom:1px solid var(--ouro3)}
 .painel h3{font-size:11px;margin-bottom:5px}
@@ -50,39 +50,51 @@ button{font-family:inherit}
 .bt.peq{padding:4px 8px;font-size:10px}
 .bt.primario{background:linear-gradient(#6b5420,#3a2c0e);border-color:#d9b45a;color:#fff1c4}
 /* ---------- laterais ---------- */
-#esq,#dir{overflow:auto}
+#esq,#dir{overflow:auto;overflow-x:hidden}
 #esq::-webkit-scrollbar,#dir::-webkit-scrollbar{width:6px}
 #esq::-webkit-scrollbar-thumb,#dir::-webkit-scrollbar-thumb{background:#3a321c;border-radius:3px}
-/* ícones de traço: origem = hexágono, classe = brasão; a borda indica o nível (bronze, prata, ouro) */
-.ti{display:inline-block;flex:none;position:relative;line-height:0}
-.hx,.sh{position:relative;display:inline-block;flex:none;background:var(--bc,#4a4638);cursor:help}
-.hx{width:var(--s,28px);height:calc(var(--s,28px)*1.1547);clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%)}
-.sh{width:var(--s,28px);height:calc(var(--s,28px)*1.08);clip-path:polygon(0 0,100% 0,100% 58%,50% 100%,0 58%)}
-.hx>i,.sh>i{position:absolute;inset:2px;clip-path:inherit;background:radial-gradient(circle at 50% 30%,#323750,#0b0c13 80%);overflow:hidden}
-.sh>i{inset:2px 2px 3px}
-.hx canvas,.sh canvas{position:absolute;left:0;top:0;width:100%;height:100%}
-.hx.n-1,.sh.n-1{--bc:#3b382e}
-.hx.n-1 canvas,.sh.n-1 canvas{opacity:.8;filter:saturate(.65)}
-.hx.n0,.sh.n0{--bc:linear-gradient(160deg,#f0b27a,#8a4a22 55%,#c9854c)}
-.hx.n1,.sh.n1{--bc:linear-gradient(160deg,#ffffff,#8c95a6 55%,#d5dae4)}
-.hx.n2,.sh.n2{--bc:linear-gradient(160deg,#fff4a8,#b98312 55%,#f3cf4f)}
-.ti.acende{animation:acende 1.1s ease-in-out infinite}
-.ti.acende::after{content:'+';position:absolute;right:-4px;top:-5px;font:700 11px Cinzel,serif;line-height:11px;color:#1b1400;background:#ffd95a;border-radius:50%;width:11px;text-align:center;box-shadow:0 0 5px #ffd95a}
-@keyframes acende{0%,100%{filter:drop-shadow(0 0 1px #ffd95a88)}50%{filter:drop-shadow(0 0 6px #ffe27a) brightness(1.25)}}
-/* painel de sinergias */
-.sin{display:flex;align-items:center;gap:9px;padding:5px 7px 5px 6px;border:1px solid #1d1b14;border-radius:3px;margin-bottom:4px;background:#0b0d14;position:relative;cursor:help}
-.sin .ti{--s:38px}
-.sin.ativa{border-color:#6b5a2e;background:linear-gradient(90deg,#2a210d,#12141d 70%)}
-.sin:not(.ativa) .nm,.sin:not(.ativa) .ct b{opacity:.55}
-.sin .nm{font:700 12px Cinzel,serif;color:#e8dfc2;letter-spacing:.03em}
-.sin.ativa .nm{color:var(--ouro)}
-.sin .tp{font-size:9px;color:var(--mut);text-transform:uppercase;letter-spacing:.06em}
-.sin .ct{margin-left:auto;text-align:right;white-space:nowrap}
-.sin .ct b{font:700 17px Cinzel,serif;color:#fff1c4}
-.sin .ct b em{font:700 11px Cinzel,serif;font-style:normal;color:#8f8a78}
-.sin .pips{font-size:9px;color:#6d6a5c;white-space:nowrap;margin-top:1px}
-.sin .pips u{text-decoration:none}
-.sin .pips u.on{color:var(--ouro);font-weight:700}
+/* ícone de traço: item real do Tibia (32x32 desenhado a 1x, nunca em escala fracionária) dentro de um brasão; origem = hexágono, classe = escudo; o aro mostra o nível */
+@property --ang{syntax:'<angle>';inherits:false;initial-value:0deg}
+.ti{display:inline-block;flex:none;position:relative;line-height:0;vertical-align:middle}
+.tb{--s:44px;--aro:linear-gradient(160deg,#4d4a40,#2b2a24 60%,#44413a);--fundo:radial-gradient(circle at 50% 35%,#1c1e28,#08090d 85%);position:relative;display:inline-block;flex:none;width:var(--s);cursor:help}
+.tb.hx{height:calc(var(--s)*1.1547)}
+.tb.sh{height:calc(var(--s)*1.1)}
+.tb .ar{position:absolute;inset:0;background:var(--aro)}
+.tb.hx .ar{clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%)}
+.tb.sh .ar{clip-path:polygon(0 0,100% 0,100% 58%,50% 100%,0 58%)}
+.tb .ar i{position:absolute;inset:3px;clip-path:inherit;background:var(--fundo)}
+.tb.sh .ar i{inset:3px 3px 4px}
+.tb img{position:absolute;left:50%;top:50%;width:32px;height:32px;margin:-16px 0 0 -16px;image-rendering:pixelated;filter:drop-shadow(0 1px 0 #000b);pointer-events:none}
+.tb.sh img{top:46%}
+.tb.n-1 img{filter:grayscale(1) brightness(.55);opacity:.8}
+.tb.n0{--aro:linear-gradient(160deg,#f6bd86,#8a4a22 52%,#d79356);--fundo:radial-gradient(circle at 50% 35%,#523018,#150c06 85%)}
+.tb.n1{--aro:linear-gradient(160deg,#fff,#8d97a8 52%,#e4e9f2);--fundo:radial-gradient(circle at 50% 35%,#3c4558,#0d1017 85%)}
+.tb.n2{--aro:linear-gradient(160deg,#fff4a8,#b98312 52%,#f6d355);--fundo:radial-gradient(circle at 50% 35%,#5d4510,#1a1304 85%)}
+.tb.n3{--aro:conic-gradient(from var(--ang),#ff86dc,#78f2ff,#fff58a,#aa8cff,#7bffb4,#ff86dc);--fundo:radial-gradient(circle at 50% 35%,#3a2a58,#0f0b1a 85%);animation:prisma 7s linear infinite;filter:drop-shadow(0 0 4px #b992ff99)}
+@keyframes prisma{to{--ang:360deg}}
+.ti[data-tr]:hover .tb{filter:brightness(1.22)}
+.ti.acende .tb{filter:drop-shadow(0 0 4px #ffd95a)}
+.ti.acende::after{content:'+';position:absolute;right:-3px;top:-4px;z-index:2;font:700 11px Cinzel,serif;line-height:12px;color:#1b1400;background:#ffd95a;border-radius:50%;width:12px;text-align:center;box-shadow:0 0 4px #ffd95a99}
+/* painel de sinergias: ícone no brasão, nome sempre escrito, contador grande e os degraus (o atingido aceso, com a cor do nível) */
+.sin{display:grid;grid-template-columns:auto minmax(0,1fr) auto;column-gap:9px;align-items:center;padding:5px 8px 5px 6px;border:1px solid #1d1b14;border-left:3px solid #2b2a24;border-radius:3px;margin-bottom:4px;background:#0b0d14;position:relative;cursor:help;transition:background .15s,border-color .15s}
+.sin:hover{background:#141725;border-color:#4a4228}
+.sin .ti{grid-row:1/3;grid-column:1;--s:44px}
+.sin .nm{grid-column:2;grid-row:1;align-self:end;font:700 13px/1.1 Cinzel,serif;color:#f0e8cc;letter-spacing:.02em;text-shadow:0 1px 0 #000}
+.sin.ativa .nm{color:#ffe9a0}
+.sin .ct{grid-column:3;grid-row:1/3;text-align:right;white-space:nowrap;line-height:1}
+.sin .ct b{font:700 23px Cinzel,serif;color:#fff1c4;text-shadow:0 1px 0 #000}
+.sin:not(.ativa) .ct b{color:#aaa58f}
+.sin .ct em{font:700 12px Cinzel,serif;font-style:normal;color:#a39e88;margin-left:2px}
+.sin .ct em.max{color:#ffe27a;margin-left:4px}
+.sin .pips{grid-column:2;grid-row:2;align-self:start;display:flex;align-items:center;gap:3px;margin-top:4px}
+.sin .pips .tp{font:9px Verdana;color:var(--mut);text-transform:uppercase;letter-spacing:.05em;margin-right:2px}
+.pp{display:inline-flex;align-items:center;justify-content:center;min-width:17px;height:16px;padding:0 3px;border:1px solid #3a382e;border-radius:3px;background:#0a0b10;color:#8a8672;font:700 10px Cinzel,serif}
+.pp.at{color:#1a1204;border-color:#0008;text-shadow:0 1px 0 #fff6}
+.pp.c0{background:linear-gradient(#f6bd86,#a5612c)}.pp.c1{background:linear-gradient(#fff,#a9b2c2)}.pp.c2{background:linear-gradient(#fff4a8,#d9a21c)}.pp.c3{background:linear-gradient(120deg,#ff9be4,#8ff4ff,#fff58a,#b79cff)}
+.pp.cur{outline:1px solid #fff;outline-offset:1px}
+.sin.ativa{background:linear-gradient(90deg,#2a210d,#12141d 78%);border-color:#4a3f1f}
+.sin.ativa.n0{border-left-color:#d08a4e}.sin.ativa.n1{border-left-color:#dfe5f0}.sin.ativa.n2{border-left-color:#f3cf4f}.sin.ativa.n3{border-left-color:#c9a6ff}
+
 .vazio{color:var(--mut);font-size:10.5px;line-height:1.5;padding:4px}
 /* lista de jogadores */
 #jogadores{display:flex;flex-direction:column}
@@ -115,7 +127,7 @@ button{font-family:inherit}
 .jg.espiando .olho{opacity:1}
 /* ---------- centro ---------- */
 #centro{position:relative;display:flex;flex-direction:column;min-height:0;min-width:0;gap:6px}
-#faixa-rodada{flex:none;height:40px;display:flex;align-items:center;gap:10px;padding:4px 12px;min-width:0;overflow:hidden;white-space:nowrap}
+#faixa-rodada{flex:none;height:46px;display:flex;align-items:center;gap:10px;padding:4px 12px;min-width:0;overflow:hidden;white-space:nowrap}
 #faixa-rodada .rt{font:700 10px Cinzel,serif;color:var(--ouro);letter-spacing:.14em;text-transform:uppercase;flex:none}
 #faixa-rodada .sep{width:1px;align-self:stretch;margin:2px 0;background:linear-gradient(transparent,#6b5a2e,transparent);flex:none}
 #faixa-rodada .mons{display:flex;gap:5px;align-items:center}
@@ -128,7 +140,7 @@ button{font-family:inherit}
 #faixa-rodada .info{font-size:10.5px;color:#d4cdb4;overflow:hidden;text-overflow:ellipsis}
 #faixa-rodada .info b{font:700 12px Cinzel,serif;color:#f3e6b4}
 #faixa-rodada .av{width:32px;height:32px}
-#faixa-rodada .ti{--s:20px}
+#faixa-rodada .ti{--s:32px}
 #faixa-rodada .trs{display:flex;gap:4px;align-items:center}
 #cvbox{flex:1;min-height:0;min-width:0;display:flex;align-items:center;justify-content:center;position:relative}
 #cvw{position:relative;line-height:0}
@@ -183,18 +195,24 @@ button{font-family:inherit}
 .slot.cheio{border-color:#6b5a2e;background:linear-gradient(#171307,#0b0a05)}
 #itens .dica{margin-top:6px;font-size:9.5px;color:var(--mut);line-height:1.4}
 #loja{display:flex;flex-direction:column;padding:6px}
-#cartas{display:flex;gap:7px;flex:1;min-height:0}
+#cartas{display:flex;gap:6px;flex:1;min-height:0;padding:0 8px}
+/* cada carta fica num encaixe fixo: o mouse "pertence" ao encaixe, então a carta pode subir sem tremer */
+.cslot{flex:1;min-width:0;position:relative;display:flex;cursor:pointer}
+.cslot:hover{z-index:30}
 /* carta: moldura de pedra e metal por custo, rebites nos cantos */
 .carta{--tc:#8d8d8d;flex:1;min-width:0;position:relative;display:flex;flex-direction:column;padding:5px;cursor:pointer;border-radius:5px;
   background:linear-gradient(145deg,color-mix(in srgb,var(--tc) 55%,#fff) 0%,var(--tc) 16%,color-mix(in srgb,var(--tc) 42%,#000) 48%,color-mix(in srgb,var(--tc) 80%,#fff) 74%,color-mix(in srgb,var(--tc) 38%,#000) 100%);
-  box-shadow:0 0 0 1px #000,0 3px 8px #000b,inset 0 1px 0 #fff7,inset 0 -2px 0 #0008;transition:transform .12s,filter .12s}
+  box-shadow:0 0 0 1px #000,0 3px 8px #000b,inset 0 1px 0 #fff7,inset 0 -2px 0 #0008;transform-origin:50% 100%;transform:translateY(var(--dy,0px)) rotate(var(--r,0deg));transition:transform .12s ease-out,filter .12s}
 .carta::before{content:'';position:absolute;inset:0;z-index:4;pointer-events:none;border-radius:5px;
   background:radial-gradient(circle at 5px 5px,#fff 0 .7px,#cfc8b0 1.1px,#3d392c 2.3px,transparent 2.9px) no-repeat,
   radial-gradient(circle at calc(100% - 5px) 5px,#fff 0 .7px,#cfc8b0 1.1px,#3d392c 2.3px,transparent 2.9px) no-repeat,
   radial-gradient(circle at 5px calc(100% - 5px),#fff 0 .7px,#cfc8b0 1.1px,#3d392c 2.3px,transparent 2.9px) no-repeat,
   radial-gradient(circle at calc(100% - 5px) calc(100% - 5px),#fff 0 .7px,#cfc8b0 1.1px,#3d392c 2.3px,transparent 2.9px) no-repeat}
 .carta.c1{--tc:#8d8d8d}.carta.c2{--tc:#4fae4f}.carta.c3{--tc:#4a86e8}.carta.c4{--tc:#a55be0}.carta.c5{--tc:#e0b030}
-.carta:hover:not(.vend){filter:brightness(1.18);transform:translateY(-3px)}
+/* leque (−4° a +4°, em arco); com o mouse em cima a carta sobe ~24 px, endireita, cresce ~1,12x e fica na frente */
+.cslot:hover .carta:not(.vend){transform:translateY(-24px) rotate(0deg) scale(1.12);filter:brightness(1.12);box-shadow:0 0 0 1px #000,0 10px 22px #000d,inset 0 1px 0 #fff7,inset 0 -2px 0 #0008}
+body.arrastando .cslot:hover .carta:not(.vend){transform:translateY(var(--dy,0px)) rotate(var(--r,0deg));filter:none}
+html.reduz .cslot:hover .carta:not(.vend){transform:translateY(var(--dy,0px)) rotate(var(--r,0deg));filter:brightness(1.12)}
 .carta.vend{opacity:.16;cursor:default;filter:grayscale(1)}
 .carta.vend::before{display:none}
 .carta .cin{flex:1;min-height:0;display:flex;flex-direction:column;background:#0a0b11;border-radius:3px;overflow:hidden;position:relative;box-shadow:inset 0 0 0 1px #000,0 0 0 1px #0006}
@@ -203,27 +221,30 @@ button{font-family:inherit}
 .carta .art{flex:1;min-height:0;position:relative;display:flex;align-items:flex-end;justify-content:center;overflow:hidden;background:#101018}
 .carta .art::before{content:'';position:absolute;inset:0;background:var(--chao) 0 0/256px 51px repeat;image-rendering:pixelated;opacity:.95;filter:brightness(.8) saturate(1.1)}
 .carta .art::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 70%,transparent 35%,#000b 100%),linear-gradient(#0008,transparent 40%,#0006);pointer-events:none}
-.carta .art canvas{position:relative;z-index:1;width:136px;height:100px;filter:drop-shadow(0 3px 2px #000a);flex:none}
+.carta .art canvas{position:relative;z-index:1;width:128px;height:92px;filter:drop-shadow(0 3px 2px #000a);flex:none}
 .carta .cu{position:absolute;right:3px;top:3px;z-index:2;display:flex;align-items:center;gap:3px;padding:1px 6px 1px 4px;border-radius:10px;background:#000c;border:1px solid var(--tc);font:700 12px Cinzel,serif;color:#fff1c4;text-shadow:0 1px 0 #000}
 .carta .cu img{width:15px;height:15px}
 .carta.pobre .cu{color:#ff8a7a}.carta.pobre .art canvas{filter:drop-shadow(0 3px 2px #000a) grayscale(.55) brightness(.8)}
 .carta .tecla{position:absolute;left:3px;top:3px;z-index:2;width:15px;height:15px;line-height:14px;text-align:center;border-radius:3px;background:#000b;border:1px solid #4a4638;font:700 9px Verdana;color:#b3ab90}
-.carta .pie{flex:none;height:30px;display:flex;align-items:center;gap:6px;padding:0 6px;background:linear-gradient(#14131b,#0c0c12);border-top:1px solid #000}
-.carta .pie .ti{--s:24px}
+.carta .pie{flex:none;height:42px;display:flex;align-items:center;gap:5px;padding:0 6px;background:linear-gradient(#14131b,#0c0c12);border-top:1px solid #000}
+.carta .pie .ti{--s:34px}
 .carta .copias{margin-left:auto;font:700 9.5px Verdana;color:#8bc7ff;text-shadow:0 1px 0 #000}
-.carta .selo{position:absolute;left:50%;top:-1px;transform:translateX(-50%);z-index:5;padding:0 9px;height:16px;line-height:16px;border-radius:0 0 8px 8px;background:linear-gradient(#ffe27a,#c9971c);color:#2b1c00;font:700 11px Verdana;text-shadow:0 1px 0 #fff8;box-shadow:0 1px 3px #000,0 0 10px #ffd24acc;white-space:nowrap}
-.carta.up{animation:pulsoOuro 1.15s ease-in-out infinite}
-.carta.up::after{content:'';position:absolute;inset:-1px;border-radius:6px;border:2px solid #ffe27a;pointer-events:none;z-index:6;box-shadow:0 0 10px #ffd24a99,inset 0 0 8px #ffd24a66;animation:anelOuro 1.15s ease-in-out infinite}
-.carta.up3::after{border-color:#fff3b0;box-shadow:0 0 14px #ffe27acc,inset 0 0 12px #ffe27a88}
-@keyframes pulsoOuro{0%,100%{box-shadow:0 0 0 1px #000,0 3px 8px #000b,inset 0 1px 0 #fff7,inset 0 -2px 0 #0008}50%{box-shadow:0 0 0 1px #000,0 0 18px 3px #ffd24acc,inset 0 1px 0 #fff7,inset 0 -2px 0 #0008}}
-@keyframes anelOuro{0%,100%{opacity:.45}50%{opacity:1}}
+/* destaque suave: já tenho a unidade = carta um pouco mais clara com borda dourada fina (sem animação); perto de promover = brilho que "respira" devagar e selo discreto */
+.carta .selo{position:absolute;left:9px;bottom:48px;z-index:5;padding:0 6px;height:15px;line-height:14px;border-radius:8px;background:rgba(20,15,4,.8);border:1px solid rgba(240,204,100,.85);color:#ffe27a;font:700 10px Verdana;letter-spacing:1px;text-shadow:0 1px 0 #000;white-space:nowrap}
+.carta.tem{filter:brightness(1.08)}
+.carta.tem::after,.carta.pert::after{content:'';position:absolute;inset:0;border-radius:5px;border:1px solid rgba(236,200,96,.9);box-shadow:0 0 6px rgba(255,214,90,.3);pointer-events:none;z-index:6}
+.carta.pert .cin::before{content:'';position:absolute;inset:0;z-index:3;pointer-events:none;box-shadow:inset 0 0 16px 3px rgba(255,214,90,.95);animation:respira 2s ease-in-out infinite alternate}
+.carta.pert3 .cin::before{box-shadow:inset 0 0 18px 4px rgba(255,244,190,.98)}
+.carta.pert3::after{border-color:rgba(255,246,190,.95)}
+@keyframes respira{from{opacity:.25}to{opacity:.5}}
 .carta.c4 .cin::after,.carta.c5 .cin::after{content:'';position:absolute;inset:0;z-index:3;pointer-events:none;background:linear-gradient(112deg,transparent 42%,#ffffff30 50%,transparent 58%) 0 0/260% 100% no-repeat;animation:brilho 3.4s linear infinite}
 .carta.c5 .cin::after{background-image:linear-gradient(112deg,transparent 40%,#fff1a855 50%,transparent 60%);animation-duration:2.6s}
-.carta.c5:not(.up):not(.vend){animation:brilho5 2.8s ease-in-out infinite}
+.carta.c5:not(.pert):not(.vend){animation:brilho5 2.8s ease-in-out infinite}
 @keyframes brilho{from{background-position:140% 0}to{background-position:-60% 0}}
 @keyframes brilho5{0%,100%{box-shadow:0 0 0 1px #000,0 3px 8px #000b,inset 0 1px 0 #fff7,inset 0 -2px 0 #0008}50%{box-shadow:0 0 0 1px #000,0 0 14px 1px #e0b03099,inset 0 1px 0 #fff7,inset 0 -2px 0 #0008}}
 .voo{position:fixed;z-index:45;pointer-events:none;transform-origin:0 0;will-change:transform}
-.voo .carta{width:100%;height:100%;animation:none!important}
+.voo .carta{width:100%;height:100%;animation:none!important;transform:none!important;--r:0deg}
+.voo .carta *,.voo .carta::before,.voo .carta::after{animation:none!important}
 /* botões e chances da loja */
 #botoes{display:flex;flex-direction:column;gap:4px;justify-content:center;padding:6px 8px}
 #botoes .bt{display:flex;justify-content:space-between;align-items:center;gap:6px;padding:5px 9px}
@@ -247,6 +268,34 @@ button{font-family:inherit}
 #zona-venda .vv{display:flex;align-items:center;gap:8px;font:700 28px Cinzel,serif;color:#fff1c4;text-shadow:0 2px 0 #000,0 0 14px #e0574a}
 #zona-venda .vv img{width:30px;height:30px}
 @keyframes vendaPulso{0%,100%{border-color:#e0574a}50%{border-color:#ff9a88}}
+/* ---------- painel flutuante da carta (aparece acima dela quando o mouse a levanta) ---------- */
+#cpainel{position:fixed;z-index:70;display:none;pointer-events:none;width:296px;padding:9px 11px 10px;background:linear-gradient(180deg,#1f2333,#0d0f17);border:1px solid var(--ouro2);border-radius:4px;box-shadow:inset 0 0 0 1px #05060a,0 8px 26px #000d;font-size:10.5px;line-height:1.4;color:#d4cdb4}
+#cpainel.on{display:block;animation:cpIn .12s ease-out both}
+#cpainel::after{content:'';position:absolute;left:var(--ax,50%);bottom:-7px;width:12px;height:12px;background:#0d0f17;border-right:1px solid var(--ouro2);border-bottom:1px solid var(--ouro2);transform:translateX(-50%) rotate(45deg)}
+@keyframes cpIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+#cpainel .cab{display:flex;align-items:center;gap:8px}
+#cpainel .cab h4{margin:0;flex:1;font:700 15px Cinzel,serif;color:var(--ouro);letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#cpainel .cab .cus{display:flex;align-items:center;gap:3px;font:700 14px Cinzel,serif;color:#fff1c4}
+#cpainel .cab .cus img{width:16px;height:16px}
+#cpainel .sub{font:10px Verdana;color:var(--mut);margin:1px 0 0;letter-spacing:.04em}
+#cpainel .st{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin:7px 0 6px}
+#cpainel .st div{display:flex;align-items:center;gap:5px;background:#0a0c13;border:1px solid #2a2616;border-radius:3px;padding:3px 5px}
+#cpainel .st svg{width:15px;height:15px;flex:none}
+#cpainel .st b{display:block;font:700 12px/1 Cinzel,serif;color:#fff1c4}
+#cpainel .st small{display:block;font:8px Verdana;color:var(--mut);text-transform:uppercase;letter-spacing:.05em;margin-top:2px}
+#cpainel .hab{padding-top:6px;border-top:1px solid #3a321c}
+#cpainel .hab .pm{font:700 12.5px Verdana;color:#ffe14a;text-shadow:0 1px 0 #000}
+#cpainel .hab .tp{display:inline-block;margin-left:6px;padding:0 6px;border:1px solid #6b5a2e;border-radius:8px;font:700 9px Cinzel,serif;color:var(--ouro);letter-spacing:.06em;text-transform:uppercase;vertical-align:1px}
+#cpainel .hab p{margin:3px 0 0;color:#d4cdb4}
+#cpainel .sn{margin-top:7px;padding-top:6px;border-top:1px solid #3a321c}
+#cpainel .sn .lin{display:flex;align-items:center;gap:8px;padding:1px 0}
+#cpainel .sn .ti{--s:30px}
+#cpainel .sn .nm{font:700 12.5px Cinzel,serif;color:#f0e8cc;flex:1}
+#cpainel .sn .pp{min-width:15px;height:14px;font-size:9px}
+#cpainel .sn .ct{font:700 13px Cinzel,serif;color:#fff1c4;white-space:nowrap}
+#cpainel .sn .ct i{font-style:normal;color:#9a957f;padding:0 3px}
+#cpainel .sn .ct u{text-decoration:none;font:700 9px Cinzel,serif;color:#1b1400;background:#ffd95a;border-radius:8px;padding:0 5px;margin-left:5px;text-transform:uppercase;letter-spacing:.04em}
+#cpainel .dica-up{margin-top:6px;padding-top:5px;border-top:1px solid #3a321c;color:#ffe27a;font-weight:700}
 /* ---------- tooltip ---------- */
 #tip{position:fixed;z-index:60;display:none;pointer-events:none;max-width:290px;min-width:190px;background:linear-gradient(180deg,#1b1e2c,#0d0f17);border:1px solid var(--ouro2);box-shadow:inset 0 0 0 1px #05060a,0 6px 20px #000d;border-radius:3px;padding:8px 10px;font-size:10.5px;line-height:1.45}
 #tip h4{margin:0 0 3px;font:700 13px Cinzel,serif;color:var(--ouro);letter-spacing:.03em;display:flex;justify-content:space-between;gap:10px}
@@ -261,7 +310,8 @@ button{font-family:inherit}
 #tip .its.l div{display:flex;gap:6px;align-items:center}
 #tip .its.l img{width:22px;height:22px}
 #tip .est{color:#ffd24a;letter-spacing:2px}
-#tip .tg{display:inline-block;padding:0 5px;border:1px solid #3a321c;border-radius:2px;margin-right:3px;color:#cdb98a;background:#0b0d14;font-size:10px}
+#tip .tg{display:inline-flex;align-items:center;gap:4px;padding:1px 7px 1px 2px;border:1px solid #3a321c;border-radius:3px;margin:0 3px 2px 0;color:#e6d9ab;background:#0b0d14;font:700 11px Cinzel,serif}
+#tip .tg .ti{--s:30px}
 #tip .tg.on{border-color:var(--ouro2);color:var(--ouro)}
 /* ---------- telas (menu, resultado, fim) ---------- */
 #tela{position:fixed;inset:0;z-index:40;display:none;align-items:center;justify-content:center;background:radial-gradient(ellipse at center,#05060acc 0%,#05060aee 100%)}
@@ -297,7 +347,7 @@ button{font-family:inherit}
 .carr .ci img{width:48px;height:48px;display:block;margin:0 auto 4px}
 .carr .ci b{display:block;font:700 10.5px Cinzel,serif;color:#f1e8cc;min-height:26px}
 .carr .ci span{font-size:9.5px;color:#a9a48f;line-height:1.35;display:block}
-@media (max-width:1100px){#app{grid-template-columns:190px minmax(0,1fr) 190px}#base{grid-template-columns:180px minmax(0,1fr) 170px}.carta .tr{display:none}}
+@media (max-width:1100px){#app{grid-template-columns:214px minmax(0,1fr) 190px}#base{grid-template-columns:180px minmax(0,1fr) 170px}.carta .tr{display:none}}
 
 /* ---------- online ---------- */
 input{font:12px Verdana,Geneva,sans-serif;user-select:text;-webkit-user-select:text}
@@ -358,7 +408,7 @@ input{font:12px Verdana,Geneva,sans-serif;user-select:text;-webkit-user-select:t
 #tip .ret .banc{border-color:#3e6aa8}
 #tip .ret .banc canvas{opacity:.75}
 #tip .cab{display:flex;align-items:center;gap:8px;margin-bottom:5px}
-#tip .cab .ti{--s:30px}
+#tip .cab .ti{--s:46px}
 #tip .cab h4{margin:0;flex:1}
 #tip .lg{display:flex;gap:10px;font-size:9.5px;color:var(--mut);margin-top:4px}
 #tip .lg i{display:inline-block;width:8px;height:8px;margin-right:3px;border:1px solid #6b5a2e}
@@ -436,7 +486,7 @@ input{font:12px Verdana,Geneva,sans-serif;user-select:text;-webkit-user-select:t
 .jg .nm em{font:700 8px Verdana;font-style:normal;color:#8fe6a0;margin-left:auto}
 .bt.ic.mudo{position:relative}.bt.ic.mudo svg{opacity:.5}.bt.ic.mudo::after{content:'';position:absolute;left:5px;right:5px;top:50%;height:2px;background:#e0574a;transform:rotate(-40deg)}
 html.reduz *,html.reduz *::before,html.reduz *::after{animation-duration:.001s!important;animation-iteration-count:1!important;transition-duration:.001s!important}
-@media (max-width:1100px){.carta .art canvas{width:112px;height:84px}.sin .ti{--s:32px}#faixa-rodada .drops img{width:22px;height:22px}}
+@media (max-width:1100px){.sin .ti{--s:38px}.sin .nm{font-size:12px}.sin .pips .tp{display:none}#faixa-rodada .drops img{width:22px;height:22px}}
 </style>
 </head>
 <body>
@@ -484,6 +534,7 @@ html.reduz *,html.reduz *::before,html.reduz *::after{animation-duration:.001s!i
 <div id="vs"></div>
 <div id="cfg" class="painel"></div>
 <div id="tip"></div>
+<div id="cpainel"></div>
 <div id="ghost"></div>
 
 <script async src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
@@ -1228,7 +1279,8 @@ const CW=352,BX=48,BY=34,BEN_X=(CW-9*TS)/2,BEN_Y=BY+NR*TS+17,CH=BEN_Y+TS+13;    
 let cv=null,cx=null,Z=2,DPR=1;
 const UI={estado:'menu',vel:1,acc:0,fimEm:0,C:null,demo:false,prev:null,prevSujo:true,drag:null,mx:0,my:0,hover:null,fxPrep:[],sujo:{},sujoRet:false,
   voc:'knight',timer:30,timerMax:30,fimShow:0,ultPassoReal:0,jogoParado:false,
-  espiar:null,fxAv:[],anims:[],voando:{},emotes:{},avHit:{},hoverU:null,tipChave:null,reduz:false,meterAberto:false,meterAba:'d',ultC:null,intro:0,freezeAte:0,shake:null,impIdx:0,stats:null};
+  espiar:null,fxAv:[],anims:[],voando:{},emotes:{},avHit:{},hoverU:null,tipChave:null,reduz:false,meterAberto:false,meterAba:'d',ultC:null,intro:0,freezeAte:0,shake:null,impIdx:0,stats:null,
+  hoverTr:null,hoverCartaId:null,hoverCartaI:-1,atq:null,hpAtr:null};
 
 /* ---- folhas de sprite (cache de imagens) ---- */
 const FOLHAS={};
@@ -1240,10 +1292,10 @@ function precarregar(cb){const L=new Set();
   VOCS.forEach(v=>{const f=SPR.roupas[v][3];if(f)L.add(f.src);});
   Object.values(CB.efeitos).forEach(f=>L.add(f.src));Object.values(CB.tiros).forEach(f=>L.add(f.src));
   LISTA_U.forEach(id=>{const c=cadDe(U[id]);if(c)L.add(c.src);});Object.keys(MON).forEach(id=>{const c=cadDe({spr:id});if(c)L.add(c.src);});   // só os cadáveres que o jogo usa
-  Object.values(ICO).forEach(s=>L.add(s));ITENS.forEach(i=>L.add(IMG('itens/'+i.id+'.png')));L.add('tactics-assets/chao.png');BIOMAS.forEach(b=>L.add('tactics-assets/chao_'+b+'.png'));
+  Object.values(ICO).forEach(s=>L.add(s));Object.keys(TRACOS).forEach(k=>L.add(icoTraco(k)));ITENS.forEach(i=>L.add(IMG('itens/'+i.id+'.png')));L.add('tactics-assets/chao.png');BIOMAS.forEach(b=>L.add('tactics-assets/chao_'+b+'.png'));
   const arr=[...L];let n=0;
   // as sprites de criaturas e os ícones são obrigatórios; o resto carrega em segundo plano
-  const obrig=arr.filter(s=>/criaturas|roupas|itens|ui\/|chao|combate_/.test(s));
+  const obrig=arr.filter(s=>/criaturas|roupas|itens|icones|ui\/|chao|combate_/.test(s));
   return new Promise(res=>{if(!obrig.length)return res();let feito=false;const fim=()=>{if(!feito){feito=true;res();}};
     obrig.forEach(s=>{const im=new Image();const e=FOLHAS[s]||(FOLHAS[s]={im,ok:false});const f=()=>{n++;e.ok=e.ok||(im.naturalWidth>0);if(cb)cb(n/obrig.length);if(n>=obrig.length)fim();};
       im.onload=()=>{e.im=im;e.ok=true;UI.sujoRet=true;f();};im.onerror=f;im.src=s;e.im=im;});
@@ -1262,12 +1314,28 @@ function bboxFolha(f,dir){const k=f.src+'|'+dir;if(BBOX[k])return BBOX[k];const 
 /* retrato de uma unidade num <canvas> (recortado e centralizado, com animação parada quando existir) */
 function pintarRetrato(c,id,rt){const d=U[id]||(typeof id==='object'?id:null);if(!d||!c)return;const g=c.getContext('2d');g.imageSmoothingEnabled=false;g.clearRect(0,0,c.width,c.height);
   const f=folhaDe(d);if(!f)return;const im=folhaImg(f.src);if(!im)return;const bb=bboxFolha(f,2)||{x0:0,y0:0,x1:f.w-1,y1:f.h-1};
-  const w=bb.x1-bb.x0+1,h=bb.y1-bb.y0+1;let esc=Math.min(c.width/w,c.height/h);esc=esc>=2?Math.floor(esc):esc;
+  const w=bb.x1-bb.x0+1,h=bb.y1-bb.y0+1;let esc=Math.min(c.width/w,c.height/h);esc=esc>=1?Math.floor(esc):esc;
   let q=0;if(f.parado>1){const tot=f.ms.reduce((a,b)=>a+b,0)||1;let t=(rt||0)%tot;while(q<f.parado-1&&(t-=f.ms[q])>=0)q++;}
   const dw=w*esc,dh=h*esc;g.drawImage(im,q*f.w+bb.x0,2*f.h+bb.y0,w,h,Math.round((c.width-dw)/2),Math.round(c.height-dh-1),dw,dh);}
 function pintarAvatar(c,voc,dir){const f=SPR.roupas[voc]&&SPR.roupas[voc][3];if(!f||!c)return;const im=folhaImg(f.src);if(!im)return;const g=c.getContext('2d');g.imageSmoothingEnabled=false;g.clearRect(0,0,c.width,c.height);
-  const bb=bboxFolha(f,dir===undefined?2:dir)||{x0:0,y0:0,x1:f.w-1,y1:f.h-1};const w=bb.x1-bb.x0+1,h=bb.y1-bb.y0+1;let esc=Math.min(c.width/w,c.height/h);esc=esc>=2?Math.floor(esc):esc;
+  const bb=bboxFolha(f,dir===undefined?2:dir)||{x0:0,y0:0,x1:f.w-1,y1:f.h-1};const w=bb.x1-bb.x0+1,h=bb.y1-bb.y0+1;let esc=Math.min(c.width/w,c.height/h);esc=esc>=1?Math.floor(esc):esc;
   g.drawImage(im,bb.x0,(dir===undefined?2:dir)*f.h+bb.y0,w,h,(c.width-w*esc)/2,c.height-h*esc-1,w*esc,h*esc);}
+
+/* retrato andando para o leste (cartas da loja): toca os quadros "andar" da folha em loop calmo; com o mouse em cima anda mais rápido.
+   Escala inteira (1x ou 2x) e posições inteiras, para o pixel art ficar nítido. */
+const BBOXA={};
+function bboxAndar(f){let b=BBOXA[f.src];if(b)return b;const im=folhaImg(f.src);if(!im)return null;
+  b={x0:f.w-1,y0:f.h-1,x1:0,y1:0};let ok=false;
+  try{const c=document.createElement('canvas');c.width=f.w;c.height=f.h;const g=c.getContext('2d',{willReadFrequently:true});
+    for(let q=0;q<f.parado+f.andar;q++){g.clearRect(0,0,f.w,f.h);g.drawImage(im,q*f.w,f.h,f.w,f.h,0,0,f.w,f.h);const d=g.getImageData(0,0,f.w,f.h).data;   // linha 1 = leste
+      for(let y=0;y<f.h;y++)for(let x=0;x<f.w;x++)if(d[(y*f.w+x)*4+3]>24){ok=true;if(x<b.x0)b.x0=x;if(x>b.x1)b.x1=x;if(y<b.y0)b.y0=y;if(y>b.y1)b.y1=y;}}}catch(e){ok=false;}
+  if(!ok)b={x0:0,y0:0,x1:f.w-1,y1:f.h-1};
+  return BBOXA[f.src]=b;}
+function pintarAndar(c,id,rt,rapido){const d=U[id];if(!d||!c)return;const f=folhaDe(d);if(!f)return;const im=folhaImg(f.src);if(!im)return;const bb=bboxAndar(f);if(!bb)return;
+  const g=c.getContext('2d');g.imageSmoothingEnabled=false;g.clearRect(0,0,c.width,c.height);
+  const w=bb.x1-bb.x0+1,h=bb.y1-bb.y0+1;let esc=Math.min(c.width/w,c.height/h);esc=esc>=1?Math.min(2,Math.floor(esc)):esc;
+  let q=0;if(!UI.reduz&&f.andar>0)q=f.parado+Math.floor(rt/(rapido?75:165))%f.andar;      // "Animações reduzidas": fica parado, de frente para o leste
+  const dw=w*esc,dh=h*esc;g.drawImage(im,q*f.w+bb.x0,f.h+bb.y0,w,h,Math.round((c.width-dw)/2),Math.round(c.height-dh-2),dw,dh);}
 
 /* ---- posição interpolada e quadro de animação ---- */
 let ESP=false;   // espelhado: o jogador local é o lado B da luta (humano x humano); a cena gira 180° para ele se ver embaixo
@@ -1278,15 +1346,15 @@ const andando=(u,rt)=>u.dur>0&&rt<u.t0+u.dur+70&&rt>=u.t0;
 function pintarSprite(d,dir,X,Y,rt,u){const f=folhaDe(d);if(!f)return null;const im=folhaImg(f.src);if(!im)return f;let q=0;
   if(u&&andando(u,rt)&&f.andar>0){const por=Math.max(1,f.andar/2);q=f.parado+Math.floor((rt-u.andaDesde)/(u.dur/por))%f.andar;}
   else if(f.parado>1){const tot=f.ms.reduce((a,b)=>a+b,0)||1;let t=(rt+(u?u.uid*137:0))%tot;while(q<f.parado-1&&(t-=f.ms[q])>=0)q++;}
-  cx.drawImage(im,q*f.w,dir*f.h,f.w,f.h,X+32-f.w,Y+32-f.h,f.w,f.h);return f;}   // o deslocamento (8,8) dos outfits é ignorado: a arte fica centrada no tile
+  cx.drawImage(im,q*f.w,dir*f.h,f.w,f.h,Math.round(X+32-f.w),Math.round(Y+32-f.h),f.w,f.h);return f;}   // o deslocamento (8,8) dos outfits é ignorado: a arte fica centrada no tile
 function quadro(f,t){let q=0;while(q<f.n-1&&(t-=f.ms[q])>=0)q++;return q;}
 
 /* ---- efeitos e mísseis (mesma lógica do Tibia Idle, em tiles flutuantes) ---- */
 function desenharFx(lista,rt){for(const e of lista){const t=rt-e.b;if(t<0)continue;const f=CB.efeitos[e.id];if(!f)continue;if(f._tot===undefined)f._tot=f.ms.reduce((a,b)=>a+b,0);if(t>=f._tot)continue;
-  const im=folhaImg(f.src);if(!im)continue;const q=quadro(f,t);cx.drawImage(im,f.x+q*f.w,f.y,f.w,f.h,BX+MX(e.x)*TS+32-f.w,BY+FY(e.y)*TS+32-f.h,f.w,f.h);}}
+  const im=folhaImg(f.src);if(!im)continue;const q=quadro(f,t);cx.drawImage(im,f.x+q*f.w,f.y,f.w,f.h,Math.round(BX+MX(e.x)*TS+32-f.w),Math.round(BY+FY(e.y)*TS+32-f.h),f.w,f.h);}}
 function desenharTiros(lista,rt){for(const m of lista){const t=(rt-m.b)/m.dur;if(t<0||t>=1)continue;const f=CB.tiros[m.id],im=f&&folhaImg(f.src);if(!im)continue;
   const k=Math.round(Math.atan2(MY(m.y2)-MY(m.y1),MX(m.x2)-MX(m.x1))/(Math.PI/4)),pp={0:[2,1],1:[2,2],2:[1,2],3:[0,2],4:[0,1],'-4':[0,1],'-1':[2,0],'-2':[1,0],'-3':[0,0]}[k]||[2,1];
-  const x=lerp(MX(m.x1),MX(m.x2),t),y=lerp(MY(m.y1),MY(m.y2),t);cx.drawImage(im,f.x+pp[0]*f.w,f.y+pp[1]*f.h,f.w,f.h,BX+x*TS+32-f.w,BY+y*TS+32-f.h,f.w,f.h);}}
+  const x=lerp(MX(m.x1),MX(m.x2),t),y=lerp(MY(m.y1),MY(m.y2),t);cx.drawImage(im,f.x+pp[0]*f.w,f.y+pp[1]*f.h,f.w,f.h,Math.round(BX+x*TS+32-f.w),Math.round(BY+y*TS+32-f.h),f.w,f.h);}}
 
 /* ---- cores da barra de vida (padrão do cliente Tibia) ---- */
 function corVida(p){return p>=.96?'#00bc00':p>=.6?'#60c060':p>=.3?'#c0c000':p>=.1?'#c03030':'#7f0000';}
@@ -1417,7 +1485,7 @@ function renderCombate(C,rt){
   // cadáveres
   for(const m of C.mortos){const age=rt-m.t;if(age>6000)continue;const cd=cadDe(m.u.d);if(!cd)continue;const im=folhaImg(cd.src);if(!im)continue;
     cx.globalAlpha=age>5000?1-(age-5000)/1000:1;cx.drawImage(im,0,0,cd.w,cd.h,BX+MX(m.x)*TS+32-cd.w,BY+MY(m.y)*TS+32-cd.h,cd.w,cd.h);cx.globalAlpha=1;}
-  const vivos=C.un.filter(u=>u.vivo).map(u=>({u,p:posU(u,rt)})).sort((a,b)=>a.p.y-b.p.y||a.p.x-b.p.x);
+  const oculto=monOculto(),vivos=C.un.filter(u=>u.vivo&&u!==oculto).map(u=>({u,p:posU(u,rt)})).sort((a,b)=>a.p.y-b.p.y||a.p.x-b.p.x);
   vivos.forEach(o=>{desenharUnidade(o.u,rt,false);iconesItens(o.u,BX+o.p.x*TS,BY+o.p.y*TS,1);});
   desenharFx(C.fx,rt);desenharTiros(C.tiros,rt);
   // passar o mouse numa unidade: linha fina até o alvo atual
@@ -1438,11 +1506,11 @@ function renderBanco(rt){const p=UI.jog;if(!p)return;const now=performance.now()
 
 /* ---- avatar do jogador nas laterais do tabuleiro (e do adversário, nas lutas PvP) ---- */
 function desenharFxPx(id,X,Y,t){const f=CB.efeitos[id];if(!f)return false;if(f._tot===undefined)f._tot=f.ms.reduce((a,b)=>a+b,0);if(t<0)return true;if(t>=f._tot)return false;
-  const im=folhaImg(f.src);if(!im)return true;const q=quadro(f,t);cx.drawImage(im,f.x+q*f.w,f.y,f.w,f.h,X+32-f.w,Y+32-f.h,f.w,f.h);return true;}
+  const im=folhaImg(f.src);if(!im)return true;const q=quadro(f,t);cx.drawImage(im,f.x+q*f.w,f.y,f.w,f.h,Math.round(X+32-f.w),Math.round(Y+32-f.h),f.w,f.h);return true;}
 function desenharAvatar(voc,X,Y,dir,t,andar){const f=SPR.roupas[voc]&&SPR.roupas[voc][3];if(!f)return;const im=folhaImg(f.src);if(!im)return;let q=0;
   if(andar&&f.andar>0)q=f.parado+Math.floor(t/115)%f.andar;
   else if(f.parado>1){const tot=f.ms.reduce((a,b)=>a+b,0)||1;let tt=t%tot;while(q<f.parado-1&&(tt-=f.ms[q])>=0)q++;}
-  cx.drawImage(im,q*f.w,dir*f.h,f.w,f.h,X+32-f.w,Y+32-f.h,f.w,f.h);}
+  cx.drawImage(im,q*f.w,dir*f.h,f.w,f.h,Math.round(X+32-f.w),Math.round(Y+32-f.h),f.w,f.h);}
 function falaAvatar(txt,x,y,age){const a=age>2600?1-(age-2600)/500:1;cx.save();cx.globalAlpha=a;cx.textAlign='center';cx.font='bold 8px Verdana';cx.lineJoin='round';cx.lineWidth=2.6;cx.strokeStyle='#000';
   const yy=y-age*.004;cx.strokeText(txt,x,yy);cx.fillStyle='#ffe14a';cx.fillText(txt,x,yy);cx.restore();}
 function desenharAvatares(now){if(UI.demo||!G||!UI.jog)return;
@@ -1451,9 +1519,10 @@ function desenharAvatares(now){if(UI.demo||!G||!UI.jog)return;
     const t=(now+desl)%7000;let dx=0,dir=2,andar=false;const s=esq?1:-1;
     if(!UI.reduz){if(t<1500){dx=s*9*t/1500;dir=esq?1:3;andar=true;}else if(t<3500){dx=s*9;}else if(t<5000){dx=s*9*(1-(t-3500)/1500);dir=esq?3:1;andar=true;}}
     const hb=UI.avHit[q.id],hit=hb&&now-hb<650?hb:0;if(hit)dx+=(Math.floor(now/45)%2?2.5:-2.5)*(1-(now-hit)/650);
+    const atqPos=UI.atq&&!UI.atq.A.mon&&UI.atq.A.id===q.id?posAtaque(UI.atq,now-UI.atq.b):null;   // durante o ataque do avatar, quem ataca é desenhado em desenharAtaque
     const X=X0+dx;cx.fillStyle='rgba(0,0,0,.45)';cx.beginPath();cx.ellipse(X+16,Y0+27,12,4.5,0,0,7);cx.fill();
     cx.strokeStyle=esq?'rgba(90,150,255,.7)':'rgba(255,100,85,.7)';cx.lineWidth=1;cx.beginPath();cx.ellipse(X+16,Y0+27,13.5,5.3,0,0,7);cx.stroke();
-    desenharAvatar(q.voc,X,Y0,dir,now,andar);
+    if(!atqPos)desenharAvatar(q.voc,X,Y0,dir,now,andar);
     if(hit){cx.fillStyle='rgba(230,40,30,'+(.35*(1-(now-hit)/650)).toFixed(3)+')';cx.beginPath();cx.ellipse(X+16,Y0+16,12,15,0,0,7);cx.fill();}
     // plaquinha: nome e vida
     const hp=clamp(q.hp/100,0,1);cx.save();cx.textAlign='center';cx.font='bold 5.6px Verdana';cx.lineJoin='round';cx.lineWidth=2;cx.strokeStyle='#000';
@@ -1462,8 +1531,73 @@ function desenharAvatares(now){if(UI.demo||!G||!UI.jog)return;
     const em=UI.emotes[q.id];if(em&&now-em.b<3100)falaAvatar(em.t,X0+16,Y0-2,now-em.b);};
   cena(eu,true,BY+5*TS-4,0);
   if(op)cena(op,false,BY+TS*.5,2300);
+  desenharAtaque(now);
   // efeitos sobre o avatar (sangue ao perder vida)
   const A=UI.fxAv;for(let i=A.length-1;i>=0;i--){const e=A[i];if(!desenharFxPx(e.id,e.X,e.Y,now-e.b))A.splice(i,1);}}
+
+/* ---- destaques leves: unidades do banco e do tabuleiro que combinam com a carta sob o mouse ou com o traço do painel ---- */
+function desenharDestaques(now){const tr=UI.hoverTr,id=UI.hoverCartaId;if((!tr&&!id)||!UI.jog||UI.demo||UI.espiar!==null)return;
+  const comb=d=>!!d&&!d.pve&&((tr&&(d.o===tr||d.k===tr))||(id&&d.id===id));
+  const a=UI.reduz?.5:.5+.15*Math.sin(now/520);
+  const marca=(X,Y)=>{cx.fillStyle='rgba(255,226,130,'+(.14*a/.5).toFixed(3)+')';cx.fillRect(X+1,Y+1,TS-2,TS-2);
+    cx.strokeStyle='rgba(255,226,130,'+(.85*a/.5).toFixed(3)+')';cx.lineWidth=1;cx.strokeRect(X+1.5,Y+1.5,TS-3,TS-3);
+    cx.fillStyle='rgba(255,226,130,'+(.30*a/.5).toFixed(3)+')';cx.beginPath();cx.ellipse(X+16,Y+27,14,6,0,0,7);cx.fill();};
+  if(UI.C){const C=UI.C,meu=C.esp?1:0;C.un.forEach(u=>{if(!u.vivo||u.lado!==meu||u.inv||!comb(u.d))return;const p=posU(u,UI.C.t+UI.acc);marca(BX+p.x*TS,BY+p.y*TS);});return;}
+  todos(UI.jog).forEach(L=>{if(!comb(U[L.inst.id]))return;if(L.onde==='tab')marca(BX+L.x*TS,BY+(L.y+4)*TS);else marca(BEN_X+L.i*TS,BEN_Y);});}
+
+/* ---- ataque do avatar no fim da luta (o "pequeno herói" do TFT): só visual, ~1,5 s, pulável (clique no tabuleiro ou Espaço).
+   PvP: o avatar do vencedor corre até o do perdedor e lança a magia da vocação. PvE perdido: o monstro mais forte que sobrou ataca o seu avatar. ---- */
+const MAGIA_AV={
+  knight:{pal:'exori',perto:true,efs:[['hitarea',0,0,0],['drawblood',0,0,70]],som:'golpe'},
+  paladin:{pal:'exori san',tiro:'arrow',efs:[['holydamage',0,0,0]],som:'flecha',som2:'sagrado'},
+  sorcerer:{pal:'adori gran mort',tiro:'suddendeath',efs:[['mortarea',0,0,0],['mortarea',-13,6,130]],som:'morte'},
+  druid:{pal:'adori mas frigo',tiro:'smallice',efs:[['icearea',0,0,0],['icearea',-14,-8,110],['icearea',14,-6,200]],som:'gelo'}};
+function criarAtaque(o){const A=o.atk,T=o.alvo,mag=o.mag,rd=UI.reduz;
+  const dx=T.X-A.X,dy=T.Y-A.Y,dist=Math.max(1,Math.hypot(dx,dy));
+  const frac=rd?0:(mag.perto?Math.max(0,1-27/dist):.42),ida=rd?0:(mag.perto?520:300);            // fração do caminho percorrida e duração da corrida
+  const tc=ida,md=mag.tiro&&!rd?Math.round(80+dist*(1-frac)*.5):0,th=tc+md+(rd?0:50);             // tc: lança a magia; th: o golpe acerta
+  const tv=th+(rd?0:360),vol=rd?0:ida,te=tv+vol;                                                  // tv: começa a voltar; te: chegou em casa
+  return {b:performance.now(),A,T,mag,dano:o.dano||0,perdId:o.perdId,frac,ida,tc,md,th,tv,vol,te,dur:Math.max(te,th+1000),hit:false,somTc:false,mon:o.mon||null,dxy:[dx,dy]};}
+/* posição do atacante: {X,Y,dir,andar}, ou null quando ele está em casa */
+function posAtaque(a,t){if(UI.reduz||t>=a.te||t<0)return null;
+  const dirI=Math.abs(a.dxy[0])>=Math.abs(a.dxy[1])?(a.dxy[0]>0?1:3):(a.dxy[1]>0?2:0);let k,dir=dirI,andar=false;
+  if(t<a.ida){k=a.frac*t/a.ida;andar=true;}else if(t<a.tv)k=a.frac;else{k=a.frac*(1-(t-a.tv)/a.vol);dir=(dirI+2)%4;andar=true;}
+  return {X:Math.round(a.A.X+a.dxy[0]*k),Y:Math.round(a.A.Y+a.dxy[1]*k),dir,andar};}
+const monOculto=()=>{const a=UI.atq;return a&&a.mon&&!UI.reduz&&performance.now()-a.b<a.te?a.mon:null;};
+function iniciarAtaqueAvatar(d,p){UI.atq=null;UI.hpAtr=null;if(!G||UI.demo||!UI.C||!d)return;const C=UI.C,PE=posAvatarTab(true),PO=posAvatarTab(false);let o=null;
+  if(!C.pve){const op=oponenteLocal();if(!op||(d.v!=='v'&&d.v!=='d'))return;                      // sombra (sem adversário) e empate: sem ataque
+    if(d.v==='v')o={atk:{id:p.id,voc:p.voc,X:PE.X,Y:PE.Y},alvo:{id:op.id,esq:false,X:PO.X,Y:PO.Y},mag:MAGIA_AV[p.voc]||MAGIA_AV.knight,dano:d.dop||0,perdId:op.id,perdQ:op};
+    else o={atk:{id:op.id,voc:op.voc,X:PO.X,Y:PO.Y},alvo:{id:p.id,esq:true,X:PE.X,Y:PE.Y},mag:MAGIA_AV[op.voc]||MAGIA_AV.knight,dano:d.dano||0,perdId:p.id,perdQ:p};}
+  else if(d.v==='d'){const m=C.un.filter(u=>u.vivo&&u.lado===1).sort((a,b)=>b.hpM-a.hpM)[0];if(!m)return;       // PvE perdido: o monstro mais forte que sobrou
+    const at=m.d.atq,dist=m.al>1;
+    o={atk:{id:-1,mon:m,X:BX+m.x*TS,Y:BY+m.y*TS},alvo:{id:p.id,esq:true,X:PE.X,Y:PE.Y},mag:{pal:'',perto:!dist,tiro:dist?(at?at.t:'arrow'):null,efs:[[at?at.hit:(m.d.hit||'drawblood'),0,0,0]],som:'golpe'},dano:0,perdId:p.id,mon:m};}
+  if(!o)return;
+  UI.atq=criarAtaque(o);
+  if(o.dano>0&&o.perdQ)UI.hpAtr={id:o.perdId,hp:o.perdQ.hp+o.dano};}                                // a vida desce na lista só quando o golpe acerta
+function passoAtaque(now){const a=UI.atq;if(!a)return;const t=now-a.b;
+  if(!a.somTc&&t>=a.tc){a.somTc=true;if(KS[a.mag.som])KS[a.mag.som](.9);}
+  if(!a.hit&&t>=a.th){a.hit=true;if(a.mag.som2&&KS[a.mag.som2])KS[a.mag.som2](.9);
+    feriuAvatar(a.perdId,a.T.esq);if(a.dano>0&&!UI.reduz&&a.perdId===(UI.jog&&UI.jog.id))UI.shake={b:now,dur:380,amp:4};
+    UI.hpAtr=null;marcar('jog');}
+  if(t>=a.dur){UI.atq=null;UI.hpAtr=null;marcar('jog');}}
+function pularAtaque(){if(!UI.atq)return;UI.atq.b=-1e9;passoAtaque(performance.now());}
+function desenharTiroPx(id,x1,y1,x2,y2,t){const f=CB.tiros[id],im=f&&folhaImg(f.src);if(!im||t<0||t>=1)return;
+  const k=Math.round(Math.atan2(y2-y1,x2-x1)/(Math.PI/4)),pp={0:[2,1],1:[2,2],2:[1,2],3:[0,2],4:[0,1],'-4':[0,1],'-1':[2,0],'-2':[1,0],'-3':[0,0]}[k]||[2,1];
+  const x=Math.round(lerp(x1,x2,t)),y=Math.round(lerp(y1,y2,t));cx.drawImage(im,f.x+pp[0]*f.w,f.y+pp[1]*f.h,f.w,f.h,x+32-f.w,y+32-f.h,f.w,f.h);}
+function desenharCriaturaPx(d,dir,X,Y,t,andar){const f=folhaDe(d);if(!f)return;const im=folhaImg(f.src);if(!im)return;let q=0;
+  if(andar&&f.andar>0)q=f.parado+Math.floor(t/90)%f.andar;else if(f.parado>1){const tot=f.ms.reduce((a,b)=>a+b,0)||1;let tt=t%tot;while(q<f.parado-1&&(tt-=f.ms[q])>=0)q++;}
+  cx.drawImage(im,q*f.w,dir*f.h,f.w,f.h,Math.round(X+32-f.w),Math.round(Y+32-f.h),f.w,f.h);}
+function desenharAtaque(now){const a=UI.atq;if(!a)return;const t=now-a.b,A=a.A,T=a.T,mag=a.mag,pa=posAtaque(a,t);
+  if(pa){cx.fillStyle='rgba(0,0,0,.45)';cx.beginPath();cx.ellipse(pa.X+16,pa.Y+27,12,4.5,0,0,7);cx.fill();
+    if(A.mon)desenharCriaturaPx(A.mon.d,pa.dir,pa.X,pa.Y,now,pa.andar);else desenharAvatar(A.voc,pa.X,pa.Y,pa.dir,now,pa.andar);}
+  const pc=posAtaque(a,a.tc)||{X:A.X,Y:A.Y};
+  if(mag.tiro&&a.md>0&&t>=a.tc)desenharTiroPx(AN(mag.tiro),pc.X,pc.Y-6,T.X,T.Y-6,(t-a.tc)/a.md);                // míssil do COMB15
+  mag.efs.forEach(([n,ox,oy,at])=>{if(t>=a.th+at)desenharFxPx(E(n),T.X+ox,T.Y+oy,t-a.th-at);});                // efeito da magia no alvo
+  if(mag.pal&&t>=a.tc&&t<a.tc+1100){const age=t-a.tc,q=pa||{X:A.X,Y:A.Y};cx.save();cx.globalAlpha=age>800?1-(age-800)/300:1;cx.textAlign='center';cx.font='bold 8px Verdana';cx.lineJoin='round';cx.lineWidth=2.6;cx.strokeStyle='#000';
+    const yy=Math.round(q.Y-4-age*.006);cx.strokeText(mag.pal,Math.round(q.X+16),yy);cx.fillStyle='#ffe14a';cx.fillText(mag.pal,Math.round(q.X+16),yy);cx.restore();}   // palavra mágica em amarelo, como no Tibia
+  if(a.dano>0&&t>=a.th){const age=t-a.th;if(age<1000){cx.save();cx.globalAlpha=age>700?1-(age-700)/300:1;cx.textAlign='center';cx.lineJoin='round';   // dano em número grande sobre o avatar atingido
+      const esc=age<140?1+(1-age/140)*.7:1;cx.font='bold '+Math.round(16*esc)+'px Verdana';cx.lineWidth=3.6;cx.strokeStyle='#000';cx.fillStyle='#ff5a48';
+      const tx=Math.round(T.X+16),ty=Math.round(T.Y-4-Math.min(age,700)*.03);cx.strokeText('-'+a.dano,tx,ty);cx.fillText('-'+a.dano,tx,ty);cx.restore();}}}
 
 /* ---- animações da interface sobre o canvas: unidades que se fundem e texto de estrela ---- */
 function desenharAnims(now){const A=UI.anims;if(!A.length)return;
@@ -1485,13 +1619,14 @@ function render(){if(!cx)return;const C=UI.C,rt=C?C.t+UI.acc:performance.now(),n
   if(C)renderCombate(C,rt);else{renderPrev(rt);desenharFx(UI.fxPrep,now);}
   desenharAvatares(now);
   if(UI.jog&&!UI.demo&&UI.espiar==null)renderBanco(C?now:rt);
+  desenharDestaques(now);
   desenharAnims(now);
   // hover sutil
   if(UI.hoverCel&&!UI.drag&&!UI.demo&&UI.espiar==null){const c=UI.hoverCel;cx.strokeStyle='rgba(255,230,140,.55)';cx.lineWidth=1;
     if(c.onde==='tab')cx.strokeRect(BX+c.x*TS+.5,BY+(c.y+4)*TS+.5,TS-1,TS-1);else if(c.onde==='banco')cx.strokeRect(BEN_X+c.i*TS+.5,BEN_Y+.5,TS-1,TS-1);}
 }
 function ajustarCanvas(){const box=$('cvbox');if(!box||!cv)return;const w=box.clientWidth-8,h=box.clientHeight-6;
-  Z=Math.max(1,Math.floor(Math.min(w/CW,h/CH)*16)/16);DPR=Math.min(2,window.devicePixelRatio||1);
+  const zr=Math.min(w/CW,h/CH);Z=zr>=2?Math.floor(zr):Math.max(1,Math.floor(zr*16)/16);DPR=Math.min(2,window.devicePixelRatio||1);
   cv.style.width=Math.round(CW*Z)+'px';cv.style.height=Math.round(CH*Z)+'px';cv.width=Math.round(CW*Z*DPR);cv.height=Math.round(CH*Z*DPR);
   $('meter').classList.toggle('fora',(box.clientWidth-CW*Z)/2>=236);}   // placar ao lado do tabuleiro quando há espaço; senão sobre ele
 
@@ -1513,7 +1648,8 @@ function marcar(){UI.tipChave=null;for(const k of arguments)UI.sujo[k]=true;}
 const marcarTudo=()=>marcar('topo','sin','jog','loja','itens','btn','strip');
 
 /* ---------- texto das habilidades ---------- */
-function descHab(d,e){const h=d.hab;if(!h)return 'Sem habilidade ativa.';const sk=d.pve?(d.sk||0):CUSTO_SK[d.c]*(ESTR[e||1]),dm=m=>Math.round(m*sk);
+/* habilidade em partes: palavra mágica, tipo e a descrição numa frase com números */
+function habInfo(d,e){const h=d.hab;if(!h)return null;const sk=d.pve?(d.sk||0):CUSTO_SK[d.c]*(ESTR[e||1]),dm=m=>Math.round(m*sk);
   const ex=s=>{let t='';if(s.stun)t+=`, atordoa ${(s.stun/1000).toFixed(1)}s`;if(s.dot)t+=` e queima/envenena por ${dm(s.dot.m)} em ${s.dot.dur}s`;if(s.drena)t+=', cura o conjurador';
     if(s.deb){if(s.deb.fraco)t+=`, alvo causa ${Math.round(s.deb.fraco*100)}% menos dano`;if(s.deb.armR)t+=`, reduz ${Math.round(s.deb.armR*100)}% da armadura`;if(s.deb.lento)t+=`, deixa o alvo ${Math.round(s.deb.lento*100)}% mais lento`;}return t;};
   const um=s=>{switch(s.t){
@@ -1527,7 +1663,10 @@ function descHab(d,e){const h=d.hab;if(!h)return 'Sem habilidade ativa.';const s
     case 'invocar':return `invoca ${s.n}× ${U[s.id].nome}`;
     case 'buff':{let t=s.escudo?`escudo de ${Math.round(s.escudo*100)}% da vida`:'';if(s.buff){if(s.buff.as)t+=(t?' e ':'')+`+${Math.round(s.buff.as*100)}% de vel. de ataque`;if(s.buff.dmg)t+=` e +${Math.round(s.buff.dmg*100)}% de dano`;}return (s.raio?'aliados próximos ganham ':'ganha ')+t;}
     }return '';};
-  return `<i>"${esc(h.p)}"</i> ${(h.t==='seq'?h.seq:[h]).map(um).join('; depois ')}.`;}
+  const ps=h.t==='seq'?h.seq:[h];
+  return {p:h.p,tipo:[...new Set(ps.map(s=>TIPO_HAB[s.t]||'Magia'))].join(' + '),txt:ps.map(um).join('; depois ')};}
+const TIPO_HAB={alvo:'Alvo único',onda:'Onda',self:'Explosão ao redor',pos:'Explosão no alvo',cura:'Cura própria',curaAmigo:'Cura de aliado',curaArea:'Cura em área',invocar:'Invocação',buff:'Reforço'};
+function descHab(d,e){const x=habInfo(d,e);if(!x)return 'Sem habilidade ativa.';return `<i>"${esc(x.p)}"</i> ${x.txt}.`;}
 
 /* ---------- tooltip ---------- */
 function mostrarTip(html,ev,chave){const t=$('tip');
@@ -1538,9 +1677,44 @@ function posTip(ev){const t=$('tip');if(t.style.display!=='block')return;const w
 const esconderTip=()=>{$('tip').style.display='none';UI.tipChave=null;};
 function statUn(inst){const P=UI.prev;let u=null;if(P)u=P.un.find(v=>v.inst===inst&&v.lado===0);
   if(!u){const Ct=criarCombate({un:[{d:U[inst.id],e:inst.e,x:0,y:7,itens:inst.itens}]},{un:[]},{semSalto:true,seed:1});u=Ct.un[0];}return u;}
+const nivAgora=t=>{const p=UI.jog;return p?nivelTraco(t,contarTracos(idsEm(p,'tab'))[t]||0):-1;};
+const chipTraco=t=>`<span class="tg">${iconeTraco(t,nivAgora(t),'',true)}${trNome(t)}</span>`;
+const CACHE_ST={};
+function statCarta(id){let s=CACHE_ST[id];if(s)return s;
+  const C=criarCombate({un:[{d:U[id],e:1,x:0,y:7,itens:[]}]},{un:[]},{semSalto:true,seed:1}),u=C.un[0];
+  return CACHE_ST[id]={hp:Math.round(u.hpM),atk:Math.round(u.atk),arm:Math.round(u.arm),al:u.al,as:u.as*(1+u.asB),m0:Math.round(u.mana),mM:u.manaM};}
+const SVG_ST={
+  vida:'<svg viewBox="0 0 14 14"><path fill="#e0574a" stroke="#4a0f0a" d="M7 12.6S1.4 8.8 1.4 5A3 3 0 0 1 7 3.7 3 3 0 0 1 12.6 5C12.6 8.8 7 12.6 7 12.6z"/></svg>',
+  atk:'<svg viewBox="0 0 14 14"><path fill="#e6e2d2" stroke="#3a3830" d="M12.5 1.5l-.3 3-6.6 6.6-2.7-2.7L9.5 1.8z"/><path stroke="#c9971c" stroke-width="1.6" d="M3 11l-1.5 1.5M4.3 8.7l3 3"/></svg>',
+  arm:'<svg viewBox="0 0 14 14"><path fill="#8fa9cf" stroke="#1d2a44" d="M7 1.4l5 1.8v3.6c0 2.9-2.1 4.7-5 5.8-2.9-1.1-5-2.9-5-5.8V3.2z"/></svg>',
+  al:'<svg viewBox="0 0 14 14" fill="none" stroke="#8fe6a0" stroke-width="1.4"><circle cx="7" cy="7" r="4.6"/><circle cx="7" cy="7" r="1.5" fill="#8fe6a0"/><path d="M7 .6v2.6M7 10.8v2.6M.6 7h2.6M10.8 7h2.6"/></svg>',
+  vel:'<svg viewBox="0 0 14 14"><path fill="#ffd24a" stroke="#5a3d00" d="M8.4 1L3 8h3.5L5.6 13 11.2 5.8H7.6z"/></svg>',
+  mana:'<svg viewBox="0 0 14 14"><path fill="#4f8dff" stroke="#10265a" d="M7 1.2C5.2 4 3 5.8 3 8.6a4 4 0 0 0 8 0C11 5.8 8.8 4 7 1.2z"/></svg>'};
+/* painel da carta sob o mouse: atributos, habilidade (palavra mágica em amarelo, tipo e frase com números) e sinergias (agora → depois da compra) */
+function htmlPainelCarta(i){const p=UI.jog,id=p&&p.loja[i];if(!id)return '';
+  const d=U[id],pv=previaCompra(p,id),st=statCarta(id),hb=habInfo(d,1);
+  const cel=(ic,v,l)=>`<div>${SVG_ST[ic]}<span><b>${v}</b><small>${l}</small></span></div>`;
+  const ids=idsEm(p,'tab'),cnt=contarTracos(ids),novo=!ids.includes(id);
+  const lin=t=>{const T=TRACOS[t],a=cnt[t]||0,b=a+(novo?1:0),na=nivelTraco(t,a),nb=nivelTraco(t,b);
+    return `<div class="lin">${iconeTraco(t,nb,'',true)}<span class="nm">${T.n}</span>${pipsTraco(t,b)}<span class="ct">${a}<i>→</i>${b}${nb>na?`<u>${na<0?'ativa':'sobe'}</u>`:''}</span></div>`;};
+  let h=`<div class="cab"><h4>${esc(d.nome)}</h4><span class="cus">${d.c}<img src="${ICO.ouro}" alt=""></span></div><div class="sub">${TRACOS[d.o].n} · ${TRACOS[d.k].n}</div>
+    <div class="st">${cel('vida',st.hp,'Vida')}${cel('atk',st.atk,'Ataque')}${cel('arm',st.arm,'Armadura')}${cel('al',st.al+(st.al>1?' tiles':' tile'),'Alcance')}${cel('vel',st.as.toFixed(2)+'/s','Vel. ataque')}${cel('mana',st.mM?st.m0+'/'+st.mM:'-','Mana')}</div>
+    <div class="hab">${hb?`<span class="pm">"${esc(hb.p)}"</span><span class="tp">${esc(hb.tipo)}</span><p>${hb.txt}.</p>`:'<p>Sem habilidade ativa.</p>'}</div>
+    <div class="sn"><div class="sub" style="margin:0 0 3px">Sinergias: no tabuleiro agora → depois da compra</div>${lin(d.o)}${lin(d.k)}</div>`;
+  if(pv.up)h+=`<div class="dica-up">${pv.up===3?'Comprar forma 3 estrelas (já tem duas cópias de 2 estrelas)':'Comprar forma 2 estrelas (já tem duas cópias)'}</div>`;
+  return h;}
+/* o painel só aparece acima da carta levantada (dentro da tela); forcar = reconstruir o conteúdo da carta que continua sob o mouse */
+function cartaHover(slot,forcar){const p=UI.jog;let i=-1;
+  if(slot&&UI.estado==='jogo'&&!UI.drag&&!UI.pausado&&p){const k=+slot.dataset.i;if(p.loja[k])i=k;}
+  const el=$('cpainel');if(!forcar&&i===UI.hoverCartaI&&(i<0||el.classList.contains('on')))return;
+  UI.hoverCartaI=i;UI.hoverCartaId=i>=0?p.loja[i]:null;
+  if(i<0){el.classList.remove('on');return;}
+  el.innerHTML=htmlPainelCarta(i);el.classList.add('on');
+  const sr=slot.getBoundingClientRect(),w=el.offsetWidth,h=el.offsetHeight,topC=UI.reduz?sr.top:sr.bottom-24-sr.height*1.12,l=clamp(sr.left+sr.width/2-w/2,6,innerWidth-w-6);
+  el.style.left=Math.round(l)+'px';el.style.top=Math.round(Math.max(6,topC-12-h))+'px';el.style.setProperty('--ax',Math.round(sr.left+sr.width/2-l)+'px');}
 function tipUnidade(d,e,itens,u){const cl=CLASSES[d.k];const star=d.pve?'':'<span class="est">'+'★'.repeat(e||1)+'</span>';
   const sk=d.pve?'':`<span style="color:${TIER_COR[d.c]}">${d.c} <img src="${ICO.ouro}" style="width:11px;height:11px;vertical-align:-2px"></span>`;
-  const tr=d.pve?'Criatura selvagem':`<span class="tg">${trNome(d.o)}</span><span class="tg">${trNome(d.k)}</span>`;
+  const tr=d.pve?'Criatura selvagem':chipTraco(d.o)+chipTraco(d.k);
   const L=(a,b)=>`<div class="lin"><span>${a}</span><b>${b}</b></div>`;
   let h=`<h4><span>${esc(d.nome)}</span>${star||''}${sk}</h4><div class="sb">${tr}</div>`;
   if(u){const asv=u.as*(1+u.asB)*(u.furia?1+u.orcFuria:1);
@@ -1550,10 +1724,14 @@ function tipUnidade(d,e,itens,u){const cl=CLASSES[d.k];const star=d.pve?'':'<spa
   h+=`<div class="hab"><b style="color:#d9b45a">Habilidade</b><br>${descHab(d,e)}</div>`;
   if(itens&&itens.length)h+='<div class="its">'+itens.map(i=>`<img src="${IMG('itens/'+i+'.png')}">`).join('')+'</div>'+itens.map(i=>`<div class="sb" style="margin:2px 0 0">${esc(ITEM[i].n)}: ${esc(ITEM[i].d)}</div>`).join('');
   return h;}
-/* ícone de traço: origem = hexágono, classe = brasão; a borda mostra o nível ativo (bronze, prata, ouro) */
-const nivCor=(t,niv)=>{if(niv<0)return -1;const L=TRACOS[t].niv.length;return niv===L-1&&L>1?2:niv===0?0:1;};
+/* ícone de traço: item real do Tibia (32x32 a 1x) num brasão (origem = hexágono, classe = escudo); o aro mostra o nível:
+   -1 apagado (cinza), 0 bronze, 1 prata, 2 ouro, 3 prismático (nível máximo do traço). O mesmo ícone aparece na carta, no tooltip e no painel. */
+const nivCor=(t,niv)=>{if(niv<0)return -1;const L=TRACOS[t].niv.length;return niv===L-1?3:Math.min(niv,2);};
+const icoTraco=t=>'tactics-assets/icones/'+t+'.png';
 function iconeTraco(t,niv,cls,semTip){const T=TRACOS[t];
-  return `<span class="ti ${cls||''}"${semTip?'':` data-tip="sin:${t}"`}><span class="${T.t==='origem'?'hx':'sh'} n${nivCor(t,niv)}"><i><canvas width="36" height="36" data-ret="${T.rep}"></canvas></i></span></span>`;}
+  return `<span class="ti ${cls||''}" data-tr="${t}"${semTip?'':` data-tip="sin:${t}"`}><span class="tb ${T.t==='origem'?'hx':'sh'} n${nivCor(t,niv)}"><span class="ar"><i></i></span><img src="${icoTraco(t)}" alt="${esc(T.n)}" draggable="false"></span></span>`;}
+/* degraus do traço (2 · 4 · 6): o atingido aceso com a cor do nível, o atual com um anel */
+const pipsTraco=(t,n)=>{const L=TRACOS[t].niv,niv=nivelTraco(t,n);return L.map((x,i)=>`<span class="pp${n>=x?' at c'+nivCor(t,i):''}${i===niv?' cur':''}">${x}</span>`).join('');};
 /* unidades distintas no tabuleiro / no banco do jogador p (para contar sinergias) */
 const idsEm=(p,onde)=>[...new Set(todos(p).filter(L=>L.onde===onde).map(L=>L.inst.id))];
 function tipTraco(t){const T=TRACOS[t],p=UI.jog;
@@ -1567,13 +1745,9 @@ function tipTraco(t){const T=TRACOS[t],p=UI.jog;
 function previaCompra(p,id){const d=U[id],n1=copias(p,id,1),n2=copias(p,id,2),up=n1>=2?(n2>=2?3:2):0;
   const ids=idsEm(p,'tab'),cnt=contarTracos(ids),novo=!ids.includes(id);
   const sobe=t=>novo&&nivelTraco(t,(cnt[t]||0)+1)>nivelTraco(t,cnt[t]||0);
-  return {up,acO:sobe(d.o),acK:sobe(d.k),nO:nivelTraco(d.o,cnt[d.o]||0),nK:nivelTraco(d.k,cnt[d.k]||0)};}
+  return {up,tem:todos(p).some(L=>L.inst.id===id),acO:sobe(d.o),acK:sobe(d.k),nO:nivelTraco(d.o,cnt[d.o]||0),nK:nivelTraco(d.k,cnt[d.k]||0)};}
 const LTIP=(a,b)=>`<div class="lin"><span>${a}</span><b>${b}</b></div>`;
 function htmlTip(k){const [t,a]=k.split(':'),p=UI.jog;
-  if(t==='carta'){const id=p.loja[+a];if(!id)return null;const d=U[id],pv=previaCompra(p,id);let h=tipUnidade(d,1,null,null);
-    if(pv.up)h+=`<div class="dica-up">${pv.up===3?'Comprar forma 3 estrelas (já tem duas cópias de 2 estrelas)':'Comprar forma 2 estrelas (já tem duas cópias)'}</div>`;
-    const sb=[];if(pv.acO)sb.push(trNome(d.o));if(pv.acK)sb.push(trNome(d.k));
-    if(sb.length)h+=`<div class="dica-up" style="${pv.up?'border:0;margin-top:2px;padding-top:0':''}">Ativa ou sobe a sinergia: ${sb.join(' e ')}</div>`;return h;}
   if(t==='sin')return tipTraco(a);
   if(t==='item'){const id=a==='slot'?null:+a;const it=ITEM[id];if(!it)return null;return `<h4><span>${esc(it.n)}</span><span class="est" style="font-size:10px">${'I'.repeat(it.t)}</span></h4><div class="sb">${esc(it.d)}</div><div class="sb" style="margin:0">Arraste sobre uma unidade (máx. 3 itens).</div>`;}
   if(t==='jog'){const q=G.jog[+a],hs=(q.hist||[]);return `<h4><span>${esc(q.nome)}</span></h4>`+LTIP('Vida',Math.max(0,q.hp))+LTIP('Nível',q.nivel)+LTIP('Sequência',q.seq>0?q.seq+' vitórias':q.seq<0?(-q.seq)+' derrotas':'-')+
@@ -1630,10 +1804,10 @@ function hudSinergias(){const p=UI.jog;if(!p)return;const c=contarTracos(idsEm(p
   const ls=Object.keys(c).map(t=>({t,n:c[t],niv:nivelTraco(t,c[t])})).sort((a,b)=>(b.niv>=0)-(a.niv>=0)||b.niv-a.niv||b.n-a.n);
   if(!ls.length){$('sinergias').innerHTML='<div class="vazio">Coloque unidades no tabuleiro para ativar sinergias. Cada unidade tem uma origem e uma classe; unidades diferentes com o mesmo traço contam juntas.</div>';return;}
   $('sinergias').innerHTML=ls.map(o=>{const T=TRACOS[o.t],prox=T.niv.find(n=>n>o.n);
-    return `<div class="sin ${o.niv>=0?'ativa':''}" data-tip="sin:${o.t}">${iconeTraco(o.t,o.niv,'',true)}<div><div class="nm">${T.n}</div><div class="tp">${T.t}</div></div><div class="ct"><b>${o.n}${prox?` <em>/ ${prox}</em>`:''}</b><div class="pips">${prox?'':'máx · '}${T.niv.map((n,i)=>`<u class="${i===o.niv?'on':''}">${n}</u>`).join(' / ')}</div></div></div>`;}).join('');
-  retratosPend($('sinergias'));}
+    return `<div class="sin ${o.niv>=0?'ativa n'+nivCor(o.t,o.niv):''}" data-tip="sin:${o.t}" data-tr="${o.t}">${iconeTraco(o.t,o.niv,'',true)}<div class="nm">${T.n}</div><div class="ct"><b>${o.n}</b><em class="${prox?'':'max'}">${prox?'/ '+prox:'máx'}</em></div><div class="pips"><span class="tp">${T.t==='origem'?'Origem':'Classe'}</span>${pipsTraco(o.t,o.n)}</div></div>`;}).join('');}
 function retratosPend(r){r=r||document;
   r.querySelectorAll('canvas[data-ret]').forEach(c=>pintarRetrato(c,c.dataset.ret,0));
+  r.querySelectorAll('canvas[data-and]').forEach(c=>pintarAndar(c,c.dataset.and,performance.now()+(+c.dataset.k||0)*137,false));
   r.querySelectorAll('canvas[data-av]').forEach(c=>pintarAvatar(c,c.dataset.av));
   r.querySelectorAll('canvas[data-mon]').forEach(c=>pintarRetrato(c,monDef(c.dataset.mon,1),0));}
 
@@ -1650,7 +1824,7 @@ function hudJogadores(){if(!G)return;const cont=$('jogadores'),opo=oponenteLocal
     el.querySelector('.lv').textContent=q.nivel;
     el.querySelector('.n').textContent=q.nome+(q.local&&q.nome!=='Você'?' (você)':'');el.querySelector('.nm img').style.display=opo===q?'':'none';
     el.querySelector('.nm em').textContent=hum&&q.pronto&&UI.fase==='prep'&&q.vivo?'pronto':'';
-    const pc=Math.max(0,Math.min(100,q.hp)),b=el.querySelector('.h');b.style.width=pc+'%';b.style.backgroundColor=corVida(pc/100);el.querySelector('.ch').style.width=pc+'%';el.querySelector('.hpn').textContent=Math.max(0,q.hp);
+    const hpv=(UI.hpAtr&&UI.hpAtr.id===q.id)?UI.hpAtr.hp:q.hp,pc=Math.max(0,Math.min(100,hpv)),b=el.querySelector('.h');b.style.width=pc+'%';b.style.backgroundColor=corVida(pc/100);el.querySelector('.ch').style.width=pc+'%';el.querySelector('.hpn').textContent=Math.max(0,hpv);
     const hs=(q.hist||[]).slice(-5),pad=5-hs.length,hh=Array.from({length:5},(_,k)=>k<pad?'<b></b>':`<b class="${hs[k-pad]}"></b>`).join('');
     const hsEl=el.querySelector('.hs');if(hsEl._h!==hh){hsEl._h=hh;hsEl.innerHTML=hh;hsEl.style.display='flex';hsEl.style.gap='3px';}
     const sq=Math.abs(q.seq),sEl=el.querySelector('.seq'),sh=sq>=2?`${FLAME}${sq}`:'';if(sEl._h!==sh){sEl._h=sh;sEl.innerHTML=sh;}sEl.className='seq '+(q.seq>0?'w':'l');});}
@@ -1659,11 +1833,14 @@ function falaNaLista(id,txt){const el=$('jogadores').children[id];if(!el)return;
 
 /* ---------- loja ---------- */
 function hudLoja(){const p=UI.jog;if(!p)return;
-  $('cartas').innerHTML=p.loja.map((id,i)=>{if(!id)return `<div class="carta vend" data-i="${i}"></div>`;const d=U[id],cop=copias(p,id,1),pv=previaCompra(p,id);
-    return `<div class="carta c${d.c} ${p.ouro<d.c?'pobre':''} ${pv.up?'up'+(pv.up===3?' up3':''):''}" data-i="${i}" data-tip="carta:${i}" style="--chao:url(tactics-assets/chao_${BIOMA_O[d.o]}.png)"><div class="cin"><div class="cn">${esc(d.nome)}</div>
-      <div class="art"><span class="tecla">${i+1}</span><span class="cu">${d.c}<img src="${ICO.ouro}" alt=""></span><canvas width="136" height="100" data-ret="${id}"></canvas></div>
-      <div class="pie">${iconeTraco(d.o,pv.nO,pv.acO?'acende':'')}${iconeTraco(d.k,pv.nK,pv.acK?'acende':'')}${cop?`<span class="copias">${cop} no time</span>`:''}</div></div>${pv.up?`<span class="selo">${'★'.repeat(pv.up)}</span>`:''}</div>`;}).join('');
-  retratosPend($('cartas'));hudOdds();}
+  $('cartas').innerHTML=p.loja.map((id,i)=>{const leque=`--r:${(i-2)*2}deg;--dy:${((i-2)*(i-2)*1.5).toFixed(1)}px`;       // leque: −4° a +4° em arco suave
+    if(!id)return `<div class="cslot" data-i="${i}" style="${leque}"><div class="carta vend"></div></div>`;
+    const d=U[id],cop=copias(p,id,1),pv=previaCompra(p,id),dest=pv.up?'pert'+(pv.up===3?' pert3':''):pv.tem?'tem':'';
+    return `<div class="cslot" data-i="${i}" style="${leque}"><div class="carta c${d.c} ${p.ouro<d.c?'pobre':''} ${dest}" style="--chao:url(tactics-assets/chao_${BIOMA_O[d.o]}.png)"><div class="cin"><div class="cn">${esc(d.nome)}</div>
+      <div class="art"><span class="tecla">${i+1}</span><span class="cu">${d.c}<img src="${ICO.ouro}" alt=""></span><canvas width="128" height="92" data-and="${id}" data-k="${i}"></canvas></div>
+      <div class="pie">${iconeTraco(d.o,pv.nO,pv.acO?'acende':'',true)}${iconeTraco(d.k,pv.nK,pv.acK?'acende':'',true)}${cop?`<span class="copias">${cop} no time</span>`:''}</div></div>${pv.up?`<span class="selo">${'★'.repeat(pv.up)}</span>`:''}</div></div>`;}).join('');
+  retratosPend($('cartas'));hudOdds();
+  const k=UI.hoverCartaI;if(k>=0){const sl=$('cartas').children[k];if(sl&&p.loja[k]&&p.loja[k]===UI.hoverCartaId)cartaHover(sl,true);else cartaHover(null);}}   // o painel acompanha a carta sob o mouse
 function hudOdds(){const p=UI.jog;if(!p)return;const el=$('odds');if(el._nv===p.nivel)return;el._nv=p.nivel;const o=ODDS[p.nivel];
   el.innerHTML=`<div class="oh"><span>Chances da loja</span><b>Nv ${p.nivel}</b></div><div class="ob">${o.map((v,i)=>v?`<i style="width:${v}%;background:${TIER_COR[i+1]}"></i>`:'').join('')}</div><div class="on_">${o.map((v,i)=>`<b class="${v?'':'z'}" style="color:${TIER_COR[i+1]}">${v}%</b>`).join('')}</div>`;}
 function hudItens(){const p=UI.jog;if(!p)return;let h='';for(let i=0;i<MAX_ITENS;i++){const id=p.itens[i];h+=`<div class="slot ${id?'cheio':''}">${id?`<img src="${IMG('itens/'+id+'.png')}" data-slot="${i}" data-tip="item:${id}" draggable="false">`:''}</div>`;}$('grade-itens').innerHTML=h;}
@@ -1715,14 +1892,14 @@ function voarCompra(el,L,dur){const r=el.getBoundingClientRect(),cr=cv.getBoundi
   const X=L.onde==='banco'?BEN_X+L.i*TS:BX+L.x*TS,Y=L.onde==='banco'?BEN_Y:BY+(L.y+4)*TS;
   const tx=cr.left+(X+16)/CW*cr.width,ty=cr.top+(Y+16)/CH*cr.height;
   const g=document.createElement('div');g.className='voo';g.style.cssText=`left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px`;
-  const cl=el.cloneNode(true);cl.removeAttribute('data-tip');cl.classList.remove('up','up3');
+  const cl=el.cloneNode(true);cl.removeAttribute('data-tip');cl.classList.remove('pert','pert3','tem');
   const cs=el.querySelectorAll('canvas'),cc=cl.querySelectorAll('canvas');cs.forEach((c,i)=>{try{cc[i].getContext('2d').drawImage(c,0,0);}catch(e){}});
   g.appendChild(cl);document.body.appendChild(g);
   const s=Math.max(.1,(TS*cr.width/CW)/r.width);
   const a=g.animate([{transform:'translate(0px,0px) scale(1)',opacity:1},{transform:`translate(${tx-r.left-r.width*s/2}px,${ty-r.top-r.height*s/2}px) scale(${s})`,opacity:.8}],{duration:dur,easing:'cubic-bezier(.5,.05,.8,.5)',fill:'forwards'});
   a.onfinish=()=>{g.remove();UI.fxPrep.push({id:E('poff'),x:(X-BX)/TS,y:(Y-BY)/TS,b:performance.now()});};
   setTimeout(()=>g.remove(),dur+400);}
-function comprarUI(i){const p=UI.jog;if(!p||!p.loja[i])return;const antes=capturarPos(),el=document.querySelector('#cartas .carta[data-i="'+i+'"]');
+function comprarUI(i){const p=UI.jog;if(!p||!p.loja[i])return;const antes=capturarPos(),el=document.querySelector('#cartas .cslot[data-i="'+i+'"] .carta');
   if(!acaoLocal({t:'comprar',i}))return;
   Sons.comprar&&Sons.comprar();
   const novo=todos(p).find(L=>!antes[L.inst.uid]);                 // a cópia que acabou de chegar (não existe se a compra fundiu)
@@ -1824,11 +2001,12 @@ function unidadeCombateEm(cel,rt){const C=UI.C;if(!C||cel.onde==='banco'||cel.on
   return C.un.find(u=>{if(!u.vivo)return false;const p=posU(u,rt);return Math.round(p.x)===cx_&&Math.round(p.y)===cy_;})||null;}
 function iniciarArrasto(d,ev){UI.drag=d;const g=$('ghost');g.style.display='block';g.style.left=ev.clientX+'px';g.style.top=ev.clientY+'px';
   if(d.tipo==='un'){g.innerHTML='<canvas width="56" height="56"></canvas>';pintarRetrato(g.firstChild,d.inst.id,0);}else g.innerHTML=`<img src="${IMG('itens/'+d.id+'.png')}" width="40" height="40" style="image-rendering:pixelated">`;
-  esconderTip();if(d.tipo==='un'){$('venda-v').textContent=valorVenda(d.inst);$('zona-venda').classList.add('on');}Sons.pegar();}
-function pointerDownCv(ev){if(UI.estado!=='jogo'||ev.button!==0||UI.espiar!==null||UI.pausado)return;const cel=celAt(ev);if(!cel)return;const L=unidadeEm(cel);if(!L)return;
+  esconderTip();cartaHover(null);UI.hoverTr=null;if(d.tipo==='un'){$('venda-v').textContent=valorVenda(d.inst);$('zona-venda').classList.add('on');}Sons.pegar();}
+function pointerDownCv(ev){if(UI.atq&&ev.button===0)pularAtaque();if(UI.estado!=='jogo'||ev.button!==0||UI.espiar!==null||UI.pausado)return;const cel=celAt(ev);if(!cel)return;const L=unidadeEm(cel);if(!L)return;
   if(L.onde==='tab'&&UI.fase!=='prep')return;UI.pd={tipo:'un',de:L,inst:L.inst,x:ev.clientX,y:ev.clientY};}
 function pointerDownItem(ev){const img=ev.target.closest('img[data-slot]');if(!img||ev.button!==0||UI.estado!=='jogo')return;ev.preventDefault();const idx=+img.dataset.slot;UI.pd={tipo:'item',idx,id:UI.jog.itens[idx],x:ev.clientX,y:ev.clientY};}
 function pointerMove(ev){UI.mx=ev.clientX;UI.my=ev.clientY;const p=UI.jog;
+  if(!UI.drag){const tg=ev.target.closest?ev.target:null;cartaHover(tg&&tg.closest('.cslot'));const tr=tg&&tg.closest('[data-tr]');UI.hoverTr=tr?tr.dataset.tr:null;}   // acende no tabuleiro e no banco as unidades da carta/traço sob o mouse
   if(UI.pd&&!UI.drag&&Math.hypot(ev.clientX-UI.pd.x,ev.clientY-UI.pd.y)>5){iniciarArrasto(UI.pd,ev);}
   if(UI.drag){const g=$('ghost');g.style.left=ev.clientX+'px';g.style.top=ev.clientY+'px';const d=UI.drag,cel=celAt(ev);$('zona-venda').classList.toggle('sobre',d.tipo==='un'&&!!(ev.target.closest&&ev.target.closest('#base')));
     if(d.tipo==='un'){d.cel=cel&&(cel.onde==='tab'||cel.onde==='banco')?cel:null;d.ok=false;
@@ -1857,6 +2035,7 @@ function pointerUp(ev){const pd=UI.pd,d=UI.drag;UI.pd=null;if(!d)return;UI.drag=
     if(L.inst.itens.length>=3){aviso('A unidade já carrega 3 itens');return;}
     const idx=p.itens.indexOf(d.id);if(idx>=0&&acaoLocal({t:'equipar',item:idx,id:d.id,un:locDe(L)})){Sons.equipar();UI.fxPrep.push({id:E('magic_green'),x:L.onde==='tab'?L.x:-9,y:L.onde==='tab'?L.y+4:-9,b:performance.now()});posAcao();}}}
 function teclado(ev){if(UI.estado!=='jogo'||UI.pausado||ev.ctrlKey||ev.metaKey||ev.altKey)return;const k=ev.key.toLowerCase();
+  if(UI.atq&&(k===' '||k==='enter')){pularAtaque();ev.preventDefault();return;}
   if(UI.emoteAberto){if(k>='1'&&k<='5'){enviarEmote(+k-1);return;}if(k==='e'||k==='escape'){fecharEmotes();return;}}
   if(k==='d'){rolarUI();}else if(k==='f'){xpUI();}else if(k==='l'){travarUI();}else if(k===' '){ev.preventDefault();pronto();}
   else if(k==='w'){const h=UI.hover;if(h)venderUI(h);else aviso('Passe o mouse sobre uma unidade sua e aperte W');}
@@ -1868,10 +2047,10 @@ function alternarVel(){if(Online.ativo)return;UI.vel=UI.vel===1?2:UI.vel===2?4:1
 /* =====================================================================================
    Fluxo da partida
    ===================================================================================== */
-function resetUI(){UI.espectador=false;UI.fimGravado=false;UI.acabou=false;sairEspiar();fecharEmotes();fecharIntro();UI.stats=novasStats();UI.anims=[];UI.emotes={};UI.ultC=null;UI.avHit={};UI.fxAv=[];UI.voando={};UI._nv=undefined;UI.impIdx=0;UI.hoverU=null;}
+function resetUI(){UI.espectador=false;UI.fimGravado=false;UI.acabou=false;sairEspiar();fecharEmotes();fecharIntro();UI.stats=novasStats();UI.anims=[];UI.emotes={};UI.ultC=null;UI.avHit={};UI.fxAv=[];UI.voando={};UI._nv=undefined;UI.impIdx=0;UI.hoverU=null;UI.atq=null;UI.hpAtr=null;UI.hoverTr=null;UI.hoverCartaId=null;UI.hoverCartaI=-1;}
 function novaPartida(){onlineSair();resetUI();fecharTela();$('app').classList.remove('menu');G=novoJogo({humano:true,nome:'Você'});UI.jog=G.jog[0];UI.jog.voc=UI.voc;UI.estado='jogo';UI.demo=false;UI.pausado=false;UI.vel=1;$('bt-vel').textContent='1x';
   $('app').style.visibility='visible';iniciarPrepUI(true);}
-function iniciarPrepUI(primeira){const r=G.info;UI.fase='prep';UI.C=null;UI.acc=0;UI.fxPrep=[];UI.hoverU=null;fecharIntro();sairEspiar();UI.timerMax=r.tipo==='car'?25:r.est===1?45:30;UI.timer=UI.timerMax;
+function iniciarPrepUI(primeira){const r=G.info;UI.fase='prep';UI.C=null;UI.acc=0;UI.atq=null;UI.hpAtr=null;UI.fxPrep=[];UI.hoverU=null;fecharIntro();sairEspiar();UI.timerMax=r.tipo==='car'?25:r.est===1?45:30;UI.timer=UI.timerMax;
   UI.prevSujo=true;marcarTudo();atualizarSujos();banner(r.tipo==='car'?'Carrossel':'Preparação','Estágio '+r.nome+(r.tipo==='pve'?' · Monstros':r.tipo==='pvp'?' · Jogador x Jogador':''),'#d9b45a',1700);
   if(Online.host)Online.hostRodada();
   if(r.tipo==='car')abrirCarrosselUI();}
@@ -1891,15 +2070,15 @@ function iniciarCombateUI(){if(UI.estado!=='fim')fecharTela();sairEspiar();fecha
 function descResultado(f,p,r){
   if(r.tipo==='car')return {t:'Carrossel',s:'Item escolhido',cor:'#d9b45a',sm:'',v:null,dano:0};
   if(!f)return {t:'Rodada encerrada',s:'Você está eliminado',cor:'#cfc9b4',sm:'',v:null,dano:0};
-  let t,s,cor,sm='',vv=null,dn=0;
+  let t,s,cor,sm='',vv=null,dn=0,dop=0;
   if(f.pve){const v=f.C.venc===0;vv=v?'v':'d';t=v?'Vitória':'Derrota';cor=v?'#e6c25a':'#e0574a';
     if(v&&p.drop){const pt=[];if(p.drop.ouro)pt.push('+'+p.drop.ouro+' de ouro');p.drop.itens.forEach(i=>pt.push(ITEM[i].n));s=pt.length?'Butim: '+pt.join(', '):'Monstros derrotados';}else s='Os monstros resistiram: sem recompensas';}
-  else{const meu=f.b===p?1:0,w=f.C.venc,outro=meu?f.a:f.b;vv=w<0?'e':w===meu?'v':'d';if(vv==='d')dn=f.dano||0;
+  else{const meu=f.b===p?1:0,w=f.C.venc,outro=meu?f.a:f.b;vv=w<0?'e':w===meu?'v':'d';if(vv==='d')dn=f.dano||0;if(vv==='v'&&!f.fant)dop=f.dano||0;   // dop: dano causado ao adversário (o convidado usa para tocar o ataque do avatar)
     if(w<0){t='Empate';cor='#cfc9b4';s='Ninguém perde vida';}
     else if(w===meu){t='Vitória';cor='#e6c25a';s=f.fant?'Você derrotou uma sombra de '+outro.nome:`${outro.nome} perdeu ${f.dano} de vida`;}
     else{t='Derrota';cor='#e0574a';s=`Você perdeu ${f.dano} de vida`;}
     if(f.C.tempoEsgotado)sm='O tempo acabou: decidido pela vida restante';}
-  return {t,s,cor,sm,v:vv,dano:dn};}
+  return {t,s,cor,sm,v:vv,dano:dn,dop};}
 function bannerRes(d){const f=$('faixa');f.className='res '+(d.v==='v'?'vit':d.v==='d'?'der':'');
   f.innerHTML=`<b style="color:${d.cor}">${esc(d.t).toUpperCase()}</b>${d.dano>0?`<div class="dano">-${d.dano}<i>de vida</i></div>`:''}<span>${esc(d.s)}</span>${d.sm?'<small>'+esc(d.sm)+'</small>':''}`;
   f.classList.add('on');clearTimeout(banner.t);banner.t=setTimeout(()=>f.classList.remove('on'),3000);}
@@ -1909,8 +2088,9 @@ function resultadoUI(d,p){fecharIntro();
   const op=oponenteLocal();
   if(!Online.ativo&&d.v&&Math.random()<.22){const bots=G.jog.filter(q=>q.vivo&&!q.local),b=(d.v==='d'&&op&&op.vivo)?op:bots[Math.floor(Math.random()*bots.length)];
     if(b)setTimeout(()=>{if(G&&UI.estado==='jogo')mostrarEmote(b.id,d.v==='d'?[3,4,1][Math.floor(Math.random()*3)]:[0,2][Math.floor(Math.random()*2)]);},700+Math.random()*900);}
-  if(d.dano>0){feriuAvatar(p.id,true);if(!UI.reduz)UI.shake={b:performance.now(),dur:380,amp:4};}
-  else if(d.v==='v'&&G.info.tipo==='pvp'&&op)feriuAvatar(op.id,false);}
+  iniciarAtaqueAvatar(d,p);                          // o avatar de quem venceu ataca (PvP) ou o monstro ataca o seu (PvE perdido); sangue e tremor vêm quando o golpe acerta
+  if(!UI.atq){if(d.dano>0){feriuAvatar(p.id,true);if(!UI.reduz)UI.shake={b:performance.now(),dur:380,amp:4};}
+    else if(d.v==='v'&&op&&UI.C&&!UI.C.pve)feriuAvatar(op.id,false);}}
 function finalizarRodadaUI(){const f=G.luta,r=G.info,p=UI.jog,C0=UI.C;fecharRodada(G);UI.fase='resultado';UI.resEm=3300;UI.prevSujo=false;UI.prev=null;marcarTudo();
   if(C0)UI.ultC=C0;
   const d=descResultado(f,p,r);if(r.tipo==='car')UI.resEm=1200;
@@ -1980,9 +2160,11 @@ function mostrarComoJogar(volta){
     <h3>Rodadas</h3><p>Cada rodada tem uma preparação (30 s) e um combate automático. O estágio 1 é só contra monstros; depois cada estágio traz 4 rodadas PvP, 1 carrossel de itens e 1 rodada contra monstros que dão ouro e itens.</p>
     <h3>Economia</h3><p>+5 de ouro por rodada, +1 de juros a cada 10 guardados (até +5) e bônus por sequência de vitórias ou derrotas. Rolar a loja custa 2; comprar 4 de XP custa 4. O nível define quantas unidades você pode colocar no tabuleiro.</p>
     <h3>Unidades e estrelas</h3><p>Compre cartas na loja e arraste as unidades do banco para as suas 4 linhas de baixo. Três cópias iguais fundem em 2 estrelas (x1,8 de vida e dano); três de 2 estrelas viram 3 estrelas (x3,2). Arraste uma unidade para a loja para vender.</p>
-    <h3>Sinergias</h3><p>Cada unidade tem uma origem e uma classe. Reunir unidades diferentes com a mesma origem ou classe ativa bônus (2/4/6). Veja o painel da esquerda; passe o mouse para ver os detalhes.</p>
+    <h3>Sinergias</h3><p>Cada unidade tem uma origem (hexágono) e uma classe (escudo), cada uma com o ícone de um item do Tibia: o mesmo ícone aparece na carta, no tooltip e no painel da esquerda. Reunir unidades diferentes com o mesmo traço ativa bônus (2/4/6). O aro do ícone mostra o nível: cinza = inativo, bronze, prata, ouro e prismático no nível máximo. Passe o mouse num traço para acender no tabuleiro e no banco as unidades que o têm.</p>
+    <h3>Cartas da loja</h3><p>As cartas ficam em leque; passe o mouse em uma para levantá-la e ver o painel com atributos, habilidade e sinergias (contagem atual e depois da compra). Cartas de unidades que você já tem ganham uma borda dourada; se a compra forma 2 ou 3 estrelas, a carta ganha um brilho suave e o selo ★★ ou ★★★. As unidades iguais no banco e no tabuleiro também se acendem.</p>
     <h3>Itens</h3><p>Monstros e o carrossel dão itens do Tibia. Arraste o item sobre uma unidade (até 3 por unidade).</p>
     <h3>Jogar online</h3><p>Em "Jogar online" um jogador cria a sala e passa o código de 4 letras aos amigos (2 a 8 jogadores); as vagas que sobrarem viram bots. O anfitrião roda a partida: se ele sair, a partida acaba; se um convidado cair, um bot assume e ele pode voltar com o mesmo código e nome. Online não há pausa nem velocidade 2x/4x; a preparação termina quando todos apertam Pronto ou o relógio zera.</p>
+    <h3>Fim da luta</h3><p>Quando uma luta entre jogadores termina, o avatar de quem venceu corre até o do perdedor e lança a magia da vocação (Knight: exori; Paladin: exori san; Sorcerer: sudden death; Druid: avalanche). O dano aparece sobre o avatar atingido e a vida desce na lista da direita. É só visual e dura cerca de 1,5 s; clique no tabuleiro ou aperte <kbd>Espaço</kbd> para pular. Contra monstros, se você perder, o monstro mais forte que sobrou ataca o seu avatar.</p>
     <h3>Espiar e placar</h3><p>Clique num jogador da lista da direita para ver o tabuleiro dele na preparação (só leitura); clique de novo, em "Voltar" ou aperte <kbd>Esc</kbd> para sair. O botão "Placar" (ou <kbd>Tab</kbd>) mostra o dano causado, o dano recebido e a cura de cada unidade na luta atual ou na última. Na preparação, a faixa acima do tabuleiro mostra a próxima onda e o butim (PvE) ou o adversário e as sinergias dele (PvP).</p>
     <h3>Atalhos</h3><p><kbd>D</kbd> rolar &nbsp; <kbd>F</kbd> comprar XP &nbsp; <kbd>L</kbd> travar loja &nbsp; <kbd>1</kbd>-<kbd>5</kbd> comprar carta &nbsp; <kbd>W</kbd> vender a unidade sob o mouse &nbsp; <kbd>Espaço</kbd> pronto &nbsp; <kbd>V</kbd> velocidade do combate &nbsp; <kbd>E</kbd> emotes &nbsp; <kbd>Tab</kbd> placar da luta &nbsp; <kbd>M</kbd> mudo &nbsp; <kbd>Esc</kbd> pausa</p>
     </div><div class="menu" style="margin-top:16px"><button class="bt" id="b-v">Voltar</button></div></div>`);$('b-v').onclick=volta||mostrarMenu;}
@@ -2003,7 +2185,7 @@ function iniciarDemo(){UI.demoBioma=BIOMAS[Math.floor(Math.random()*BIOMAS.lengt
    Camada de rede com dois transportes de mesma interface: PeerJS (WebRTC, real) e BroadcastChannel (?rede=local, duas abas).
    Mensagens JSON {t:tipo,...}; o handshake leva a versão do protocolo.
    ===================================================================================== */
-const PROTO=2;   // 2: pub/rodada/res levam tb (tabuleiros públicos) e hh (histórico); mensagem 'emote'; desc do resultado ganha v e dano
+const PROTO=3;   // 2: pub/rodada/res levam tb (tabuleiros públicos) e hh (histórico); mensagem 'emote'; desc do resultado ganha v e dano. 3: desc ganha dop (dano causado ao adversário) para o convidado tocar o ataque do avatar
 const MODO_REDE=(()=>{try{return new URLSearchParams(location.search).get('rede')==='local'?'local':'peerjs';}catch(e){return 'peerjs';}})();
 const ALFA_SALA='ABCDEFGHJKMNPQRSTUVWXYZ23456789';           // sem letras que confundem (I, L, O, 0, 1)
 const novoCodigo=()=>{let c='';for(let i=0;i<4;i++)c+=ALFA_SALA[Math.floor(Math.random()*ALFA_SALA.length)];return c;};
@@ -2431,7 +2613,10 @@ function laco(ts){requestAnimationFrame(laco);const dt=Math.min(100,ts-(UI.ultT|
   else if(cv.style.transform)cv.style.transform='';
   if(UI.meterAberto&&ts-(UI.ultMeter||0)>250){UI.ultMeter=ts;hudMeter();}
   // retratos animados das cartas
-  if(UI.estado==='jogo'&&ts-(UI.ultRet||0)>130){UI.ultRet=ts;document.querySelectorAll('.carta canvas[data-ret]').forEach(c=>pintarRetrato(c,c.dataset.ret,ts));}
+  // retratos das cartas: andam para o leste (mais rápido com o mouse em cima)
+  if(UI.estado==='jogo'&&ts-(UI.ultRet||0)>40){UI.ultRet=ts;document.querySelectorAll('#cartas canvas[data-and]').forEach(c=>pintarAndar(c,c.dataset.and,ts+(+c.dataset.k)*137,+c.dataset.k===UI.hoverCartaI));}
+  const arr=!!UI.drag;if(arr!==UI._arr){UI._arr=arr;document.body.classList.toggle('arrastando',arr);}      // arrastando uma unidade: as cartas não levantam
+  if(UI.atq)passoAtaque(now);
   render();}
 
 /* =====================================================================================
@@ -2441,8 +2626,10 @@ function iniciar(){cv=$('cv');cx=cv.getContext('2d');ajustarCanvas();addEventLis
   cv.addEventListener('pointerdown',pointerDownCv);$('grade-itens').addEventListener('pointerdown',pointerDownItem);
   addEventListener('pointermove',pointerMove);addEventListener('pointerup',pointerUp);addEventListener('keydown',teclado);
   cv.addEventListener('pointerleave',()=>{if(!UI.drag){esconderTip();UI.hoverCel=null;UI.hover=null;UI.hoverU=null;}});
-  document.body.addEventListener('pointerleave',esconderTip);
-  $('cartas').addEventListener('click',e=>{const c=e.target.closest('.carta');if(c&&!c.classList.contains('vend'))comprarUI(+c.dataset.i);});
+  document.body.addEventListener('pointerleave',()=>{esconderTip();cartaHover(null);UI.hoverTr=null;});
+  $('cartas').addEventListener('click',e=>{const s=e.target.closest('.cslot');if(s&&!s.querySelector('.vend'))comprarUI(+s.dataset.i);});
+  $('cartas').addEventListener('mouseover',e=>{if(!UI.drag)cartaHover(e.target.closest('.cslot'));});
+  $('cartas').addEventListener('mouseleave',()=>cartaHover(null));
   $('bt-rolar').onclick=rolarUI;$('bt-xp').onclick=xpUI;$('bt-trava').onclick=travarUI;$('bt-pronto').onclick=()=>pronto();$('bt-vel').onclick=alternarVel;$('bt-menu').onclick=pausar;$('logo').onclick=()=>{if(UI.estado==='jogo')pausar();};
   lerCfg();ligarCfg();addEventListener('pointerdown',somIniciar,{once:true});addEventListener('keydown',somIniciar,{once:true});
   $('jogadores').addEventListener('click',e=>{const r=e.target.closest('.jg');if(r)espiarJog(+r.dataset.id);});
