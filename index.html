@@ -2,8 +2,8 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="versao-site" content="2026-10-15.1"><!-- a cada deploy: trocar aqui, em VERSAO_SITE e nos ?v= dos scripts locais -->
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="versao-site" content="2026-10-15.2"><!-- a cada deploy: trocar aqui, em VERSAO_SITE e nos ?v= dos scripts locais -->
 <script id="auto-update">
 /* auto-atualização: o GitHub Pages cacheia 10 min; compara a versão do index no servidor com a desta página e recarrega se mudou */
 (function(){
@@ -673,6 +673,116 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
 #app.combate #botoes #bt-pronto{display:none}#app.combate #botoes #bt-recolher{display:flex}}
 #botoes #bt-recolher{display:none}
 #cpainel.lado::after{display:none}
+/* ---------- Celular (Fase 4 · Etapa 3): deitado e em pé; vem por último para vencer os blocos de largura acima ---------- */
+.bt.mob{display:none}.bt .md,.bt .lb{font:inherit}
+.dica-giro{display:flex;align-items:center;justify-content:center;gap:8px;margin:12px auto 0;max-width:270px;padding:6px 8px 6px 12px;border:1px solid #6b5a2e;border-radius:4px;background:#0b0d14;font:11px/1.4 Verdana,sans-serif;color:#d4cdb4}
+.dica-giro button{flex:none;width:32px;height:32px;border:1px solid #3a321c;border-radius:3px;background:#161209;color:var(--ouro);font:700 16px/1 Verdana;cursor:pointer}
+@media (orientation:landscape) and (max-height:540px){
+ html,body{height:100%;min-height:0;overflow:hidden;overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
+ button,.cslot,.carta,.jg,.sin,.heroi{touch-action:manipulation}
+ #grade-itens,#grade-itens .slot{touch-action:none}
+ /* #app#app: especificidade para vencer #app.em-combate etc. */
+ #app#app{--hh:38px;height:100vh;height:100dvh;min-height:0;overflow:hidden;grid-template-columns:78px minmax(0,1fr) 164px 80px;grid-template-rows:38px minmax(0,1fr);gap:4px;
+  padding:max(4px,env(safe-area-inset-top)) max(4px,env(safe-area-inset-right)) max(4px,env(safe-area-inset-bottom)) max(4px,env(safe-area-inset-left))}
+ #app#app #topo{grid-column:1/-1;grid-row:1;flex-wrap:nowrap;gap:6px;padding:0 6px;overflow:hidden}
+ #app#app #logo,#app#app #trilha,#app#app #faixa-rodada,#app#app #mini,#app#app #odds,#app#app #esq h2,#app#app #dir h2,#app#app #sinergias .vazio,#app#app .stat .ex{display:none}
+ #app#app #estagio{min-width:38px}#app#app #estagio b{font-size:16px}#app#app #estagio span{font-size:7px;letter-spacing:0}
+ #app#app #tempo{flex:1 1 90px;min-width:56px;max-width:240px}#app#app #tempo .txt{font-size:8px;margin-bottom:1px}#app#app #tempo .txt b{font-size:12px}#app#app .barra{height:6px}
+ #app#app #cabdir{flex:none;flex-wrap:nowrap;gap:6px;margin-left:auto}
+ #app#app #cabdir .stat{gap:3px}#app#app #cabdir .stat img{width:18px;height:18px}#app#app #cabdir .stat b{font-size:13px}#app#app #cabdir .stat small{font-size:7px;letter-spacing:0}
+ #app#app #nivelbox{min-width:60px}#app#app #nivelbox .nv{font-size:12px}#app#app #nivelbox .nv span{font-size:8px}
+ #app#app #cabdir .bt{min-height:32px;min-width:34px;padding:2px 6px;font-size:10px}
+ #app#app #cabdir #bt-t-itens,#app#app #cabdir #bt-t-jog{display:inline-flex;align-items:center;justify-content:center}
+ #app#app.ver-itens #bt-t-itens,#app#app.ver-jog #bt-t-jog{border-color:#e6d27a;color:#fff1c4;background:linear-gradient(#5a4a1c,#2d230c)}
+ /* centro: tabuleiro com a altura toda */
+ #app#app #centro{grid-column:2;grid-row:2;gap:0}
+ #app#app #base{display:contents}
+ /* trilho esquerdo: sinergias só com ícone e contagem */
+ #app#app #esq{grid-column:1;grid-row:2;padding:3px;display:block;max-height:none}
+ #app#app .sin{display:flex;align-items:center;gap:3px;padding:2px 3px 2px 2px;margin-bottom:3px;border-left-width:2px}
+ #app#app .sin .ti{--s:28px}#app#app .sin .nm,#app#app .sin .pips{display:none}
+ #app#app .sin .ct{margin-left:auto}#app#app .sin .ct b{font-size:15px}#app#app .sin .ct em{font-size:8px;margin-left:1px}#app#app .sin .ct em.max{margin-left:1px}
+ /* coluna direita: loja (padrão), itens ou jogadores no mesmo lugar */
+ #app#app #loja,#app#app #itens,#app#app #dir{grid-column:3;grid-row:2;min-width:0;max-height:none}
+ #app#app #loja{padding:3px;overflow:hidden}
+ #app#app #itens,#app#app #dir{display:none;padding:4px;overflow:auto}
+ #app#app.ver-itens #itens,#app#app.ver-jog #dir{display:block}
+ #app#app.em-combate #loja,#app#app.ver-itens #loja,#app#app.ver-jog #loja{display:none}
+ #app#app #itens h3{margin-bottom:4px;font-size:10px}#app#app #itens h3 .bt{min-height:30px}
+ #app#app #grade-itens{grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}#app#app .slot{max-width:none}
+ #app#app #cartas{flex-direction:column;gap:3px;padding:0;overflow:hidden}
+ #app#app .cslot{min-width:0;min-height:0}
+ #app#app .cslot .carta,#app#app .cslot:hover .carta:not(.vend){transform:none}
+ #app#app .carta{padding:3px;border-radius:4px}
+ #app#app .carta .cin{display:grid;grid-template-columns:62px minmax(0,1fr);grid-template-rows:minmax(0,1fr)}
+ #app#app .carta .art{grid-column:1;grid-row:1}
+ #app#app .carta .art canvas{width:62px;height:44px;image-rendering:auto}
+ #app#app .carta .cn{grid-column:2;grid-row:1;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;height:auto;padding:3px 2px 0 4px;font-size:9.5px;line-height:1.15;text-align:left;border-bottom:0}
+ #app#app .carta .identidade,#app#app .carta .pie,#app#app .carta .tecla{display:none}
+ #app#app .carta .cu{top:auto;right:auto;left:2px;bottom:2px;font-size:11px}
+ #app#app .carta .selo{left:auto;right:38px;bottom:4px}
+ #app#app .detalhes-carta{width:32px;height:32px;top:auto;bottom:3px;right:3px}
+ #app#app #zona-venda .vt{font-size:10px;letter-spacing:.1em}#app#app #zona-venda .vv{font-size:20px}
+ /* coluna de botões: sempre a um toque */
+ #app#app #botoes{grid-column:4;grid-row:2;padding:3px;gap:4px;justify-content:stretch}
+ #app#app #botoes .bt{flex:1 1 0;min-height:40px;flex-direction:column;justify-content:center;align-items:center;gap:1px;padding:3px 2px;font-size:11px;letter-spacing:.02em;text-align:center}
+ #app#app #botoes .bt span{font-size:9px}#app#app #botoes #bt-trava span,#app#app #botoes #bt-pronto span,#app#app #botoes #bt-recolher span,.bt .md{display:none}
+ #app#app.combate #botoes #bt-pronto{display:none}#app#app.combate #botoes #bt-recolher{display:flex}
+ /* placar vira painel fixo sobre a coluna da loja (não cobre o tabuleiro) */
+ #app#app #meter{position:fixed;left:auto;right:calc(max(4px,env(safe-area-inset-right)) + 84px);top:calc(max(4px,env(safe-area-inset-top)) + 42px);width:164px;z-index:40;max-height:calc(100vh - 54px);max-height:calc(100dvh - 54px)}
+ #app#app #meter .abas button{font-size:8px;padding:3px 1px;letter-spacing:0}
+ #app#app #bt-meter{font-size:0;gap:0;padding:6px 8px;min-height:32px}
+ #faixa b{font-size:38px}#faixa.res b{font-size:44px}#faixa .dano{font-size:32px}#faixa span{font-size:13px}
+ #cpainel{max-height:calc(100vh - 12px);max-height:calc(100dvh - 12px)}
+ /* menu e telas cabem na altura baixa */
+ .modal{max-height:calc(100vh - 12px);max-height:calc(100dvh - 12px);padding:10px 18px}.modal h1{font-size:34px}.modal .sub{margin-bottom:8px}.herois{margin-bottom:8px}.heroi{width:62px}.heroi canvas{width:40px;height:40px}
+ .modal .menu{display:grid;grid-template-columns:1fr 1fr;max-width:none}.modal .menu .bt{font-size:13px;padding:8px;min-height:40px}.versao-jogo{margin-top:8px}
+}
+@media (orientation:portrait) and (max-width:540px){
+ html,body{height:100%;min-height:0;overflow:hidden;overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
+ button,.cslot,.carta,.jg,.sin,.heroi{touch-action:manipulation}
+ #grade-itens,#grade-itens .slot{touch-action:none}
+ #app#app{height:100vh;height:100dvh;min-height:0;overflow:hidden;grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) 112px auto;gap:4px;
+  padding:max(4px,env(safe-area-inset-top)) max(4px,env(safe-area-inset-right)) max(4px,env(safe-area-inset-bottom)) max(4px,env(safe-area-inset-left))}
+ /* topo em duas linhas: placar (estágio, tempo, ouro, nível, unidades) e botões */
+ #app#app #topo{grid-column:1;grid-row:1;flex-wrap:wrap;gap:4px 6px;padding:4px 6px}
+ #app#app #cabdir{display:contents}
+ #app#app #topo::after{content:'';order:2;flex-basis:100%;height:0}
+ #app#app #logo,#app#app #trilha,#app#app #faixa-rodada,#app#app #mini,#app#app #odds,#app#app #esq h2,#app#app #dir h2,#app#app .stat .ex{display:none}
+ #app#app #estagio{order:1;min-width:40px}#app#app #estagio b{font-size:16px}#app#app #estagio span{font-size:7px;letter-spacing:0}
+ #app#app #tempo{order:1;flex:1 1 70px;min-width:50px;max-width:none}#app#app #tempo .txt{font-size:8px;margin-bottom:1px}#app#app #tempo .txt b{font-size:12px}#app#app .barra{height:6px}
+ #app#app #cabdir .stat,#app#app #nivelbox{order:1}#app#app #cabdir .stat{gap:3px}#app#app #cabdir .stat img{width:18px;height:18px}#app#app #cabdir .stat b{font-size:13px}#app#app #cabdir .stat small{font-size:7px;letter-spacing:0}
+ #app#app #nivelbox{min-width:56px}#app#app #nivelbox .nv{font-size:12px}#app#app #nivelbox .nv span{font-size:8px}
+ #app#app #cabdir .bt{order:3;flex:1 1 0;min-height:34px;min-width:0;padding:2px 4px;font-size:10px}
+ #app#app #cabdir #bt-t-itens,#app#app #cabdir #bt-t-jog,#app#app #cabdir #bt-t-sin{display:inline-flex;align-items:center;justify-content:center}
+ #app#app.ver-itens #bt-t-itens,#app#app.ver-jog #bt-t-jog,#app#app.ver-sin #bt-t-sin{border-color:#e6d27a;color:#fff1c4;background:linear-gradient(#5a4a1c,#2d230c)}
+ /* tabuleiro: ocupa o que sobra, limitado pela largura */
+ #app#app #centro{grid-column:1;grid-row:2;gap:0}
+ #app#app #base{display:contents}
+ #app#app #loja,#app#app #itens{grid-column:1;grid-row:3;min-height:0;height:112px;padding:3px;overflow:hidden}
+ #app#app #itens{display:none;overflow:auto}#app#app.ver-itens #itens{display:block}#app#app.ver-itens #loja{display:none}
+ #app#app #itens h3{margin-bottom:3px;font-size:10px}#app#app #itens h3 .bt{min-height:30px}
+ #app#app #grade-itens{grid-template-columns:repeat(8,minmax(0,1fr));gap:2px}#app#app .slot{max-width:34px}#app#app #itens h3{padding-bottom:2px}
+ #app#app #cartas{flex-direction:row;overflow:hidden;padding:0;gap:4px;scroll-snap-type:none}
+ #app#app .cslot{min-width:0}
+ #app#app .cslot .carta,#app#app .cslot:hover .carta:not(.vend){transform:none}
+ #app#app .carta{padding:3px;border-radius:4px}
+ #app#app .carta .art{order:1}#app#app .carta .cn{order:2;height:24px;padding:0 2px;font-size:9px;line-height:1.1;text-align:center;white-space:normal;display:flex;align-items:center;justify-content:center;border-top:1px solid #000}
+ #app#app .carta .art canvas{width:62px;height:44px;image-rendering:auto}
+ #app#app .carta .identidade,#app#app .carta .pie,#app#app .carta .tecla{display:none}
+ #app#app .carta .cu{left:2px;right:auto;top:2px;font-size:11px}
+ #app#app .carta .selo{left:auto;right:4px;bottom:28px}
+ #app#app .detalhes-carta{width:32px;height:32px;top:3px;right:3px}
+ #app#app #zona-venda .vt{font-size:10px;letter-spacing:.1em}#app#app #zona-venda .vv{font-size:20px}
+ #app#app #botoes{grid-column:1;grid-row:4;flex-direction:row;gap:4px;padding:3px;justify-content:stretch}
+ #app#app #botoes .bt{flex:1 1 0;min-height:44px;flex-direction:column;justify-content:center;align-items:center;gap:1px;padding:3px 2px;font-size:11px;letter-spacing:.02em;text-align:center}
+ #app#app #botoes .bt span{font-size:9px}#app#app #botoes #bt-trava span,#app#app #botoes #bt-pronto span,#app#app #botoes #bt-recolher,.bt .md{display:none}
+ /* sinergias e jogadores: painéis sobre a tela, abertos pelos botões do topo */
+ #app#app #esq,#app#app #dir{display:none;position:fixed;z-index:50;left:max(6px,env(safe-area-inset-left));right:max(6px,env(safe-area-inset-right));top:calc(max(4px,env(safe-area-inset-top)) + 84px);bottom:auto;max-height:calc(100vh - 150px);max-height:calc(100dvh - 150px);grid-column:auto;grid-row:auto;overflow:auto}
+ #app#app.ver-sin #esq,#app#app.ver-jog #dir{display:block}
+ #faixa b{font-size:40px}#faixa.res b{font-size:48px}#faixa .dano{font-size:36px}
+ .modal{padding:14px}.modal h1{font-size:40px}
+}
 </style>
 </head>
 <body>
@@ -687,6 +797,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
       <div class="stat" id="salatag" style="display:none"><div><small>Sala</small><b id="sala-cod">----</b></div></div>
       <div id="nivelbox"><div class="nv"><span style="color:var(--mut)">Nível</span> <b id="nivel">3</b><span id="xp-t"></span></div><div class="barra"><i id="xp-b" style="width:0%"></i></div></div>
       <div class="stat"><div><small>Unidades</small><b id="unid">0/3</b></div></div>
+      <button class="bt peq mob" id="bt-t-sin" type="button" title="Sinergias">Sin.</button><button class="bt peq mob" id="bt-t-itens" type="button" title="Itens">Itens</button><button class="bt peq mob" id="bt-t-jog" type="button" title="Jogadores">Jogs.</button>
       <button class="bt peq ic" id="bt-mudo" title="Silenciar (M)"><svg viewBox="0 0 16 16"><path d="M2 6h3l4-3.5v11L5 10H2z"/><path d="M11 5.2a4 4 0 0 1 0 5.6M12.8 3.4a6.6 6.6 0 0 1 0 9.2" stroke="currentColor" stroke-width="1.3" fill="none" stroke-linecap="round"/></svg></button>
       <button class="bt peq ic" id="bt-cfg" title="Som e opções"><svg viewBox="0 0 16 16"><path d="M7 1h2l.4 1.8 1.4.6 1.6-1 1.4 1.4-1 1.6.6 1.4L15 7v2l-1.8.4-.6 1.4 1 1.6-1.4 1.4-1.6-1-1.4.6L9 15H7l-.4-1.8-1.4-.6-1.6 1-1.4-1.4 1-1.6-.6-1.4L1 9V7l1.8-.4.6-1.4-1-1.6 1.4-1.4 1.6 1 1.4-.6zM8 5.5A2.5 2.5 0 1 0 8 10.5 2.5 2.5 0 0 0 8 5.5z"/></svg></button>
       <button class="bt peq" id="bt-vel" title="Velocidade do combate (V)">1x</button>
@@ -712,8 +823,8 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
     <div id="botoes" class="painel">
       <div id="odds" data-tip="odds:x"></div>
       <button class="bt" id="bt-rolar" data-tip="bt:rolar">Rolar <span><img src="tibia-assets/sprites15/ui/gold.png" alt="">2 · D</span></button>
-      <button class="bt" id="bt-xp" data-tip="bt:xp">Comprar XP <span><img src="tibia-assets/sprites15/ui/gold.png" alt="">4 · F</span></button>
-      <button class="bt" id="bt-trava" data-tip="bt:trava">Travar loja <span>L</span></button>
+      <button class="bt" id="bt-xp" data-tip="bt:xp"><b class="lb"><i class="md">Comprar </i>XP</b> <span><img src="tibia-assets/sprites15/ui/gold.png" alt="">4 · F</span></button>
+      <button class="bt" id="bt-trava" data-tip="bt:trava"><b class="lb">Travar<i class="md"> loja</i></b> <span>L</span></button>
       <button class="bt peq" id="bt-recolher">Recolher loja <span>S</span></button>
       <button class="bt primario" id="bt-pronto" data-tip="bt:pronto">Pronto <span>Espaço</span></button>
     </div>
@@ -728,11 +839,11 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
 <div id="ghost"></div>
 
 <script async src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
-<script src="tibia-assets/sprites15.js?v=2026-10-15.1"></script>
-<script src="tibia-assets/combate15.js?v=2026-10-15.1"></script>
+<script src="tibia-assets/sprites15.js?v=2026-10-15.2"></script>
+<script src="tibia-assets/combate15.js?v=2026-10-15.2"></script>
 <script>
 'use strict';
-const VERSAO_SITE='2026-10-15.1';   // bumpar junto com <meta versao-site> e os ?v= dos scripts a cada deploy
+const VERSAO_SITE='2026-10-15.2';   // bumpar junto com <meta versao-site> e os ?v= dos scripts a cada deploy
 /* =====================================================================================
    TIBIA TACTICS  -  auto-battler estilo TFT com visual do Tibia
    Parte 1: dados (unidades, sinergias, itens, monstros). Nada aqui toca o DOM.
@@ -2109,8 +2220,11 @@ function render(){if(!cx)return;const C=UI.C,rt=C?C.t+UI.acc:performance.now(),n
 function sincCombate(){const a=$('app'),cb=UI.fase==='combate'&&!!UI.C&&!UI.demo,c=cb&&!UI.lojaAberta;
   if(cb&&UI.jog){const o=UI.jog.ouro;$('mini-ouro').textContent=o;$('bt-m-rolar').disabled=o<2;$('bt-m-xp').disabled=o<4||UI.jog.nivel>=9;}
   a.classList.toggle('combate',cb);if(a.classList.contains('em-combate')===c)return;
-  a.classList.toggle('em-combate',c);ajustarCanvas();if(!observaCaixa())clearTimeout(sincCombate.t),sincCombate.t=setTimeout(ajustarCanvas,260);}   // em combate a loja vira uma faixa (ouro, rolar, XP); 'Abrir loja'/S traz tudo de volta
-function alternarLoja(){if(!(UI.fase==='combate'&&UI.C&&!UI.demo))return;UI.lojaAberta=!UI.lojaAberta;sincCombate();}
+  a.classList.toggle('em-combate',c);{const r=$('bt-recolher').firstChild;if(r)r.textContent=c?'Abrir loja ':'Recolher loja ';}ajustarCanvas();if(!observaCaixa())clearTimeout(sincCombate.t),sincCombate.t=setTimeout(ajustarCanvas,260);}   // em combate a loja vira uma faixa (ouro, rolar, XP); 'Abrir loja'/S traz tudo de volta
+function alternarLoja(){if(!(UI.fase==='combate'&&UI.C&&!UI.demo))return;UI.lojaAberta=!UI.lojaAberta;if(UI.lojaAberta)$('app').classList.remove('ver-itens','ver-jog');sincCombate();}
+/* celular: Itens/Jogadores/Sinergias abrem no lugar da loja (deitado) ou como painel sobre a tela (em pé); um por vez */
+function alternarPainel(k){const a=$('app'),c='ver-'+k,on=!a.classList.contains(c);a.classList.remove('ver-itens','ver-jog','ver-sin');if(on)a.classList.add(c);}
+const celularEmPe=()=>matchMedia('(orientation:portrait) and (max-width:540px)').matches;
 /* observa o tamanho do #cvbox: recalcula o canvas sempre que a caixa mudar (transição da loja, janela, timers atrasados); sem ResizeObserver cai no setTimeout + transitionend */
 function observaCaixa(){if(observaCaixa.ok!==undefined)return observaCaixa.ok;const box=$('cvbox');
   if(!box||typeof ResizeObserver==='undefined'){const app=$('app');app&&app.addEventListener('transitionend',()=>ajustarCanvas());return observaCaixa.ok=false;}
@@ -2233,6 +2347,7 @@ function cartaHover(slot,forcar){const p=UI.jog;let i=-1;
     if(cr.bottom+6+h<=sr.top-8)t=cr.bottom+6;
     else if(cr.left-w-6>=6){l=cr.left-w-6;lado=true;}
     else if(cr.right+6+w<=innerWidth-6){l=cr.right+6;lado=true;}}
+  t=clamp(t,6,Math.max(6,innerHeight-h-6));   // celular deitado: nunca sai pela base da tela
   el.classList.toggle('lado',lado);
   el.style.left=Math.round(l)+'px';el.style.top=Math.round(t)+'px';el.style.setProperty('--ax',Math.round(clamp(sr.left+sr.width/2-l,14,w-14))+'px');}
 function estadosUnidade(u){if(!u||!u.C)return [];return [['ferida','Ferida','#ed7971','F'],['silencio','Silêncio','#cba5ff','S'],['provocado','Provocado','#f4c978','P']].filter(([k])=>k==='provocado'?!!alvoProvocado(u.C,u):bv(u,k)>0);}
@@ -2590,6 +2705,9 @@ function hudAnaliseEspia(){const el=$('espia-analise'),q=G.jog[UI.espiar],un=UI.
     <div class="lin"><span>Armadura média</span><b>${media('arm')}</b></div><div class="lin"><span>Res. mágica média</span><b>${media('rm')}</b></div>
     <p>Elementos disponíveis</p><div class="elementos">${Object.keys(els).map(chipElemento).join('')}</div>
     <ul>${dicas.map(d=>`<li>${d}</li>`).join('')}</ul><small>Inclui itens e sinergias visíveis. A média não prevê o resultado da luta.</small>`;}
+/* soltar para vender: no desktop vale o #base todo; no celular só a loja (#loja), para não vender sem querer ao soltar em botões/painéis */
+const layoutCelular=()=>matchMedia('(orientation:landscape) and (max-height:540px)').matches||celularEmPe();
+const sobreVenda=el=>!!(el&&el.closest&&el.closest(layoutCelular()?'#loja':'#base'));
 function cancelarArrasto(){UI.pd=null;esconderPrevia();if(UI.drag){UI.drag=null;$('ghost').style.display='none';$('zona-venda').classList.remove('on','sobre');}}
 
 /* ---------- emotes (tecla E): balão amarelo, como a fala do Tibia; online vai para os outros ---------- */
@@ -2673,7 +2791,7 @@ function pointerDownItem(ev){const el=ev.target.closest('[data-slot]');if(!el||e
 function pointerMove(ev){UI.mx=ev.clientX;UI.my=ev.clientY;const p=UI.jog;
   if(!UI.drag){const tg=ev.target.closest?ev.target:null;cartaHover(tg&&tg.closest('.cslot'));const tr=tg&&tg.closest('[data-tr]');UI.hoverTr=tr?tr.dataset.tr:null;}   // acende no tabuleiro e no banco as unidades da carta/traço sob o mouse
   if(UI.pd&&!UI.drag&&Math.hypot(ev.clientX-UI.pd.x,ev.clientY-UI.pd.y)>5){iniciarArrasto(UI.pd,ev);}
-  if(UI.drag){const g=$('ghost');g.style.left=ev.clientX+'px';g.style.top=ev.clientY+'px';const d=UI.drag,cel=celAt(ev);$('zona-venda').classList.toggle('sobre',d.tipo==='un'&&!!(ev.target.closest&&ev.target.closest('#base')));
+  if(UI.drag){const g=$('ghost');g.style.left=ev.clientX+'px';g.style.top=ev.clientY+'px';const d=UI.drag,cel=celAt(ev);$('zona-venda').classList.toggle('sobre',d.tipo==='un'&&!!(ev.target.closest&&sobreVenda(ev.target)));
     if(d.tipo==='un'){d.cel=cel&&(cel.onde==='tab'||cel.onde==='banco')?cel:null;d.ok=false;
       if(d.cel){const dest=unidadeEm(d.cel);d.ok=d.cel.onde==='banco'||(UI.fase==='prep'&&(dest||d.de.onde==='tab'||contarTab(p)<p.nivel));}}
     else{d.pl=null;d.alvo=null;d.ok=false;d.slotAlvo=-1;                                                       // item: sobre outro item do inventário ou sobre uma unidade
@@ -2698,7 +2816,7 @@ function pointerMove(ev){UI.mx=ev.clientX;UI.my=ev.clientY;const p=UI.jog;
   if(el&&(UI.estado==='jogo'||/^(item|rec):/.test(el.dataset.tip))){const k=el.dataset.tip;if(UI.tipChave===k&&$('tip').style.display==='block')posTip(ev);else{const h=htmlTip(k);if(h)mostrarTip(h,ev,k);else esconderTip();}}else esconderTip();}
 function pointerUp(ev){const pd=UI.pd,d=UI.drag;UI.pd=null;if(!d){if(ev.button===0&&(!pd||Math.hypot(ev.clientX-pd.x,ev.clientY-pd.y)<=5))inspecionarNoCanvas(ev);return;}UI.drag=null;$('ghost').style.display='none';$('zona-venda').classList.remove('on','sobre');const p=UI.jog;
   if(d.tipo==='un'){const el=document.elementFromPoint(ev.clientX,ev.clientY);
-    if(el&&el.closest('#base')){const L=unidadeEm(d.de.onde==='banco'?{onde:'banco',i:d.de.i}:{onde:'tab',x:d.de.x,y:d.de.y});if(L&&L.inst===d.inst)venderUI(L);return;}
+    if(sobreVenda(el)){const L=unidadeEm(d.de.onde==='banco'?{onde:'banco',i:d.de.i}:{onde:'tab',x:d.de.x,y:d.de.y});if(L&&L.inst===d.inst)venderUI(L);return;}
     const cel=celAt(ev);if(!cel||(cel.onde!=='tab'&&cel.onde!=='banco'))return;
     const para=cel.onde==='tab'?{onde:'tab',x:cel.x,y:cel.y}:{onde:'banco',i:cel.i};
     acaoLocal({t:'mover',de:locDe(d.de),para});
@@ -2824,11 +2942,19 @@ function abrirCarrosselUI(){const c=G.car;if(!c||UI.pausado||UI.estado!=='jogo')
 /* ---------- telas ---------- */
 function telaHTML(h,leve){limparConsulta();esconderTip();const t=$('tela');t.innerHTML=h;t.className='on'+(leve?' leve':'');}
 function fecharTela(){limparConsulta();esconderTip();const t=$('tela');t.className='';t.innerHTML='';}
-function mostrarMenu(){UI.estado='menu';fecharTela();iniciarDemo();$('app').style.visibility='visible';$('app').classList.add('menu');
+/* celular: tela cheia (e tenta travar deitado; falhas são ignoradas) */
+const toque=()=>matchMedia('(pointer:coarse)').matches;
+const telaCheiaOk=()=>toque()&&!!(document.fullscreenEnabled||document.webkitFullscreenEnabled);
+function alternarTelaCheia(){const el=document.documentElement;try{
+  if(document.fullscreenElement||document.webkitFullscreenElement){(document.exitFullscreen||document.webkitExitFullscreen).call(document);return;}
+  const f=el.requestFullscreen||el.webkitRequestFullscreen;if(!f)return;
+  Promise.resolve(f.call(el)).then(()=>screen.orientation&&screen.orientation.lock&&screen.orientation.lock('landscape')).catch(()=>{});}catch(e){}}
+function mostrarMenu(){UI.estado='menu';$('app').classList.remove('ver-itens','ver-jog','ver-sin');fecharTela();iniciarDemo();$('app').style.visibility='visible';$('app').classList.add('menu');
   telaHTML(`<div class="painel modal"><h1>Tibia Tactics</h1><div class="sub">Auto-battler de Tibia</div>
     <div class="herois">${VOCS.map(v=>`<div class="heroi ${UI.voc===v?'sel':''}" data-v="${v}"><canvas width="56" height="56" data-av="${v}"></canvas>${{knight:'Knight',paladin:'Paladin',sorcerer:'Sorcerer',druid:'Druid'}[v]}</div>`).join('')}</div>
-    <div class="menu"><button class="bt primario" id="b-jogar">Jogar</button><button class="bt" id="b-online">Jogar online</button><button class="bt" id="b-como">Como jogar</button><button class="bt" id="b-rec">Recordes</button><button class="bt" id="b-cartas">Novas cartas</button></div><p class="versao-jogo">Fase 4 · Etapa 2 — lutas mais longas e emocionantes</p></div>`);
+    <div class="menu"><button class="bt primario" id="b-jogar">Jogar</button><button class="bt" id="b-online">Jogar online</button><button class="bt" id="b-como">Como jogar</button><button class="bt" id="b-rec">Recordes</button><button class="bt" id="b-cartas">Novas cartas</button>${telaCheiaOk()?'<button class="bt" id="b-tela">Tela cheia</button>':''}</div>${toque()&&celularEmPe()&&!UI.dicaGiroFechada?'<p class="dica-giro" id="dica-giro"><span>Dica: gire o celular para jogar deitado</span><button type="button" id="dica-giro-x" aria-label="Fechar dica">×</button></p>':''}<p class="versao-jogo">Fase 4 · Etapa 3 — jogo no celular</p></div>`);
   retratosPend();$('tela').classList.add('menu');$('b-jogar').onclick=novaPartida;$('b-online').onclick=()=>mostrarOnline();$('b-como').onclick=()=>mostrarComoJogar(mostrarMenu);$('b-rec').onclick=mostrarRecordes;$('b-cartas').onclick=mostrarNovasCartas;
+  {const bt=$('b-tela');if(bt)bt.onclick=alternarTelaCheia;const dx=$('dica-giro-x');if(dx)dx.onclick=()=>{UI.dicaGiroFechada=true;$('dica-giro').remove();};}
   document.querySelectorAll('.heroi').forEach(el=>el.onclick=()=>{UI.voc=el.dataset.v;document.querySelectorAll('.heroi').forEach(e=>e.classList.toggle('sel',e===el));});}
 function voltarMenu(){onlineSair();G=null;UI.jog=null;UI.C=null;UI.prev=null;mostrarMenu();}
 function mostrarRecordes(){const r=lerRec();
@@ -3319,7 +3445,8 @@ function iniciar(){cv=$('cv');cx=cv.getContext('2d');ajustarCanvas();observaCaix
   $('cartas').addEventListener('mouseleave',()=>cartaHover(null));
   $('bt-forjar').onclick=forjarUI;$('bt-rec').onclick=()=>{if(UI.estado==='jogo')mostrarReceitas(()=>fecharTela());};$('bt-rolar').onclick=rolarUI;$('bt-m-rolar').onclick=rolarUI;$('bt-m-xp').onclick=xpUI;$('bt-m-loja').onclick=alternarLoja;$('bt-recolher').onclick=alternarLoja;$('bt-xp').onclick=xpUI;$('bt-trava').onclick=travarUI;$('bt-pronto').onclick=()=>pronto();$('bt-vel').onclick=alternarVel;$('bt-menu').onclick=pausar;$('logo').onclick=()=>{if(UI.estado==='jogo')pausar();};
   lerCfg();ligarCfg();addEventListener('pointerdown',somIniciar,{once:true});addEventListener('keydown',somIniciar,{once:true});
-  $('jogadores').addEventListener('click',e=>{const r=e.target.closest('.jg');if(r)espiarJog(+r.dataset.id);});
+  $('jogadores').addEventListener('click',e=>{const r=e.target.closest('.jg');if(r){espiarJog(+r.dataset.id);if(celularEmPe())$('app').classList.remove('ver-jog');}});
+  $('bt-t-itens').onclick=()=>alternarPainel('itens');$('bt-t-jog').onclick=()=>alternarPainel('jog');$('bt-t-sin').onclick=()=>alternarPainel('sin');
   $('bt-espia-v').onclick=sairEspiar;$('bt-meter').onclick=alternarMeter;
   $('meter').addEventListener('click',e=>{const b=e.target.closest('button[data-a]');if(b){UI.meterAba=b.dataset.a;$('meter')._C=null;hudMeter();}});
   $('emotes').addEventListener('click',e=>{const b=e.target.closest('button[data-k]');if(b)enviarEmote(+b.dataset.k);});
