@@ -633,6 +633,18 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
  .modal{padding:16px}.modal h1{font-size:44px}.modal .sub{letter-spacing:.15em}.herois{gap:4px}.heroi{width:66px}
 }
 
+.novas-cartas{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.nova-carta{display:flex;align-items:center;gap:12px;text-align:left;padding:14px;background:linear-gradient(130deg,#252b3d,#111622);border:1px solid #74613a;color:#e4dbc5;border-radius:6px;cursor:pointer}
+.nova-carta:hover{border-color:#e2bd68;background:linear-gradient(130deg,#363023,#18202c)}
+.nova-carta canvas{width:80px;height:80px;flex:none;image-rendering:pixelated;background:#0c121c;border-radius:4px}
+.nova-carta b{display:block;font:700 15px/1.4 Cinzel,serif;color:#f0dba4}.nova-carta small{display:block;font:11px/1.6 Verdana,sans-serif;margin:4px 0;color:#b9b3a4}
+.nova-carta em{display:block;font:11px/1.6 Verdana,sans-serif;font-style:normal;color:#c8c6ba;margin-top:7px}
+.ficha-unidade{font:13px/1.6 Verdana,sans-serif;max-width:650px;margin:auto}.ficha-unidade>canvas{display:block;margin:0 auto 12px;background:#0c121c;border:1px solid #74613a;border-radius:5px}
+.ficha-unidade h4{display:flex;align-items:center;gap:12px;color:#efdbb0;font:700 18px Cinzel,serif}.ficha-unidade h4 span:first-child{flex:1}
+.ficha-unidade .lin{display:flex;justify-content:space-between;gap:14px;padding:6px 0;border-bottom:1px solid #2c2b28}
+.ficha-unidade .hab{margin-top:15px;padding:12px 0;border-top:1px solid #655532}.ficha-unidade .itl{margin-top:12px}.ficha-unidade .itx{display:flex;gap:10px;margin:8px 0}.ficha-unidade .itx span{display:block}
+.estados-unidade{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}.estados-unidade>span{border:1px solid currentColor;padding:3px 6px;border-radius:4px;font-size:11px}
+@media(max-width:650px){.novas-cartas{grid-template-columns:minmax(0,1fr)}.nova-carta{padding:10px;gap:10px}.nova-carta canvas{width:64px;height:64px}}
 </style>
 </head>
 <body>
@@ -792,6 +804,9 @@ D('dragon_hatchling','Dragon Hatchling','dragon_hatchling',2,'dragao','mago',{p:
 D('dwarf','Dwarf','dwarf',2,'anao','guerreiro',{p:'machadada!',t:'alvo',m:2.0,el:'phys',ef:'hitarea',stun:600});
 D('elf','Elf','elf',2,'elfo','assassino',{p:'corte veloz',t:'alvo',m:2.3,el:'phys',ef:'big_scratch'});
 D('mummy','Mummy','mummy',2,'morto','guardiao',{p:'maldição',t:'alvo',m:1.4,el:'death',ef:'mortarea',deb:{fraco:.3,dur:5000}},{hit:'hitarea'});
+// Fase 3 / etapa 2: proteção física e precisão, custo 2.
+D('minotaur_guard','Minotaur Guard','minotaur_guard',2,'minotauro','guardiao',{p:'protejam a linha!',t:'self',raio:2,m:1.2,el:'phys',ef:'hitarea',provoca:2500},{arm:40,rm:10,dica:'Tanque físico. Provoca inimigos próximos por 2,5 s e protege a retaguarda.'});
+D('hunter','Hunter','hunter',2,'humano','atirador',{p:'tiro preciso',t:'alvo',m:2.8,el:'phys',tiro:'sniperarrow',ef:'hitarea'},{atq:AR,al:4,dica:'Carry físico de alvo único. Velocidade de ataque e dano reforçam seus disparos.'});
 // ---------- custo 3 ----------
 D('orc_warrior','Orc Warlord','orc_warrior',3,'orc','guerreiro',{p:'grito de guerra',t:'buff',raio:2,buff:{as:.35,dur:5000},ef:'magic_red'});
 D('minotaur_mage','Minotaur Mage','minotaur_mage',3,'minotauro','mago',{p:'exevo frigo hur',t:'onda',area:A_ONDA4,m:2.4,el:'ice',ef:'icearea'},{atq:{t:'smallice',hit:'icearea'},el:'ice'});
@@ -804,6 +819,11 @@ D('earth_elemental','Earth Elemental','earth_elemental',3,'elemental','guardiao'
 D('bonebeast','Bonebeast','bonebeast',3,'morto','guerreiro',{p:'ossos partidos',t:'alvo',m:2.5,el:'death',ef:'mortarea',deb:{armR:.4,dur:5000}},{hit:'hitarea'});
 D('tiger','Tiger','tiger',3,'fera','guerreiro',{p:'garras!',t:'alvo',m:2.2,el:'phys',ef:'claw_white',dot:{m:1.2,dur:3,el:'phys',ef:'drawblood'}});
 D('monk','Monk','monk',3,'humano','curandeiro',{p:'exura gran',t:'curaAmigo',m:3.6,ef:'magic_blue'},{atq:{t:'smallholy',hit:'holydamage'},el:'holy'});
+// Novos counters e dano contínuo, custo 3.
+D('ice_witch','Ice Witch','ice_witch',3,'humano','mago',{p:'exevo frigo hur',t:'onda',area:A_CURTA3,m:2.1,el:'ice',ef:'icearea',deb:{lento:.25,dur:3000}},{atq:{t:'smallice',hit:'icearea'},el:'ice',dica:'Carry de gelo. Sua onda reduz a velocidade de ataque e movimento por 3 s.'});
+D('demon_skeleton','Demon Skeleton','demon_skeleton',3,'morto','guardiao',{p:'barreira dos mortos',t:'buff',escudo:.30,dur:4000,ef:'magic_red'},{arm:16,rm:45,dica:'Tanque mágico. Tem 45 de resistência mágica e uma barreira; armadura física menor.'});
+D('dark_monk','Dark Monk','dark_monk',3,'humano','curandeiro',{p:'maldição e penitência',t:'seq',seq:[{t:'alvo',m:1.8,el:'death',tiro:'death',ef:'mortarea',deb:{ferida:.40,dur:5000}},{t:'curaAmigo',m:1.4,ef:'magic_blue',atraso:300}]},{atq:{t:'death',hit:'mortarea'},el:'death',dica:'Suporte ofensivo. Aplica Ferida e depois cura o aliado mais ferido.'});
+D('wyvern','Wyvern','wyvern',3,'dragao','assassino',{p:'presas venenosas',t:'alvo',m:1.5,el:'earth',ef:'hitbypoison',dot:{m:1.8,dur:4,el:'earth',ef:'hitbypoison'}},{hit:'bite',dica:'Carry de veneno. Diversifica o dano dos Dragões e combina com Assassinos.'});
 // ---------- custo 4 ----------
 D('dragon','Dragon','dragon',4,'dragao','guardiao',{p:'exevo flam hur',t:'seq',seq:[{t:'onda',area:A_ONDA4,m:2.4,el:'fire',ef:'hitbyfire'},{t:'pos',raio:1,m:1.6,el:'fire',tiro:'fire',ef:'firearea',atraso:450}]},{al:2,atq:{t:'fire',hit:'hitbyfire'},el:'fire',hit:'hitarea'});
 D('giant_spider','Giant Spider','giant_spider',4,'fera','invocador',{p:'crias!',t:'invocar',id:'poison_spider',n:2,ef:'magic_green'},{al:1,hit:'hitbypoison'});
@@ -812,12 +832,15 @@ D('frost_giant','Frost Giant','frost_giant',4,'gigante','guerreiro',{p:'pancada 
 D('hellhound','Hellhound','hellhound',4,'demonio','assassino',{p:'mordida infernal',t:'alvo',m:3.3,el:'fire',ef:'hitbyfire',dot:{m:1.4,dur:4,el:'fire',ef:'hitbyfire'},queima:40},{hit:'bite'});
 D('efreet','Efreet','efreet',4,'elemental','mago',{p:'exevo gran vis lux',t:'onda',area:A_ONDA5,m:3.0,el:'energy',tiro:'energy',ef:'energyarea'},{atq:{t:'energy',hit:'energyhit'},el:'energy'});
 D('hydra','Hydra','hydra',4,'dragao','curandeiro',{p:'exura gran mas res',t:'seq',seq:[{t:'curaArea',raio:1,m:2.4,ef:'magic_blue'},{t:'onda',area:A_ONDA4,m:2.0,el:'ice',ef:'icearea',atraso:300}]},{al:2,atq:{t:'smallice',hit:'icearea'},el:'ice'});
+D('bonelord','Bonelord','bonelord',4,'morto','mago',{p:'olhar silenciador',t:'pos',raio:1,m:1.9,el:'earth',tiro:'poison',ef:'poisonarea',deb:{silencio:1,dur:2000}},{atq:{t:'smallearth',hit:'poisonarea'},el:'earth',mana:90,dica:'Controle em área. Silencia por 2 s; alvos ainda podem atacar e acumular mana.'});
 // ---------- custo 5 ----------
 D('demon','Demon','demon',5,'demonio','invocador',{p:'exevo gran mas flam',t:'seq',seq:[{t:'pos',raio:2,m:3.2,el:'fire',tiro:'fire',ef:'firearea'},{t:'invocar',id:'fire_elemental',n:1,ef:'magic_red',atraso:500}]},{al:2,atq:{t:'fire',hit:'hitbyfire'},el:'fire',hit:'hitarea'});
 D('dragon_lord','Dragon Lord','dragon_lord',5,'dragao','mago',{p:'exevo gran flam hur',t:'seq',seq:[{t:'onda',area:A_ONDA7,m:3.4,el:'fire',ef:'hitbyfire'},{t:'pos',raio:1,m:1.8,el:'fire',tiro:'fire',ef:'firearea',atraso:500}]},{al:3,atq:{t:'fire',hit:'hitbyfire'},el:'fire',hit:'hitarea'});
 D('behemoth','Behemoth','behemoth',5,'gigante','guardiao',{p:'pisão!',t:'self',raio:2,m:3.2,el:'phys',ef:'groundshaker',stun:1600},{hit:'hitarea'});
 D('juggernaut','Juggernaut','juggernaut',5,'demonio','guerreiro',{p:'fúria!',t:'seq',seq:[{t:'buff',buff:{as:.7,dmg:.3,dur:6000},ef:'magic_red'},{t:'self',raio:1,m:2.6,el:'phys',ef:'hitarea',atraso:200}]},{hit:'hitarea'});
 D('undead_dragon','Undead Dragon','undead_dragon',5,'dragao','mago',{p:'exevo mort hur',t:'onda',area:A_ONDA7,m:3.8,el:'death',ef:'mortarea',drena:.5},{al:3,atq:{t:'death',hit:'mortarea'},el:'death',hit:'hitarea'});
+D('grim_reaper','Grim Reaper','grim_reaper',5,'morto','assassino',{p:'colheita de almas',t:'alvo',m:2.4,el:'death',ef:'mortarea',finaliza:{limiar:.30,mult:1.60}},{el:'death',hit:'mortarea',dica:'Carry finalizador. Prioriza inimigos feridos ao alcance; sua habilidade causa +60% de dano contra alvos com até 30% de vida.'});
+const NOVAS_CARTAS=['minotaur_guard','ice_witch','demon_skeleton','hunter','dark_monk','bonelord','wyvern','grim_reaper'];
 /* unidade só de invocação / PvE usa o mesmo molde */
 const QTD_POOL=[0,22,18,16,12,10];
 const TIER_COR=['','#8d8d8d','#4fae4f','#4a86e8','#a55be0','#e0b030'];
@@ -1025,7 +1048,7 @@ function aplicarItem(u,code){const it=itemInfo(code);if(!it||it.perg)return;cons
   if(it.conv)(u.convs=u.convs||[]).push(it.conv);}
 function novoUnit(C,s,lado){const d=s.d,e=s.e||1,st=statsDe(d,e);
   const u={uid:++C.uid,d,e,lado,x:s.x,y:s.y,fx:s.x,fy:s.y,t0:-99999,dur:0,andaDesde:0,dir:lado===0?0:2,hp:st.hp,hpM:st.hp,atk:st.atk,sk:st.sk,arm:d.arm,al:d.al,as:d.as,
-    mov:1,mana:d.m0||0,manaM:d.hab?d.mana:0,ap:0,asB:0,dmgB:0,crit:0,esq:0,roubo:0,rouboM:0,ie:{},convs:null,nAt:0,furtivoAte:0,regen:0,mreg:0,recMul:1,rm:15,res:{},armMul:1,hab:d.hab,
+    mov:1,mana:d.m0||0,manaM:d.hab?d.mana:0,ap:0,asB:0,dmgB:0,crit:0,esq:0,roubo:0,rouboM:0,ie:{},convs:null,nAt:0,furtivoAte:0,regen:0,mreg:0,recMul:1,rm:d.rm===undefined?15:d.rm,res:{},armMul:1,hab:d.hab,
     vivo:true,alvo:null,prox:0,livreEm:0,stunAte:0,b:{},dots:[],itens:s.itens||[],inv:!!s.inv,el:d.el||'phys',
     C,queima:0,estunaChance:0,fatEsp:0,orcFuria:0,furia:false,morteFogo:0,nome:d.nome,lunge:null,pve:!!d.pve,inst:s.inst||null,st:{d:0,r:0,c:0}};   // st = placar: dano causado, recebido e cura feita
   if(d.pve&&d.mana===undefined){u.manaM=d.hab?60:0;u.mana=d.hab?20:0;}
@@ -1119,7 +1142,7 @@ function causar(C,src,u,bruto,el,o){o=o||{};if(!u.vivo)return 0;
   if(u.orcFuria&&!u.furia&&u.hp<u.hpM*.5&&u.hp>0){u.furia=true;fx(C,'magic_red',u.x,u.y);txt(C,u.x,u.y,'Fúria!','#ff6a4a');}
   if(u.hp<=0)morrer(C,u,src);
   return d;}
-function curar(C,u,v,mudo,fonte){if(!u.vivo)return 0;v=Math.round(Math.min(v,u.hpM-u.hp));if(v<=0)return 0;u.hp+=v;C.cura[u.lado]+=v;(fonte||u).st.c+=v;if(!mudo)txt(C,u.x,u.y,'+'+v,EL.cura.cor);return v;}
+function curar(C,u,v,mudo,fonte){if(!u.vivo)return 0;v=Math.round(Math.min(v*(1-clamp(bv(u,'ferida'),0,.8)),u.hpM-u.hp));if(v<=0)return 0;u.hp+=v;C.cura[u.lado]+=v;(fonte||u).st.c+=v;if(!mudo)txt(C,u.x,u.y,'+'+v,EL.cura.cor);return v;}
 function morrer(C,u,src){if(!u.vivo)return;
   if(u.ie.revive&&!u.revivido){u.revivido=true;u.hp=Math.max(1,Math.round(u.hpM*u.ie.revive));u.dots.length=0;u.stunAte=Math.max(u.stunAte,C.t+300);   // Amulet of Loss: volta uma vez
     fx(C,'holyarea',u.x,u.y);fx(C,'hearts',u.x,u.y,150);txt(C,u.x,u.y,'Ressuscitou!','#ffe680',true);return;}
@@ -1130,7 +1153,8 @@ function morrer(C,u,src){if(!u.vivo)return;
   if(src&&src!==u&&src.vivo&&src.ie.killHeal){curar(C,src,src.hpM*src.ie.killHeal);fx(C,'green_rings',src.x,src.y);}}
 
 /* ---- escolha de alvo / movimento ---- */
-function escolherAlvo(C,u){let melhor=null;
+function alvoProvocado(C,u){const id=bv(u,'provocado'),v=id&&C.map[id];return v&&v.vivo&&v.lado!==u.lado?v:null;}
+function escolherAlvo(C,u){const provocado=alvoProvocado(C,u);if(provocado)return provocado;let melhor=null;
   for(let passe=0;passe<2&&!melhor;passe++){let md=1e9,n=0;      // 1º passe ignora quem está furtivo (Stealth Ring); se só sobrar furtivo, ataca mesmo assim
     for(const v of C.un){if(!v.vivo||v.lado===u.lado||(passe===0&&v.furtivoAte>C.t))continue;const d=cheb(u,v)*100+dist2(u,v);
       if(d<md){md=d;melhor=v;n=1;}else if(d===md){n++;if(C.r()<1/n)melhor=v;}}}
@@ -1190,11 +1214,13 @@ function auraInfernal(C,u){const dd=(u.atk*.5+u.sk*.15)*(1+u.ap)*u.ie.aura;     
 function auraCura(C,u){let a=null,mp=.98;                                                                                           // Sacred Tree Amulet
   C.un.forEach(v=>{if(!v.vivo||v.lado!==u.lado||cheb(u,v)>2)return;const p=v.hp/v.hpM;if(p<mp){mp=p;a=v;}});
   if(a){fx(C,'green_rings',a.x,a.y);curar(C,a,u.hpM*u.ie.auraCura,false,u);}}
-function podeLancar(C,u,t){const h=u.hab;if(!h)return false;const tp=h.t==='seq'?h.seq[0].t:h.t;
+function podeLancar(C,u,t){const h=u.hab;if(!h||bv(u,'silencio'))return false;const tp=h.t==='seq'?h.seq[0].t:h.t;
   if(tp==='cura')return u.hp<u.hpM*.9;
   if(tp==='curaAmigo'||tp==='curaArea')return C.un.some(v=>v.vivo&&v.lado===u.lado&&v.hp<v.hpM*.85&&(tp==='curaAmigo'||cheb(u,v)<=(h.raio||2)))||(h.t==='seq'&&t&&cheb(u,t)<=u.al);
   if(tp==='invocar'||tp==='buff')return !!t&&cheb(u,t)<=Math.max(u.al,3)+ (tp==='buff'?1:3);
   return !!t&&cheb(u,t)<=u.al;}
+function alvoHabilidade(C,u,t){if(!u.hab.finaliza||alvoProvocado(C,u))return t;
+  return C.un.filter(v=>v.vivo&&v.lado!==u.lado&&cheb(u,v)<=u.al&&v.furtivoAte<=C.t).sort((a,b)=>a.hp/a.hpM-b.hp/b.hpM||a.uid-b.uid)[0]||t;}
 function lancar(C,u,h){const t=u.alvo;u.mana=u.ie.manaRet?Math.round(u.manaM*Math.min(.9,u.ie.manaRet)):0;if(u.mana>0)txt(C,u.x,u.y,'+mana','#6fa8ff');if(C.vis&&!u.pve&&!u.inv&&u.d.c===5)imp(C,'hab5');u.livreEm=Math.max(u.livreEm,C.t+500);u.prox=Math.max(u.prox,C.t+700);
   if(t)u.dir=dirPara(u,t);
   fala(C,u,h.p);
@@ -1211,14 +1237,17 @@ function danoArea(C,u,h,tiles,el,mult,efNome,tempoEscalonado){let n=0;
     if(h.stun)atordoar(C,v,h.stun);if(h.deb)aplicarDeb(C,v,h.deb);if(h.dot)aplicarDot(C,u,v,h.dot);
     if(h.drena)curar(C,u,habDano(u,mult)*h.drena*.6);});
   return n;}
-function aplicarDeb(C,v,deb){const dur=deb.dur||4000;Object.keys(deb).forEach(k=>{if(k==='dur')return;v.b[k]={ate:C.t+dur,v:deb[k]};});fx(C,'sound_purple',v.x,v.y);}
+function aplicarDeb(C,v,deb){if(!v.vivo)return;const dur=deb.dur||4000;Object.keys(deb).forEach(k=>{if(k==='dur')return;
+  const antes=bv(v,k),b=v.b[k];v.b[k]={ate:Math.max(C.t+dur,b&&b.ate>C.t?b.ate:0),v:Math.max(antes,deb[k])};
+  if(k==='ferida'&&!antes)txt(C,v.x,v.y,'Ferida','#ed7971');if(k==='silencio'&&!antes)txt(C,v.x,v.y,'Silêncio','#cba5ff');});fx(C,'sound_purple',v.x,v.y);}
+function provocar(C,u,ms,raio){C.un.forEach(v=>{if(!v.vivo||v.lado===u.lado||cheb(u,v)>raio)return;v.b.provocado={ate:C.t+ms,v:u.uid};v.alvo=u;txt(C,v.x,v.y,'Provocado','#f4c978');});fx(C,'yellow_rings',u.x,u.y);}
 function aplicarDot(C,u,v,dot){v.dots.push({src:u,el:dot.el,d:habDano(u,dot.m)/dot.dur,n:dot.dur,prox:C.t+1000,ef:dot.ef});}
 function acaoHab(C,u,h,t){const el=h.el||'phys',dir=t?dirPara(u,t):(u.lado===0?0:2);
   switch(h.t){
     case 'alvo':{if(!t||!t.vivo)return;const d=h.tiro?tiro(C,h.tiro,u,t):80,dano=habDano(u,h.m);
-      agendar(C,d,()=>{if(!t.vivo)return;fx(C,h.ef,t.x,t.y);const r=causar(C,u,t,dano,el,{magia:true,hab:true});if(u.ie.veneno&&t.vivo)venenar(C,u,t,dano);if(h.stun)atordoar(C,t,h.stun);if(h.deb)aplicarDeb(C,t,h.deb);if(h.dot&&t.vivo)aplicarDot(C,u,t,h.dot);if(h.drena&&r)curar(C,u,r*h.drena);});break;}
+      agendar(C,d,()=>{if(!t.vivo)return;const fatal=h.finaliza&&t.hp/t.hpM<=h.finaliza.limiar,raw=dano*(fatal?h.finaliza.mult:1);fx(C,h.ef,t.x,t.y);if(fatal)fx(C,'fatal',t.x,t.y);const r=causar(C,u,t,raw,el,{magia:true,hab:true});if(u.ie.veneno&&t.vivo)venenar(C,u,t,raw);if(h.stun)atordoar(C,t,h.stun);if(h.deb)aplicarDeb(C,t,h.deb);if(h.dot&&t.vivo)aplicarDot(C,u,t,h.dot);if(h.drena&&r)curar(C,u,r*h.drena);});break;}
     case 'onda':{if(t&&h.tiro)tiro(C,h.tiro,u,t);danoArea(C,u,h,tilesArea(h.area,u.x,u.y,dir),el,h.m,h.ef,true);break;}
-    case 'self':{const tl=areaTiles(h,u.x,u.y,dir).filter(([x,y])=>!(x===u.x&&y===u.y));danoArea(C,u,h,tl,el,h.m,h.ef,false);break;}
+    case 'self':{const tl=areaTiles(h,u.x,u.y,dir).filter(([x,y])=>!(x===u.x&&y===u.y));danoArea(C,u,h,tl,el,h.m,h.ef,false);if(h.provoca)provocar(C,u,h.provoca,h.raio||1);break;}
     case 'pos':{if(!t)return;const d=h.tiro?tiro(C,h.tiro,u,t):60,cx=t.x,cy=t.y;
       agendar(C,d,()=>{danoArea(C,u,h,areaTiles(h,cx,cy,0),el,h.m,h.ef,false);});break;}
     case 'cura':{fx(C,h.ef||'magic_blue',u.x,u.y);curar(C,u,habCura(u,h.m));break;}
@@ -1259,12 +1288,12 @@ function passo(C){if(C.fim)return;C.t+=100;C.tk++;
   else if(C.t>=C.tempoMax+60000){finalizar(C);}   // trava de segurança: desempata pela vida restante
 }
 function agir(C,u){if(C.t<u.stunAte||C.t<u.livreEm)return;
-  let t=u.alvo;
+  const provocado=alvoProvocado(C,u);let t=provocado||u.alvo;if(provocado)u.alvo=provocado;
   if(!t||!t.vivo)t=u.alvo=escolherAlvo(C,u);
-  else if(cheb(u,t)>u.al){const p=escolherAlvo(C,u);if(p&&cheb(u,p)<cheb(u,t))t=u.alvo=p;}
+  else if(!provocado&&cheb(u,t)>u.al){const p=escolherAlvo(C,u);if(p&&cheb(u,p)<cheb(u,t))t=u.alvo=p;}
   if(!t)return;
   u.dir=dirPara(u,t);
-  if(u.hab&&u.manaM&&u.mana>=u.manaM&&podeLancar(C,u,t)){lancar(C,u,u.hab);return;}
+  if(u.hab&&u.manaM&&u.mana>=u.manaM&&podeLancar(C,u,t)){u.alvo=alvoHabilidade(C,u,t);lancar(C,u,u.hab);return;}
   if(cheb(u,t)<=u.al){if(C.t>=u.prox)atacar(C,u,t);}
   else mover(C,u,t);}
 function finalizar(C){if(C.fim)return;C.fim=true;
@@ -1826,6 +1855,7 @@ function desenharBarras(u,px,py,rt,alfa){const f=folhaDe(u.d),altura=f?Math.min(
   if(mh){cx.fillStyle='#0a1028';cx.fillRect(x0,y0+h+1,w,mh);cx.fillStyle='#3f7bff';cx.fillRect(x0,y0+h+1,Math.round(w*clamp(u.mana/u.manaM,0,1)),mh);cx.fillStyle='rgba(255,255,255,.25)';cx.fillRect(x0,y0+h+1,Math.round(w*clamp(u.mana/u.manaM,0,1)),1);}
   // estrelas (só de unidades do jogador)
   if(!u.inv&&!u.pve&&u.e>0){const r=Math.max(3,1.9*Z),yc=y0-r-3;for(let i=0;i<u.e;i++){estrela(sx+(i-(u.e-1)/2)*r*2.3,yc,r);}}
+  const estados=estadosUnidade(u);if(estados.length){cx.font='bold '+Math.max(9,Math.round(5*Z))+'px Verdana';cx.textAlign='center';estados.forEach(([k,n,cor,letra],i)=>{const xx=x0+i*12;cx.fillStyle='#080a11';cx.fillRect(xx,y0+H+4,11,12);cx.fillStyle=cor;cx.fillText(letra,xx+5,y0+H+14);});}
   cx.restore();}
 
 function estrela(x,y,r){cx.beginPath();for(let i=0;i<10;i++){const a=-Math.PI/2+i*Math.PI/5,rr=i%2?r*.45:r;cx.lineTo(x+Math.cos(a)*rr,y+Math.sin(a)*rr);}cx.closePath();
@@ -2026,7 +2056,7 @@ function elementosUnidade(d){return [...new Set([d.el||'phys',...partesHab(d).fl
 function chipElemento(el){return `<span class="elemento" style="--el:${EL[el].cor}"><i aria-hidden="true">${EL_SIMBOLO[el]}</i>${NOME_EL[el]}</span>`;}
 function seloPapel(d){const r=PAPEIS[PAPEL_CLASSE[d.k]];return r?`<span class="papel-badge">${SVG_ST[r.ico]}${r.n}</span>`:'';}
 function perfilUnidade(d){const r=PAPEIS[PAPEL_CLASSE[d.k]];
-  return `<div class="perfil-unidade">${seloPapel(d)}<div class="elementos">${elementosUnidade(d).map(chipElemento).join('')}</div>${r?`<p>${r.d}</p>`:''}</div>`;}
+  return `<div class="perfil-unidade">${seloPapel(d)}<div class="elementos">${elementosUnidade(d).map(chipElemento).join('')}</div>${r?`<p>${esc(d.dica||r.d)}</p>`:''}</div>`;}
 function defesasElementais(u){const els=Object.keys(NOME_EL).filter(e=>e!=='phys'&&(u.res[e]||0)!==0);
   return els.length?`<div class="defesas-el"><b>Proteção elemental adicional</b>${els.map(e=>`<span>${chipElemento(e)} ${Math.round(Math.min(.6,u.res[e])*100)}%</span>`).join('')}<small>Aplicada depois da resistência mágica.</small></div>`:'';}
 const NOME_FASE={prep:'Preparação',combate:'Combate',resultado:'Resultado',espera:'Aguardando'};
@@ -2044,7 +2074,7 @@ const marcarTudo=()=>marcar('topo','sin','jog','loja','itens','btn','strip');
 /* habilidade em partes: palavra mágica, tipo e a descrição numa frase com números */
 function habInfo(d,e){const h=d.hab;if(!h)return null;const sk=d.pve?(d.sk||0):CUSTO_SK[d.c]*(ESTR[e||1]),dm=m=>Math.round(m*sk);
   const ex=s=>{let t='';if(s.stun)t+=`, atordoa ${(s.stun/1000).toFixed(1)}s`;if(s.dot)t+=` e queima/envenena por ${dm(s.dot.m)} em ${s.dot.dur}s`;if(s.drena)t+=', cura o conjurador';
-    if(s.deb){if(s.deb.fraco)t+=`, alvo causa ${Math.round(s.deb.fraco*100)}% menos dano`;if(s.deb.armR)t+=`, reduz ${Math.round(s.deb.armR*100)}% da armadura`;if(s.deb.lento)t+=`, deixa o alvo ${Math.round(s.deb.lento*100)}% mais lento`;}return t;};
+    if(s.deb){if(s.deb.fraco)t+=`, alvo causa ${Math.round(s.deb.fraco*100)}% menos dano`;if(s.deb.armR)t+=`, reduz ${Math.round(s.deb.armR*100)}% da armadura`;if(s.deb.lento)t+=`, reduz velocidade de ataque e movimento em ${Math.round(s.deb.lento*100)}% por ${(s.deb.dur/1000).toFixed(0)}s`;if(s.deb.ferida)t+=`, Ferida: reduz toda cura recebida em ${Math.round(s.deb.ferida*100)}% por ${s.deb.dur/1000}s`;if(s.deb.silencio)t+=`, silencia por ${s.deb.dur/1000}s (bloqueia habilidades, não ataques)`;}if(s.provoca)t+=`, provoca inimigos próximos por ${s.provoca/1000}s`;if(s.finaliza)t+=`; contra alvos com até ${Math.round(s.finaliza.limiar*100)}% de vida, causa +${Math.round((s.finaliza.mult-1)*100)}% de dano (FATAL!)`;return t;};
   const um=s=>{switch(s.t){
     case 'alvo':return `golpe de ${NOME_EL[s.el]||'magia'} no alvo (${dm(s.m)} de dano)${ex(s)}`;
     case 'onda':return `onda de ${NOME_EL[s.el]} na direção do alvo (${dm(s.m)} de dano)${ex(s)}`;
@@ -2105,6 +2135,7 @@ function cartaHover(slot,forcar){const p=UI.jog;let i=-1;
   el.innerHTML=htmlPainelCarta(i);el.classList.add('on');
   const sr=slot.getBoundingClientRect(),w=el.offsetWidth,h=el.offsetHeight,topC=UI.reduz?sr.top:sr.bottom-24-sr.height*1.12,l=clamp(sr.left+sr.width/2-w/2,6,innerWidth-w-6);
   el.style.left=Math.round(l)+'px';el.style.top=Math.round(Math.max(6,topC-12-h))+'px';el.style.setProperty('--ax',Math.round(sr.left+sr.width/2-l)+'px');}
+function estadosUnidade(u){if(!u||!u.C)return [];return [['ferida','Ferida','#ed7971','F'],['silencio','Silêncio','#cba5ff','S'],['provocado','Provocado','#f4c978','P']].filter(([k])=>k==='provocado'?!!alvoProvocado(u.C,u):bv(u,k)>0);}
 function tipUnidade(d,e,itens,u){const cl=CLASSES[d.k];const star=d.pve?'':'<span class="est">'+'★'.repeat(e||1)+'</span>';
   const sk=d.pve?'':`<span style="color:${TIER_COR[d.c]}">${d.c} <img src="${ICO.ouro}" style="width:11px;height:11px;vertical-align:-2px"></span>`;
   const tr=d.pve?'Criatura selvagem':chipTraco(d.o)+chipTraco(d.k);
@@ -2114,7 +2145,7 @@ function tipUnidade(d,e,itens,u){const cl=CLASSES[d.k];const star=d.pve?'':'<spa
     h+=L('Vida',(u.vivo&&u.hp<u.hpM?Math.round(u.hp)+' / ':'')+Math.round(u.hpM))+L('Ataque',Math.round(u.atk*(1+u.dmgB)))+L('Vel. de ataque',asv.toFixed(2)+'/s')+L('Armadura',Math.round(armEff(u)))+L('Res. mágica',Math.round(u.rm))+L('Alcance',u.al===1?'corpo a corpo':u.al+' tiles');
     if(u.manaM)h+=L('Mana',Math.round(u.mana)+' / '+u.manaM);
     if(u.crit)h+=L('Crítico',Math.round(u.crit*100)+'%');if(u.ap)h+=L('Poder de habilidade','+'+Math.round(u.ap*100)+'%');if(u.esq)h+=L('Esquiva',Math.round(u.esq*100)+'%');if(u.roubo)h+=L('Roubo de vida',Math.round(u.roubo*100)+'%');}
-  if(u)h+=defesasElementais(u);
+  if(u){h+=defesasElementais(u);const estados=estadosUnidade(u);if(estados.length)h+=`<div class="estados-unidade">${estados.map(([k,n,cor])=>`<span style="color:${cor}">${n}${k==='ferida'?' −'+Math.round(bv(u,k)*100)+'% de cura':''} · ${((u.b[k].ate-u.C.t)/1000).toFixed(1)}s</span>`).join('')}</div>`;}
   h+=`<div class="hab"><b style="color:#d9b45a">Habilidade</b><br>${descHab(d,e)}</div>`;
   if(itens&&itens.length)h+='<div class="itl">'+itens.map(c=>{const it=itemInfo(c);if(!it)return '';
     return `<div class="itx">${htmlItem(c,{tip:false})}<div><b>${esc(it.n)}</b>${it.enc?` <em style="color:${it.enc.cor}">· ${esc(it.enc.n)}</em>`:''}<span>${it.rec?`<u style="text-decoration:none;color:#d9b45a">${esc(it.base.fx)}</u>: `:''}${esc(it.d)}</span></div></div>`;}).join('')+'</div>';
@@ -2331,6 +2362,14 @@ function abrirConsulta(titulo,html,volta){const foco=document.activeElement,paus
   $('consulta-fechar').onclick=fecharConsulta;$('consulta-fechar').focus();retratosPend($('tela'));}
 function mostrarDetalhesCarta(i){if(!UI.jog||!UI.jog.loja[i])return;const d=U[UI.jog.loja[i]];
   abrirConsulta(d.nome,`<div class="detalhe-unidade">${htmlPainelCarta(i)}</div><p class="consulta-nota">Consultar não compra a unidade. Feche e clique na carta para comprar.</p>`);}
+function mostrarFicha(d,e,itens,u,volta){abrirConsulta(d.nome,`<div class="ficha-unidade"><canvas width="96" height="96" ${d.pve?`data-mon="${d.mon}"`:`data-ret="${d.id}"`}></canvas>${tipUnidade(d,e,itens,u)}</div>`,volta);}
+function mostrarNovasCartas(){abrirConsulta('Oito novas cartas',`<p class="consulta-nota">Explore funções e habilidades. Estas unidades aparecem normalmente na loja, conforme o nível e as chances de cada custo.</p><div class="novas-cartas">${NOVAS_CARTAS.map(id=>{const d=U[id];return `<button class="nova-carta" data-nova-carta="${id}" aria-label="Ver ${esc(d.nome)}"><canvas width="96" height="96" data-and="${id}"></canvas><span><b>${esc(d.nome)}</b><small>${d.c} ouro · ${TRACOS[d.o].n} · ${TRACOS[d.k].n}</small>${seloPapel(d)}<em>${esc(d.dica)}</em></span></button>`;}).join('')}</div>`,mostrarMenu);
+  $('tela').querySelectorAll('[data-nova-carta]').forEach(b=>b.onclick=()=>{const d=U[b.dataset.novaCarta],C=criarCombate({un:[{d,e:1,x:0,y:7,itens:[]}]},{un:[]},{seed:1,semSalto:true});mostrarFicha(d,1,[],C.un[0],mostrarNovasCartas);});}
+function inspecionarNoCanvas(ev){if(UI.estado!=='jogo'||UI.pausado||ev.target!==cv||UI.drag||UI.atq)return;const cel=celAt(ev);if(!cel)return;
+  let u=null,L=null;if(UI.C&&cel.onde!=='banco')u=unidadeCombateEm(cel,UI.C.t+UI.acc);
+  else if(UI.espiar!==null&&UI.prev){const y=cel.onde==='tab'?cel.y+4:cel.y;u=UI.prev.un.find(v=>v.x===cel.x&&v.y===y);}
+  else{L=unidadeEm(cel);if(L)u=statUn(L.inst);}
+  if(u)mostrarFicha(u.d,L?L.inst.e:u.e,L?L.inst.itens:u.itens,u);}
 const normalizarBusca=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
 function receitaDisponivel(it,p){if(!p)return false;const a=p.itens.filter(c=>c===it.pa).length,b=p.itens.filter(c=>c===it.pb).length;return it.pa===it.pb?a>=2:a>=1&&b>=1;}
 function atualizarReceitas(){const selecionada=$('receita-lista').querySelector('.selecionada'),sel=selecionada&&+selecionada.dataset.receita,foco=document.activeElement.closest('[data-receita]'),fid=foco&&foco.dataset.receita;const busca=normalizarBusca($('receita-busca').value.trim()),papel=$('receita-papel').value,so=$('receita-disponivel').checked,p=UI.estado==='jogo'?UI.jog:null;
@@ -2441,6 +2480,9 @@ function hudAnaliseEspia(){const el=$('espia-analise'),q=G.jog[UI.espiar],un=UI.
   if(un.some(u=>u.salta))dicas.push('Salto na retaguarda: proteja seus carries com posicionamento.');
   if(un.some(u=>u.queima))dicas.push('Queima de mana: habilidades podem demorar mais para sair.');
   if(un.some(u=>u.res.fire>0))dicas.push('Há proteção contra fogo. Considere outras fontes de dano.');
+  if(un.some(u=>partesHab(u.d).some(h=>h.provoca)))dicas.push('Provocação: inimigos próximos podem ser forçados a atacar o tanque.');
+  if(un.some(u=>partesHab(u.d).some(h=>h.deb&&h.deb.ferida)))dicas.push('Ferida: reduz a cura recebida; evite depender só de cura.');
+  if(un.some(u=>partesHab(u.d).some(h=>h.deb&&h.deb.silencio)))dicas.push('Silêncio: pode atrasar habilidades, mas ataques básicos continuam.');
   if(roles.suporte)dicas.push('Cura no time: concentrar dano pode impedir que um alvo se recupere.');
   if(!dicas.length)dicas.push('Compare as defesas e ajuste seus itens e posicionamento.');
   el.innerHTML=`<h3>Leitura do adversário</h3><p class="analise-nome">${esc(q.nome)} · ${un.length} unidades no tabuleiro</p>
@@ -2554,7 +2596,7 @@ function pointerMove(ev){UI.mx=ev.clientX;UI.my=ev.clientY;const p=UI.jog;
   if(ev.target===cv)return;UI.hoverCel=null;UI.hover=null;UI.hoverU=null;
   const el=ev.target.closest&&ev.target.closest('[data-tip]');
   if(el&&(UI.estado==='jogo'||/^(item|rec):/.test(el.dataset.tip))){const k=el.dataset.tip;if(UI.tipChave===k&&$('tip').style.display==='block')posTip(ev);else{const h=htmlTip(k);if(h)mostrarTip(h,ev,k);else esconderTip();}}else esconderTip();}
-function pointerUp(ev){const pd=UI.pd,d=UI.drag;UI.pd=null;if(!d)return;UI.drag=null;$('ghost').style.display='none';$('zona-venda').classList.remove('on','sobre');const p=UI.jog;
+function pointerUp(ev){const pd=UI.pd,d=UI.drag;UI.pd=null;if(!d){if(ev.button===0&&(!pd||Math.hypot(ev.clientX-pd.x,ev.clientY-pd.y)<=5))inspecionarNoCanvas(ev);return;}UI.drag=null;$('ghost').style.display='none';$('zona-venda').classList.remove('on','sobre');const p=UI.jog;
   if(d.tipo==='un'){const el=document.elementFromPoint(ev.clientX,ev.clientY);
     if(el&&el.closest('#base')){const L=unidadeEm(d.de.onde==='banco'?{onde:'banco',i:d.de.i}:{onde:'tab',x:d.de.x,y:d.de.y});if(L&&L.inst===d.inst)venderUI(L);return;}
     const cel=celAt(ev);if(!cel||(cel.onde!=='tab'&&cel.onde!=='banco'))return;
@@ -2685,8 +2727,8 @@ function fecharTela(){limparConsulta();esconderTip();const t=$('tela');t.classNa
 function mostrarMenu(){UI.estado='menu';fecharTela();iniciarDemo();$('app').style.visibility='visible';$('app').classList.add('menu');
   telaHTML(`<div class="painel modal"><h1>Tibia Tactics</h1><div class="sub">Auto-battler de Tibia</div>
     <div class="herois">${VOCS.map(v=>`<div class="heroi ${UI.voc===v?'sel':''}" data-v="${v}"><canvas width="56" height="56" data-av="${v}"></canvas>${{knight:'Knight',paladin:'Paladin',sorcerer:'Sorcerer',druid:'Druid'}[v]}</div>`).join('')}</div>
-    <div class="menu"><button class="bt primario" id="b-jogar">Jogar</button><button class="bt" id="b-online">Jogar online</button><button class="bt" id="b-como">Como jogar</button><button class="bt" id="b-rec">Recordes</button></div><p class="versao-jogo">Fase 3 · Etapa 1 — interface e estratégia</p></div>`);
-  retratosPend();$('tela').classList.add('menu');$('b-jogar').onclick=novaPartida;$('b-online').onclick=()=>mostrarOnline();$('b-como').onclick=()=>mostrarComoJogar(mostrarMenu);$('b-rec').onclick=mostrarRecordes;
+    <div class="menu"><button class="bt primario" id="b-jogar">Jogar</button><button class="bt" id="b-online">Jogar online</button><button class="bt" id="b-como">Como jogar</button><button class="bt" id="b-rec">Recordes</button><button class="bt" id="b-cartas">Novas cartas</button></div><p class="versao-jogo">Fase 3 · Etapa 2 — oito novas cartas</p></div>`);
+  retratosPend();$('tela').classList.add('menu');$('b-jogar').onclick=novaPartida;$('b-online').onclick=()=>mostrarOnline();$('b-como').onclick=()=>mostrarComoJogar(mostrarMenu);$('b-rec').onclick=mostrarRecordes;$('b-cartas').onclick=mostrarNovasCartas;
   document.querySelectorAll('.heroi').forEach(el=>el.onclick=()=>{UI.voc=el.dataset.v;document.querySelectorAll('.heroi').forEach(e=>e.classList.toggle('sel',e===el));});}
 function voltarMenu(){onlineSair();G=null;UI.jog=null;UI.C=null;UI.prev=null;mostrarMenu();}
 function mostrarRecordes(){const r=lerRec();
@@ -2725,7 +2767,8 @@ function iniciarDemo(){UI.demoBioma=BIOMAS[Math.floor(Math.random()*BIOMAS.lengt
    Camada de rede com dois transportes de mesma interface: PeerJS (WebRTC, real) e BroadcastChannel (?rede=local, duas abas).
    Mensagens JSON {t:tipo,...}; o handshake leva a versão do protocolo.
    ===================================================================================== */
-const PROTO=4;   // 4 (Fase 2): itens viram códigos inteiros (id + forja + encantamento); comandos novos combinar, forjar e encantar; inventário de 15 vagas; o equipar não aceita mais pergaminho. Antes: 2: pub/rodada/res levam tb (tabuleiros públicos) e hh (histórico); mensagem 'emote'; desc do resultado ganha v e dano. 3: desc ganha dop (dano causado ao adversário) para o convidado tocar o ataque do avatar
+const PROTO=5; // 5: oito novas cartas e counters; versões antigas não simulam o mesmo combate.
+// Histórico: const PROTO=4;   // 4 (Fase 2): itens viram códigos inteiros (id + forja + encantamento); comandos novos combinar, forjar e encantar; inventário de 15 vagas; o equipar não aceita mais pergaminho. Antes: 2: pub/rodada/res levam tb (tabuleiros públicos) e hh (histórico); mensagem 'emote'; desc do resultado ganha v e dano. 3: desc ganha dop (dano causado ao adversário) para o convidado tocar o ataque do avatar
 const MODO_REDE=(()=>{try{return new URLSearchParams(location.search).get('rede')==='local'?'local':'peerjs';}catch(e){return 'peerjs';}})();
 const ALFA_SALA='ABCDEFGHJKMNPQRSTUVWXYZ23456789';           // sem letras que confundem (I, L, O, 0, 1)
 const novoCodigo=()=>{let c='';for(let i=0;i<4;i++)c+=ALFA_SALA[Math.floor(Math.random()*ALFA_SALA.length)];return c;};
@@ -3157,7 +3200,7 @@ function laco(ts){requestAnimationFrame(laco);const dt=Math.min(100,ts-(UI.ultT|
   if(UI.meterAberto&&ts-(UI.ultMeter||0)>250){UI.ultMeter=ts;hudMeter();}
   // retratos animados das cartas
   // retratos das cartas: andam para o leste (mais rápido com o mouse em cima)
-  if(UI.estado==='jogo'&&ts-(UI.ultRet||0)>40){UI.ultRet=ts;document.querySelectorAll('#cartas canvas[data-and]').forEach(c=>pintarAndar(c,c.dataset.and,ts+(+c.dataset.k)*137,+c.dataset.k===UI.hoverCartaI));}
+  if((UI.estado==='jogo'||$('tela').querySelector('.novas-cartas'))&&ts-(UI.ultRet||0)>40){UI.ultRet=ts;document.querySelectorAll('#cartas canvas[data-and],.novas-cartas canvas[data-and]').forEach(c=>pintarAndar(c,c.dataset.and,ts+(+c.dataset.k||0)*137,+c.dataset.k===UI.hoverCartaI));}
   const arr=!!UI.drag;if(arr!==UI._arr){UI._arr=arr;document.body.classList.toggle('arrastando',arr);}      // arrastando uma unidade: as cartas não levantam
   if(UI.atq)passoAtaque(now);
   render();}

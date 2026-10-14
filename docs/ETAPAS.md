@@ -23,7 +23,15 @@ Branch: `melhoria/fase3-etapa1`. Tag de entrega: `tibia-fase3-etapa1`.
 
 O motor de combate e os valores de balanceamento permanecem os mesmos nesta etapa. Papéis são indicações de uso, não uma classe nova com bônus próprios. Os elementos indicados são fontes de dano da unidade, não uma estimativa de DPS.
 
-**Ainda não implementado:** resistências nativas verificadas por criatura, Ferida, provocação, silêncio, novos bônus de builds, charms, eventos, progressão de conta e temporadas. Não apresentar essas ideias como se já existissem. Em particular, o veneno atual não reduz cura.
+**Ainda não implementado na Etapa 1:** resistências nativas verificadas por criatura, Ferida, provocação, silêncio, novos bônus de builds, charms, eventos, progressão de conta e temporadas. Não apresentar essas ideias como se já existissem. Em particular, o veneno atual não reduz cura.
+
+## Etapa 2 — oito novas cartas e counters
+
+Entrega: `melhoria/fase3-etapa2-cartas`, tag `tibia-fase3-etapa2-cartas`.
+
+O elenco agora contém 53 cartas. Minotaur Guard, Hunter, Ice Witch, Demon Skeleton, Dark Monk, Wyvern, Bonelord e Grim Reaper têm sprites e habilidades próprios. Ferida, provocação, silêncio, finalização e defesa mágica especializada foram implementados. O menu inclui um compêndio animado e as unidades podem ser inspecionadas por clique.
+
+Veja [CARTAS_ETAPA_2.md](CARTAS_ETAPA_2.md) para custos, regras, validação e comandos para esta versão. Resistências elementais nativas para todo o elenco, charms e os demais sistemas continuam no roteiro.
 
 ## Roteiro aprovado para entregas seguintes
 

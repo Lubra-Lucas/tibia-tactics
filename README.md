@@ -28,3 +28,5 @@ Este é um projeto de fã, sem fins lucrativos e sem qualquer vínculo com a Cip
 A etapa atual adiciona funções e elementos nas cartas, inspeção sem compra, resumo de espionagem e uma consulta de receitas com busca e filtros. Use **i** na carta para ver detalhes e **Receitas** para abrir o compêndio. O solo pausa durante a consulta; online continua. **P** abre o placar e **Tab** navega pelos controles.
 
 O ponto de retorno anterior às melhorias, as próximas etapas e os comandos de Git Bash estão em [docs/ETAPAS.md](docs/ETAPAS.md).
+
+A **Etapa 2** amplia o elenco para **53 cartas**, com oito novas criaturas, Ferida, provocação, silêncio e finalização. Clique em **Novas cartas** no menu inicial para conhecer o elenco adicionado; durante a partida, clique em uma unidade para abrir sua ficha ou arraste para movê-la. Veja [custos, habilidades e comandos da Etapa 2](docs/CARTAS_ETAPA_2.md).

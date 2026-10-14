@@ -173,12 +173,102 @@ class InterfaceTests(unittest.TestCase):
         guest.keyboard.press('Escape')
         host.keyboard.press('Escape')
 
+    def test_new_roster_can_be_previewed_before_starting_a_game(self):
+        self.page.evaluate('voltarMenu()')
+        button = self.page.get_by_role('button', name='Novas cartas', exact=True)
+        self.assertEqual(button.count(), 1, 'Menu deve permitir conhecer as oito cartas')
+        button.click()
+        self.assertEqual(self.page.locator('[data-nova-carta]').count(), 8)
+        self.page.get_by_role('button', name='Ver Grim Reaper', exact=True).click()
+        self.assertIn('30%', self.page.get_by_role('dialog').inner_text())
+        self.assertIn('60%', self.page.get_by_role('dialog').inner_text())
+        self.page.keyboard.press('Escape')
+        self.assertEqual(self.page.locator('[data-nova-carta]').count(), 8)
+
+    def test_new_compendium_previews_are_animated(self):
+        self.page.evaluate('voltarMenu()')
+        self.page.get_by_role('button', name='Novas cartas', exact=True).click()
+        self.page.wait_for_function("FOLHAS[SPR.criaturas.minotaur_guard.src]?.ok")
+        initial = self.page.locator('[data-nova-carta="minotaur_guard"] canvas').evaluate('c => c.toDataURL()')
+        self.page.wait_for_function("initial => document.querySelector('[data-nova-carta=\"minotaur_guard\"] canvas').toDataURL() !== initial", arg=initial)
+
+    def test_all_eight_new_cards_have_visible_sprites_and_skill_descriptions(self):
+        ids = ['minotaur_guard','ice_witch','demon_skeleton','hunter','dark_monk','bonelord','wyvern','grim_reaper']
+        self.assertEqual(self.page.evaluate('LISTA_U.length'), 53)
+        for ident in ids:
+            self.page.evaluate("id => {UI.jog.loja=[id,null,null,null,null]; hudLoja();}", ident)
+            self.page.wait_for_function("id => FOLHAS[SPR.criaturas[id].src]?.ok", arg=ident)
+            name = self.page.evaluate('id => U[id].nome', ident)
+            self.page.get_by_role('button', name='Detalhes de '+name, exact=True).click()
+            text = self.page.get_by_role('dialog').inner_text().casefold()
+            self.assertIn(name.casefold(), text)
+            self.assertNotIn('undefined', text)
+            self.assertNotIn('nan', text)
+            self.page.keyboard.press('Escape')
+
+    def test_click_on_owned_unit_opens_its_sheet_without_moving_or_selling(self):
+        self.page.evaluate("UI.jog.loja=['minotaur_guard',null,null,null,null]; hudLoja()")
+        self.page.locator('#cartas .cslot[data-i="0"] .art').click()
+        before = self.page.evaluate('JSON.stringify([UI.jog.ouro, UI.jog.banco])')
+        box = self.page.locator('#cv').bounding_box()
+        point = self.page.evaluate('({x:(BEN_X+16)*Z,y:(BEN_Y+16)*Z})')
+        self.page.mouse.click(box['x']+point['x'], box['y']+point['y'])
+        self.assertEqual(self.page.get_by_role('dialog').count(), 1)
+        self.assertIn('Minotaur Guard', self.page.get_by_role('dialog').inner_text())
+        self.assertEqual(before, self.page.evaluate('JSON.stringify([UI.jog.ouro, UI.jog.banco])'))
+
+    def test_new_units_can_still_be_dragged_to_the_board(self):
+        self.page.evaluate("UI.jog.loja=['minotaur_guard',null,null,null,null]; hudLoja()")
+        self.page.locator('#cartas .cslot[data-i="0"] .art').click()
+        box = self.page.locator('#cv').bounding_box()
+        points = self.page.evaluate('({bank:{x:(BEN_X+16)*Z,y:(BEN_Y+16)*Z},board:{x:(BX+16)*Z,y:(BY+4*TS+16)*Z}})')
+        self.page.mouse.move(box['x']+points['bank']['x'],box['y']+points['bank']['y'])
+        self.page.mouse.down()
+        self.page.mouse.move(box['x']+points['board']['x'],box['y']+points['board']['y'],steps=8)
+        self.page.mouse.up()
+        self.assertEqual(self.page.evaluate('UI.jog.tab[0][0]?.id'), 'minotaur_guard')
+        self.assertEqual(self.page.get_by_role('dialog').count(), 0)
+
+    def test_eight_new_units_sync_through_real_online_snapshots_and_combat(self):
+        host = self.page
+        guest = self.context.new_page()
+        guest.on('pageerror', lambda e: self.errors.append(str(e)))
+        for page in (host,guest):
+            page.goto(self.url+'?rede=local',wait_until='domcontentloaded')
+            page.locator('#b-online').click(timeout=30000)
+        host.locator('#i-nome').fill('Host')
+        host.locator('#b-criar').click()
+        host.locator('#cod-sala').wait_for()
+        guest.locator('#i-nome').fill('Guest')
+        guest.locator('#i-cod').fill(host.locator('#cod-sala').inner_text())
+        guest.locator('#b-entrar').click()
+        guest.locator('#cod-sala').wait_for()
+        host.locator('#b-ini').click()
+        guest.wait_for_function("UI.estado==='jogo'")
+        guest_id = guest.evaluate('UI.jog.id')
+        host.evaluate("""() => {
+            G.jog.filter(p=>p.humano).forEach(p=>{
+                p.nivel=9;p.tab=Array.from({length:4},()=>Array(8).fill(null));
+                NOVAS_CARTAS.forEach((id,x)=>p.tab[0][x]=novoInst(G,id));p.pronto=false;
+            });
+            paraHumanos(cl=>enviarSnapCl(cl,'snap',{force:true}));posAcao();
+        }""")
+        guest.wait_for_function("contarTab(UI.jog)===8 && UI.jog.tab[0][7]?.id==='grim_reaper'")
+        guest.locator('#bt-pronto').click()
+        host.locator('#bt-pronto').click()
+        guest.wait_for_function("UI.fase==='combate' && UI.C")
+        expected = host.evaluate("id => {const C=G.lutas[id].C;simular(C);return JSON.stringify({seed:C.seed,t:C.t,v:C.venc,u:C.un.map(u=>[u.d.id,u.hp,u.mana,u.st.d,u.st.c])});}",guest_id)
+        actual = guest.evaluate("() => {const C=UI.C;simular(C);return JSON.stringify({seed:C.seed,t:C.t,v:C.venc,u:C.un.map(u=>[u.d.id,u.hp,u.mana,u.st.d,u.st.c])});}")
+        self.assertEqual(actual,expected)
+        self.assertEqual(guest.evaluate('Online.dessinc'),0)
+
     def test_seeded_simulations_complete(self):
         self.page.goto(self.url+'?sim=3&seed=1', wait_until='domcontentloaded')
         self.page.wait_for_function("document.querySelector('#sim').textContent.startsWith('partidas ')", timeout=60000)
         text = self.page.locator('#sim').inner_text()
         self.assertIn('partidas 3 | erros 0 | travas 0', text)
-        self.assertIn('lutas PvP/PvE 400', text)
+        # Canonical seed with the 53-card roster (Etapa 1 had 400 fights).
+        self.assertIn('lutas PvP/PvE 388', text)
 
 if __name__ == '__main__':
     unittest.main()
