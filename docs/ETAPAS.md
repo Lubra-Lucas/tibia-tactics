@@ -33,12 +33,6 @@ O elenco agora contém 53 cartas. Minotaur Guard, Hunter, Ice Witch, Demon Skele
 
 Veja [CARTAS_ETAPA_2.md](CARTAS_ETAPA_2.md) para custos, regras, validação e comandos para esta versão. Resistências elementais nativas para todo o elenco, charms e os demais sistemas continuam no roteiro.
 
-## Etapa 3 — tabuleiro e reserva
-
-Entrega: `melhoria/tabuleiro-reserva`, tag `tibia-fase3-etapa3-tabuleiro-reserva`. O ponto anterior está em `tibia-marco-antes-tabuleiro-reserva-2026-10-14` (`6bd514e`).
-
-A reserva passa para uma faixa de nove vagas fora do canvas, com animações, itens e progresso de evolução. Selecionar mostra detalhes compactos e alcance, sem abrir consulta automaticamente. Arrastar distingue mover/trocar e destinos bloqueados; a venda usa uma área própria. No celular há setas para rolar a reserva. Veja [interação, validação e comandos](TABULEIRO_RESERVA_ETAPA_3.md).
-
 ## Roteiro aprovado para entregas seguintes
 
 1. **Fase 3 / combate:** conferir as resistências por criatura, definir adaptações de balanceamento, diferenciar tanques e implementar counters (Ferida, provocação e silêncio), com testes do motor e sincronização online.

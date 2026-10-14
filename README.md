@@ -29,6 +29,4 @@ A etapa atual adiciona funções e elementos nas cartas, inspeção sem compra, 
 
 O ponto de retorno anterior às melhorias, as próximas etapas e os comandos de Git Bash estão em [docs/ETAPAS.md](docs/ETAPAS.md).
 
-A **Etapa 2** amplia o elenco para **53 cartas**, com oito novas criaturas, Ferida, provocação, silêncio e finalização. Clique em **Novas cartas** no menu inicial para conhecer o elenco adicionado. Veja [custos, habilidades e comandos da Etapa 2](docs/CARTAS_ETAPA_2.md).
-
-A **Etapa 3** reorganiza o tabuleiro e a reserva: nove vagas animadas com itens e progresso de evolução, seleção com painel compacto, alcance visível e prévia de mover/trocar. A venda exige a área própria; no celular, a reserva pode ser rolada pelas setas. Clique em **Ficha completa** para abrir os detalhes. Veja [uso, validação e ponto de retorno](docs/TABULEIRO_RESERVA_ETAPA_3.md).
+A **Etapa 2** amplia o elenco para **53 cartas**, com oito novas criaturas, Ferida, provocação, silêncio e finalização. Clique em **Novas cartas** no menu inicial para conhecer o elenco adicionado; durante a partida, clique em uma unidade para abrir sua ficha ou arraste para movê-la. Veja [custos, habilidades e comandos da Etapa 2](docs/CARTAS_ETAPA_2.md).
