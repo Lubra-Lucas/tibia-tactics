@@ -3,6 +3,25 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="versao-site" content="2026-10-14.1"><!-- a cada deploy: trocar aqui, em VERSAO_SITE e nos ?v= dos scripts locais -->
+<script id="auto-update">
+/* auto-atualização: o GitHub Pages cacheia 10 min; compara a versão do index no servidor com a desta página e recarrega se mudou */
+(function(){
+  const RE=/<meta\s+name=["']versao-site["']\s+content=["']([^"']+)["']/i;
+  const novaUrl=(loc,nova)=>{const q=new URLSearchParams(loc.search);q.delete('nc');q.set('v',nova);return loc.pathname+'?'+q.toString()+loc.hash;};   // preserva ?sala=..&rede=.. e #hash
+  if(typeof window==='undefined'||typeof document==='undefined'){if(typeof module!=='undefined')module.exports={RE,novaUrl};return;}
+  const h=location.hostname;if(location.protocol==='file:'||h==='localhost'||h==='127.0.0.1'||h==='[::1]'||!window.fetch)return;
+  const mm=document.querySelector('meta[name=versao-site]'),MINHA=mm&&mm.content;if(!MINHA)return;   // versão desta página = a do próprio <meta>
+  let busy=false;
+  const livre=()=>{try{return typeof UI==='undefined'||(UI.estado==='menu'&&!(typeof Online!=='undefined'&&Online.ativo));}catch(e){return false;}};   // nunca recarrega em partida/sala
+  function checar(){if(busy)return;busy=true;
+    fetch(location.pathname+'?nc='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.text():'').then(t=>{busy=false;const m=RE.exec(t||'');if(!m||m[1]===MINHA||!livre())return;
+      try{if(sessionStorage.getItem('tt-recarregou')===m[1])return;sessionStorage.setItem('tt-recarregou',m[1]);}catch(e){return;}
+      location.replace(novaUrl(location,m[1]));}).catch(()=>{busy=false;});}
+  checar();
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&typeof UI!=='undefined'&&livre())checar();});
+})();
+</script>
 <title>Tibia Tactics</title>
 <link rel="icon" href="data:,">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -709,10 +728,11 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
 <div id="ghost"></div>
 
 <script async src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
-<script src="tibia-assets/sprites15.js"></script>
-<script src="tibia-assets/combate15.js"></script>
+<script src="tibia-assets/sprites15.js?v=2026-10-14.1"></script>
+<script src="tibia-assets/combate15.js?v=2026-10-14.1"></script>
 <script>
 'use strict';
+const VERSAO_SITE='2026-10-14.1';   // bumpar junto com <meta versao-site> e os ?v= dos scripts a cada deploy
 /* =====================================================================================
    TIBIA TACTICS  -  auto-battler estilo TFT com visual do Tibia
    Parte 1: dados (unidades, sinergias, itens, monstros). Nada aqui toca o DOM.
