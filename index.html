@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="versao-site" content="2026-10-15.2"><!-- a cada deploy: trocar aqui, em VERSAO_SITE e nos ?v= dos scripts locais -->
+<meta name="versao-site" content="2026-10-15.3"><!-- a cada deploy: trocar aqui, em VERSAO_SITE e nos ?v= dos scripts locais -->
 <script id="auto-update">
 /* auto-atualização: o GitHub Pages cacheia 10 min; compara a versão do index no servidor com a desta página e recarrega se mudou */
 (function(){
@@ -298,6 +298,16 @@ html.reduz .cslot:hover .carta:not(.vend){transform:translateY(var(--dy,0px)) ro
 #botoes .bt span{font:10px Verdana;color:#b2a26b;text-transform:none;letter-spacing:0;display:flex;align-items:center;gap:3px}
 #botoes .bt span img{width:13px;height:13px}
 #botoes .bt.on{border-color:#e6d27a;color:#fff1c4;background:linear-gradient(#5a4a1c,#2d230c)}
+/* poder da vocação (Fase 5) */
+#bt-poder{border-color:#6e5fa8}#bt-poder canvas{width:22px;height:22px;flex:none}#bt-poder .lb{flex:1;text-align:left;font-size:11px;line-height:1.1}#bt-poder .pn-c{display:none;font-style:normal}#bt-poder .pn-l{font-style:normal}
+#bt-poder.on{border-color:#9fd8ff;background:linear-gradient(#27456a,#132338);box-shadow:0 0 8px #6fb8ff88}#bt-poder.usado{opacity:.5}
+#dica-poder{position:absolute;left:50%;top:44px;transform:translateX(-50%);background:#0a2236e8;border:1px solid #6fb8ff;color:#d8efff;padding:5px 14px;border-radius:3px;font:700 12px Cinzel,serif;opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap;z-index:7}
+#dica-poder.on{opacity:1}
+#cartas.alvo-poder .cslot .carta{outline:2px dashed #6fb8ff;outline-offset:-2px;cursor:crosshair}
+.carta.gelada{box-shadow:0 0 0 2px #9fd8ff,0 0 14px #6fb8ffcc,inset 0 0 18px #bfe6ff66}.carta.gelada .art canvas{filter:drop-shadow(0 3px 2px #000a) hue-rotate(160deg) brightness(1.05)}
+.carta .gelo-m{position:absolute;left:4px;top:26px;z-index:3;background:#0b3a5ae6;border:1px solid #9fd8ff;color:#d8f2ff;border-radius:9px;padding:0 6px;font:700 11px Verdana}
+.poder-info{max-width:380px;margin:-6px auto 12px;text-align:left;font:11px/1.45 Verdana,sans-serif;color:#c9c4ad;background:#0b0d14;border:1px solid #3a321c;border-radius:3px;padding:7px 10px}
+.poder-info b{color:var(--ouro);font-family:Cinzel,serif}.poder-info .pc{color:#b2a26b}.poder-info p{margin:3px 0 0}
 #odds{margin-bottom:2px}
 #odds .oh{display:flex;justify-content:space-between;font:700 9px Cinzel,serif;color:var(--mut);letter-spacing:.1em;text-transform:uppercase;margin-bottom:3px}
 #odds .oh b{color:#f3e6b4}
@@ -727,6 +737,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
  #app#app #botoes{grid-column:4;grid-row:2;padding:3px;gap:4px;justify-content:stretch}
  #app#app #botoes .bt{flex:1 1 0;min-height:40px;flex-direction:column;justify-content:center;align-items:center;gap:1px;padding:3px 2px;font-size:11px;letter-spacing:.02em;text-align:center}
  #app#app #botoes .bt span{font-size:9px}#app#app #botoes #bt-trava span,#app#app #botoes #bt-pronto span,#app#app #botoes #bt-recolher span,.bt .md{display:none}
+ #app#app #bt-poder canvas,#app#app #bt-poder .pn-l{display:none}#app#app #bt-poder .pn-c{display:inline}#app#app #bt-poder .lb{text-align:center;font-size:10px}
  #app#app.combate #botoes #bt-pronto{display:none}#app#app.combate #botoes #bt-recolher{display:flex}
  /* placar vira painel fixo sobre a coluna da loja (não cobre o tabuleiro) */
  #app#app #meter{position:fixed;left:auto;right:calc(max(4px,env(safe-area-inset-right)) + 84px);top:calc(max(4px,env(safe-area-inset-top)) + 42px);width:164px;z-index:40;max-height:calc(100vh - 54px);max-height:calc(100dvh - 54px)}
@@ -735,7 +746,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
  #faixa b{font-size:38px}#faixa.res b{font-size:44px}#faixa .dano{font-size:32px}#faixa span{font-size:13px}
  #cpainel{max-height:calc(100vh - 12px);max-height:calc(100dvh - 12px)}
  /* menu e telas cabem na altura baixa */
- .modal{max-height:calc(100vh - 12px);max-height:calc(100dvh - 12px);padding:10px 18px}.modal h1{font-size:34px}.modal .sub{margin-bottom:8px}.herois{margin-bottom:8px}.heroi{width:62px}.heroi canvas{width:40px;height:40px}
+ .modal{max-height:calc(100vh - 12px);max-height:calc(100dvh - 12px);padding:10px 18px}.poder-info{margin:-2px auto 6px;padding:4px 8px;font-size:10px;line-height:1.3}.poder-info p{margin:1px 0 0}.modal h1{font-size:34px}.modal .sub{margin-bottom:8px}.herois{margin-bottom:8px}.heroi{width:62px}.heroi canvas{width:40px;height:40px}
  .modal .menu{display:grid;grid-template-columns:1fr 1fr;max-width:none}.modal .menu .bt{font-size:13px;padding:8px;min-height:40px}.versao-jogo{margin-top:8px}
 }
 @media (orientation:portrait) and (max-width:540px){
@@ -777,6 +788,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
  #app#app #botoes{grid-column:1;grid-row:4;flex-direction:row;gap:4px;padding:3px;justify-content:stretch}
  #app#app #botoes .bt{flex:1 1 0;min-height:44px;flex-direction:column;justify-content:center;align-items:center;gap:1px;padding:3px 2px;font-size:11px;letter-spacing:.02em;text-align:center}
  #app#app #botoes .bt span{font-size:9px}#app#app #botoes #bt-trava span,#app#app #botoes #bt-pronto span,#app#app #botoes #bt-recolher,.bt .md{display:none}
+ #app#app #bt-poder canvas,#app#app #bt-poder .pn-l{display:none}#app#app #bt-poder .pn-c{display:inline}#app#app #bt-poder .lb{text-align:center;font-size:10px}
  /* sinergias e jogadores: painéis sobre a tela, abertos pelos botões do topo */
  #app#app #esq,#app#app #dir{display:none;position:fixed;z-index:50;left:max(6px,env(safe-area-inset-left));right:max(6px,env(safe-area-inset-right));top:calc(max(4px,env(safe-area-inset-top)) + 84px);bottom:auto;max-height:calc(100vh - 150px);max-height:calc(100dvh - 150px);grid-column:auto;grid-row:auto;overflow:auto}
  #app#app.ver-sin #esq,#app#app.ver-jog #dir{display:block}
@@ -807,7 +819,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
   <aside id="esq" class="painel"><h2>Sinergias</h2><div id="sinergias"></div></aside>
   <main id="centro">
     <div id="faixa-rodada" class="painel"></div>
-    <div id="cvbox"><div id="cvw"><canvas id="cv"></canvas><div id="faixa"></div><div id="aviso"></div>
+    <div id="cvbox"><div id="cvw"><canvas id="cv"></canvas><div id="faixa"></div><div id="aviso"></div><div id="dica-poder"></div>
       <button class="bt peq" id="bt-meter" title="Placar da luta: dano causado, recebido e cura (P)"><svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="9" width="3.5" height="6"/><rect x="6.2" y="2" width="3.5" height="13"/><rect x="11.5" y="6" width="3.5" height="9"/></svg>Placar</button>
       <div id="meter" class="painel"></div>
       <div id="espia" class="painel"><span>Tabuleiro de <b id="espia-nome"></b></span><button class="bt peq" id="bt-espia-v">Voltar</button></div>
@@ -824,6 +836,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
       <div id="odds" data-tip="odds:x"></div>
       <button class="bt" id="bt-rolar" data-tip="bt:rolar">Rolar <span><img src="tibia-assets/sprites15/ui/gold.png" alt="">2 · D</span></button>
       <button class="bt" id="bt-xp" data-tip="bt:xp"><b class="lb"><i class="md">Comprar </i>XP</b> <span><img src="tibia-assets/sprites15/ui/gold.png" alt="">4 · F</span></button>
+      <button class="bt" id="bt-poder" data-tip="bt:poder" style="display:none"><canvas id="poder-av" width="22" height="22"></canvas><b class="lb"><i class="pn-l" id="poder-n"></i><i class="pn-c" id="poder-c"></i></b> <span><img src="tibia-assets/sprites15/ui/gold.png" alt=""><i id="poder-custo" style="font-style:normal"></i> · Q</span></button>
       <button class="bt" id="bt-trava" data-tip="bt:trava"><b class="lb">Travar<i class="md"> loja</i></b> <span>L</span></button>
       <button class="bt peq" id="bt-recolher">Recolher loja <span>S</span></button>
       <button class="bt primario" id="bt-pronto" data-tip="bt:pronto">Pronto <span>Espaço</span></button>
@@ -839,11 +852,11 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
 <div id="ghost"></div>
 
 <script async src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
-<script src="tibia-assets/sprites15.js?v=2026-10-15.2"></script>
-<script src="tibia-assets/combate15.js?v=2026-10-15.2"></script>
+<script src="tibia-assets/sprites15.js?v=2026-10-15.3"></script>
+<script src="tibia-assets/combate15.js?v=2026-10-15.3"></script>
 <script>
 'use strict';
-const VERSAO_SITE='2026-10-15.2';   // bumpar junto com <meta versao-site> e os ?v= dos scripts a cada deploy
+const VERSAO_SITE='2026-10-15.3';   // bumpar junto com <meta versao-site> e os ?v= dos scripts a cada deploy
 /* =====================================================================================
    TIBIA TACTICS  -  auto-battler estilo TFT com visual do Tibia
    Parte 1: dados (unidades, sinergias, itens, monstros). Nada aqui toca o DOM.
@@ -1165,11 +1178,11 @@ function nivelTraco(t,n){const L=TRACOS[t].niv;let r=-1;for(let i=0;i<L.length;i
 function criarCombate(eqA,eqB,o){o=o||{};
   const seed=(o.seed!==undefined?o.seed:sementeLuta())>>>0;   // todo o sorteio do combate sai daqui: mesmas equipes + mesma semente = mesma luta
   const C={seed,r:mulberry(seed),esp:false,t:0,tk:0,un:[],occ:new Int16Array(NC*NR),map:{},uid:0,ev:[],vis:!!o.vis,fim:false,venc:-2,vivos:[0,0],
-    semSalto:!!o.semSalto,sd:0,tr:[{},{}],niv:[{},{}],mortos:[],fx:[],tiros:[],txts:[],falas:[],dano:[0,0],cura:[0,0],tempoMax:o.tempoMax||40000,pve:!!o.pve,imp:[]};
+    semSalto:!!o.semSalto,sd:0,tr:[{},{}],niv:[{},{}],mortos:[],fx:[],tiros:[],txts:[],falas:[],dano:[0,0],cura:[0,0],curaMul:[1,1],tempoMax:o.tempoMax||40000,pve:!!o.pve,imp:[]};
   [eqA,eqB].forEach((eq,lado)=>{
     C.tr[lado]=contarTracos(eq.un.filter(s=>!s.inv&&!s.d.pve).map(s=>s.d.id));
     Object.keys(C.tr[lado]).forEach(t=>{C.niv[lado][t]=nivelTraco(t,C.tr[lado][t]);});
-    eq.un.forEach(s=>novoUnit(C,s,lado));});
+    eq.un.forEach(s=>{const u=novoUnit(C,s,lado);if(s.esc)u.escPoder=true;});});
   aplicarTracos(C);
   C.un.forEach(u=>{u.hp=u.hpM;});
   // efeitos de itens que valem desde o início da luta: escudo (Blessed Shield), furtividade (Stealth Ring) e aura de armadura (Royal Helmet)
@@ -1177,6 +1190,15 @@ function criarCombate(eqA,eqB,o){o=o||{};
     if(ie.escIni){darEscudo(C,u,u.hpM*ie.escIni,8000);fx(C,'magic_blue',u.x,u.y);}
     if(ie.furtivo)u.furtivoAte=ie.furtivo;
     if(ie.auraArm)C.un.forEach(v=>{if(v!==u&&v.lado===u.lado&&cheb(u,v)<=1)v.arm+=ie.auraArm;});});
+  // poderes das vocações: passivos + cargas do ativo (vêm no spec da equipe, então host e convidados simulam o mesmo)
+  [eqA,eqB].forEach((eq,lado)=>{const voc=eq.voc;if(!voc)return;const meus=C.un.filter(u=>u.lado===lado&&!u.inv&&!u.pve);
+    if(voc==='knight')meus.forEach(u=>{if(u.y===(lado===0?TAB_Y:3)){u.arm+=PODN.frente;u.rm+=PODN.frente;}});             // Linha de Frente
+    if(voc==='paladin')meus.forEach(u=>{if(u.al>=3)u.dmgB+=PODN.olho;});                                                 // Olho de Águia
+    if(voc==='sorcerer')meus.forEach(u=>{if(u.manaM)u.mana=Math.min(u.manaM,u.mana+PODN.mana);});                        // Fluxo Arcano
+    if(voc==='druid')C.curaMul[lado]=1+PODN.cura;                                                                         // Seiva
+    meus.forEach(u=>{if(u.escPoder){darEscudo(C,u,u.hpM*PODN.escudo,99999);fx(C,'magic_blue',u.x,u.y);}});               // Utamo Tempo
+    if(eq.sd)agendar(C,PODN.sdT,()=>{let al=null;C.un.forEach(u=>{if(u.vivo&&u.lado!==lado&&!u.inv&&(!al||u.hp>al.hp))al=u;});   // Runa SD: maior vida atual, empate = primeira unidade
+      if(!al)return;tiro(C,'suddendeath',{x:al.x,y:al.y-5},al);fx(C,'mortarea',al.x,al.y);fx(C,'explosionarea',al.x,al.y,60);causar(C,null,al,al.hpM*PODN.sd,'death',{magia:true,sem:true,crit:true});});});
   return C;}
 
 /* soma as estatísticas de um item (já com forja e encantamento) na unidade; os efeitos marcantes ficam em u.ie e são lidos pelo motor */
@@ -1286,7 +1308,7 @@ function causar(C,src,u,bruto,el,o){o=o||{};if(!u.vivo)return 0;
   if(u.orcFuria&&!u.furia&&u.hp<u.hpM*.5&&u.hp>0){u.furia=true;fx(C,'magic_red',u.x,u.y);txt(C,u.x,u.y,'Fúria!','#ff6a4a');}
   if(u.hp<=0)morrer(C,u,src);
   return d;}
-function curar(C,u,v,mudo,fonte){if(!u.vivo)return 0;v=Math.round(Math.min(v*(1-clamp(bv(u,'ferida'),0,.8)),u.hpM-u.hp));if(v<=0)return 0;u.hp+=v;C.cura[u.lado]+=v;(fonte||u).st.c+=v;if(!mudo)txt(C,u.x,u.y,'+'+v,EL.cura.cor);return v;}
+function curar(C,u,v,mudo,fonte){if(!u.vivo)return 0;v=Math.round(Math.min(v*(1-clamp(bv(u,'ferida'),0,.8))*C.curaMul[u.lado],u.hpM-u.hp));if(v<=0)return 0;u.hp+=v;C.cura[u.lado]+=v;(fonte||u).st.c+=v;if(!mudo)txt(C,u.x,u.y,'+'+v,EL.cura.cor);return v;}
 function morrer(C,u,src){if(!u.vivo)return;
   if(u.ie.revive&&!u.revivido){u.revivido=true;u.hp=Math.max(1,Math.round(u.hpM*u.ie.revive));u.dots.length=0;u.stunAte=Math.max(u.stunAte,C.t+300);   // Amulet of Loss: volta uma vez
     fx(C,'holyarea',u.x,u.y);fx(C,'hearts',u.x,u.y,150);txt(C,u.x,u.y,'Ressuscitou!','#ffe680',true);return;}
@@ -1456,6 +1478,18 @@ const ODDS=[null,[100,0,0,0,0],[100,0,0,0,0],[75,25,0,0,0],[55,30,15,0,0],[45,33
 const NEED={3:6,4:10,5:20,6:36,7:48,8:80};
 const MAX_BANCO=9,MAX_ITENS=15,TAB_Y=4;                  // TAB_Y: primeira linha do lado de baixo da arena
 const VOCS=['knight','paladin','sorcerer','druid'];
+/* ---------- poderes das vocações (Fase 5): um ativo (1x por rodada, só na preparação, custa ouro) + um passivo ---------- */
+let PODERES_OFF=false;   // balanceamento/testes: desliga ativos e passivos (G.opt.semPoderes)
+const PODN={escudo:.5,frente:15,desc:1,olho:.08,sd:.18,sdT:1500,mana:15,cura:.05,xp:2};   // números dos poderes (a interface lê daqui)
+const PODER={
+  knight:{n:'Utamo Tempo',custo:2,alvo:'un',pn:'Linha de Frente',dica:'Escolha uma unidade',
+    a:()=>`Uma unidade sua começa a próxima luta com escudo de ${Math.round(PODN.escudo*100)}% da vida.`,p:()=>`Unidades da sua linha da frente: +${PODN.frente} de armadura e de res. mágica.`},
+  paladin:{n:'Caçada',custo:1,alvo:'loja',pn:'Olho de Águia',dica:'Escolha uma carta da loja',
+    a:()=>`Congela uma carta da loja (sobrevive a rolagens e rodadas) e ela custa ${PODN.desc} a menos.`,p:()=>`Unidades com alcance 3 ou mais: +${Math.round(PODN.olho*100)}% de dano.`},
+  sorcerer:{n:'Runa SD',custo:2,alvo:null,pn:'Fluxo Arcano',
+    a:()=>`Na próxima luta, aos ${PODN.sdT/1000} s, uma Sudden Death atinge o inimigo com mais vida: ${Math.round(PODN.sd*100)}% da vida máxima dele.`,p:()=>`Suas unidades começam a luta com +${PODN.mana} de mana.`},
+  druid:{n:'Dádiva da Natureza',custo:2,alvo:null,pn:'Seiva',
+    a:()=>`Ganha +${PODN.xp} de XP agora.`,p:()=>`Cura recebida pelas suas unidades: +${Math.round(PODN.cura*100)}%.`}};
 
 function infoRodada(i){if(i<3)return {est:1,n:i+1,tipo:'pve',nome:'1-'+(i+1)};const k=i-3,est=2+Math.floor(k/6),n=k%6+1;
   return {est,n,tipo:n<=4?'pvp':n===5?'car':'pve',nome:est+'-'+n};}
@@ -1464,12 +1498,12 @@ const bonusSeq=s=>{s=Math.abs(s);return s>=5?3:s>=4?2:s>=2?1:0;};
 
 /* ---------- jogadores ---------- */
 function novoJog(G,i,nome,humano){const p={id:i,nome,humano:!!humano,hp:100,ouro:humano?10:10,nivel:3,xp:0,banco:new Array(MAX_BANCO).fill(null),
-  tab:[0,1,2,3].map(()=>new Array(NC).fill(null)),itens:[],loja:[null,null,null,null,null],travada:false,seq:0,vivo:true,colocacao:0,
+  tab:[0,1,2,3].map(()=>new Array(NC).fill(null)),itens:[],loja:[null,null,null,null,null],travada:false,seq:0,vivo:true,colocacao:0,podU:false,podEsc:0,podRuna:false,cong:-1,
   voc:VOCS[i%4],addon:rint(0,3),forca:.9+rnd()*.25,estrat:null,rolados:0,nvitorias:0,ult:null,vit:0,der:0,hist:[]};
   p.estrat=sortearEstrategia();return p;}
 function sortearEstrategia(){const ors=Object.keys(TRACOS).filter(t=>TRACOS[t].t==='origem'),cls=Object.keys(TRACOS).filter(t=>TRACOS[t].t==='classe');
   const a=pick(ors),b=pick(cls);return {tr:[a,b]};}
-function novoJogo(opt){opt=opt||{};const G={rodada:0,jog:[],pool:{},uid:0,fase:'prep',fim:false,info:null,opt,colocados:[],car:null,luta:null,lutas:{},pares:[],opoEq:{},opoDe:{},
+function novoJogo(opt){opt=opt||{};PODERES_OFF=!!opt.semPoderes;const G={rodada:0,jog:[],pool:{},uid:0,fase:'prep',fim:false,info:null,opt,colocados:[],car:null,luta:null,lutas:{},pares:[],opoEq:{},opoDe:{},
   est:{lutas:0,ladoV:[0,0,0],tr:{},ticks:[],sd:0,tempoEsg:0,pveV:{},pveN:{}}};
   LISTA_U.forEach(id=>{G.pool[id]=QTD_POOL[U[id].c];});
   // humanos: [{nome,voc,cid,local}]. Solo = um humano local; online = o anfitrião (local) + convidados (remotos), os demais são bots
@@ -1517,11 +1551,12 @@ function sortearCarta(G,p){const odds=ODDS[p.nivel];
     const ids=LISTA_U.filter(id=>U[id].c===c&&G.pool[id]>0);if(!ids.length)continue;
     let tot=0;ids.forEach(id=>tot+=G.pool[id]);let x=rnd()*tot;for(const id of ids){x-=G.pool[id];if(x<0){G.pool[id]--;return id;}}}
   return null;}
-function devolverLoja(G,p){p.loja.forEach((id,i)=>{if(id)G.pool[id]++;p.loja[i]=null;});}
-function rolarLoja(G,p){devolverLoja(G,p);for(let i=0;i<5;i++)p.loja[i]=sortearCarta(G,p);}
-function podeComprar(p,id){const d=U[id];if(p.ouro<d.c)return 'ouro';if(vagaBanco(p)<0&&copias(p,id,1)<2)return 'banco';return null;}
-function comprar(G,p,i){const id=p.loja[i];if(!id)return false;if(podeComprar(p,id))return false;
-  p.ouro-=U[id].c;p.loja[i]=null;const v=vagaBanco(p),inst=novoInst(G,id);
+function devolverLoja(G,p,tudo){p.loja.forEach((id,i)=>{if(!id||(!tudo&&i===p.cong))return;G.pool[id]++;p.loja[i]=null;});if(tudo)p.cong=-1;}   // a carta congelada (Caçada) não volta ao pool
+function rolarLoja(G,p){devolverLoja(G,p);for(let i=0;i<5;i++)if(!(i===p.cong&&p.loja[i]))p.loja[i]=sortearCarta(G,p);}
+const precoLoja=(p,i)=>{const id=p.loja[i];if(!id)return 0;return Math.max(1,U[id].c-(i===p.cong?PODN.desc:0));};
+function podeComprar(p,id,i){const d=U[id];if(p.ouro<(i===undefined?d.c:precoLoja(p,i)))return 'ouro';if(vagaBanco(p)<0&&copias(p,id,1)<2)return 'banco';return null;}
+function comprar(G,p,i){const id=p.loja[i];if(!id)return false;if(podeComprar(p,id,i))return false;
+  p.ouro-=precoLoja(p,i);p.loja[i]=null;if(p.cong===i)p.cong=-1;const v=vagaBanco(p),inst=novoInst(G,id);
   if(v>=0)p.banco[v]=inst;else p.banco.push(inst);      // banco cheio: só passa aqui se a compra completa uma fusão
   fundir(G,p);while(p.banco.length>MAX_BANCO&&p.banco[p.banco.length-1]===null)p.banco.pop();return true;}
 function venderInst(G,p,L){const inst=L.inst;p.ouro+=valorVenda(inst);G.pool[inst.id]+=Math.pow(3,inst.e-1);devolverItens(p,inst);remover(p,L);}
@@ -1564,12 +1599,21 @@ function locOk(l,p){if(!l||typeof l!=='object')return null;
   if(l.onde==='tab'&&ehInt(l.x,0,NC-1)&&ehInt(l.y,0,3))return {onde:'tab',x:l.x,y:l.y};return null;}
 function unidadeDe(p,l){if(!l)return null;if(l.onde==='banco'){const inst=p.banco[l.i];return inst?{onde:'banco',i:l.i,inst}:null;}
   const inst=p.tab[l.y]&&p.tab[l.y][l.x];return inst?{onde:'tab',x:l.x,y:l.y,inst}:null;}
+/* ativo da vocação: valida (fase, uma vez por rodada, ouro, alvo) e aplica; o efeito em combate viaja pela equipe (espDeJog) */
+function usarPoder(G,p,c){const P=PODER[p.voc];if(!P||PODERES_OFF)return 'Poderes desligados';
+  if(G.fase!=='prep')return 'Só na preparação';if(p.podU)return 'Poder já usado nesta rodada';if(p.ouro<P.custo)return 'Ouro insuficiente';
+  if(p.voc==='knight'){const L=unidadeDe(p,locOk(c.alvo,p));if(!L)return 'x';p.podEsc=L.inst.uid;}
+  else if(p.voc==='paladin'){if(!ehInt(c.alvo,0,4)||!p.loja[c.alvo])return 'x';p.cong=c.alvo;}
+  else if(p.voc==='sorcerer')p.podRuna=true;
+  else{if(p.nivel>=9)return 'Nível máximo';ganharXP(p,PODN.xp);}
+  p.ouro-=P.custo;p.podU=true;return null;}
 function execCmd(G,p,c){if(!p||!p.vivo)return 'Você foi eliminado';if(!c||typeof c!=='object')return 'x';const prep=G.fase==='prep';
   switch(c.t){
-    case 'comprar':{if(!ehInt(c.i,0,4))return 'x';const id=p.loja[c.i];if(!id)return 'x';const r=podeComprar(p,id);if(r)return r==='ouro'?'Ouro insuficiente':'Banco cheio';comprar(G,p,c.i);return null;}
+    case 'comprar':{if(!ehInt(c.i,0,4))return 'x';const id=p.loja[c.i];if(!id)return 'x';const r=podeComprar(p,id,c.i);if(r)return r==='ouro'?'Ouro insuficiente':'Banco cheio';comprar(G,p,c.i);return null;}
     case 'rolar':return rolar(G,p)?null:'Ouro insuficiente';
     case 'xp':if(p.nivel>=9)return 'Nível máximo';return comprarXP(p)?null:'Ouro insuficiente';
     case 'travar':p.travada=!p.travada;return null;
+    case 'poder':return usarPoder(G,p,c);
     case 'mover':{const de=locOk(c.de,p),pa=locOk(c.para,p);if(!de||!pa)return 'x';
       if(de.onde==='banco'&&de.i>=p.banco.length)return 'x';
       if(!moverUn(p,de,pa,!prep))return pa.onde==='tab'?(!prep?'Só é possível reposicionar na preparação':'Limite de unidades do nível atingido'):'x';return null;}
@@ -1592,7 +1636,7 @@ const tierCar=id=>ITEM[id]&&ITEM[id].perg?2:1;
    Equipes para o combate (coordenadas da arena)
    ===================================================================================== */
 function espDeJog(p,lado){const un=[];p.tab.forEach((l,y)=>l.forEach((inst,x)=>{if(!inst)return;
-  un.push({d:U[inst.id],e:inst.e,x:lado===0?x:7-x,y:lado===0?TAB_Y+y:3-y,itens:inst.itens.slice(),inst});}));return {un};}
+  un.push({d:U[inst.id],e:inst.e,x:lado===0?x:7-x,y:lado===0?TAB_Y+y:3-y,itens:inst.itens.slice(),inst,esc:p.podEsc&&inst.uid===p.podEsc});}));return {un,voc:PODERES_OFF?null:p.voc,sd:!PODERES_OFF&&p.voc==='sorcerer'&&p.podRuna};}
 function monDef(id,f){const m=MON[id],sp=SPR.criaturas[id];
   return {id:'m_'+id,mon:id,mf:f,nome:m.n,spr:id,voc:null,c:0,o:'pve',k:'pve',pve:true,hp:Math.round(m.hp*f*HPG),atk:Math.round(m.atk*f),arm:m.arm,al:m.al,as:m.as,sk:Math.round((m.sk||0)*f),
     hit:m.hit||'drawblood',atq:m.atq||null,el:m.el||'phys',hab:m.hab||null,mana:m.hab?70:0,m0:m.hab?25:0,cad:sp&&sp.cad};}
@@ -1610,21 +1654,32 @@ const potUn=inst=>(1+.5*(U[inst.id].c-1))*ESTR[inst.e]+inst.itens.length*.4;
 function valorTr(ids){const c=contarTracos(ids);let v=0;for(const t in c){const n=nivelTraco(t,c[t]);if(n>=0)v+=(n+1)*1.6+(n>=1?.5:0);else v+=c[t]*.25;}return v;}
 function ptsCompra(p,id,tr){const d=U[id];let s=d.c*1.2;if(p.estrat.tr.includes(d.o))s+=2.2;if(p.estrat.tr.includes(d.k))s+=2.2;
   const n=copias(p,id,1),n2=copias(p,id,2);s+=n>=2?7:n===1?2.5:0;if(n2>=2)s+=5;else if(n2===1)s+=1.5;return s;}
+/* ativo da vocação do bot: gasta só se não perder juros (ou da fase 4 em diante / vida baixa); Paladin congela antes de comprar, Knight escolhe depois de montar o tabuleiro */
+const BOT_PODER={estLivre:99,res_druid:true,res_knight:false,res_sorcerer:false,min_druid:2};   // min_*: estágio mínimo para o bot usar o ativo   // estLivre: estágio a partir do qual o bot ignora os juros (99 = nunca)   // ajustes de balanceamento
+function poderBot(G,p,quando){const P=PODER[p.voc];if(!P||PODERES_OFF||p.podU||G.fase!=='prep'||G.info.est<(BOT_PODER['min_'+p.voc]||1))return;
+  const juros=o=>Math.min(5,Math.floor(o/10)),ok=p.ouro>=P.custo&&(juros(p.ouro-P.custo)>=juros(p.ouro)||G.info.est>=BOT_PODER.estLivre||p.hp<45)&&(!BOT_PODER['res_'+p.voc]||p.ouro-P.custo>=(p._res||0));
+  if(!ok)return;
+  if(p.voc==='paladin'&&quando==='cedo'){let b=-1,bs=-9;p.loja.forEach((id,i)=>{if(!id||i===p.cong||p.ouro<precoLoja(p,i)-1)return;const s=ptsCompra(p,id)+rnd()*.01;if(s>bs){bs=s;b=i;}});
+    if(b>=0)execCmd(G,p,{t:'poder',alvo:b});}
+  else if(p.voc==='knight'&&quando==='tarde'){let b=null,bs=-1;todos(p).forEach(L=>{if(L.onde!=='tab')return;const s=potUn(L.inst);if(s>bs){bs=s;b=L;}});
+    if(b)execCmd(G,p,{t:'poder',alvo:locDe(b)});}
+  else if(p.voc==='sorcerer'&&quando==='tarde')execCmd(G,p,{t:'poder'});
+  else if(p.voc==='druid'&&quando==='cedo'&&p.nivel<9)execCmd(G,p,{t:'poder'});}
 function agirBot(G,p){const r=G.info;
   p.nivel=Math.max(p.nivel,curvaNivel(G.rodada));
-  const est=r.est,reserva=p.hp<45?0:Math.round((est<=1?4:est<=2?14:est<=3?30:50)*(1.2-.2*p.forca));
+  const est=r.est,reserva=p.hp<45?0:Math.round((est<=1?4:est<=2?14:est<=3?30:50)*(1.2-.2*p.forca));p._res=reserva;
   const comprarLoop=()=>{let guard=0;
     while(guard++<12){const total=todos(p).length,precisa=total<p.nivel+(est<=1?0:1);let melhor=-1,ms=-9;
-      p.loja.forEach((id,i)=>{if(!id)return;const d=U[id];if(p.ouro<d.c||podeComprar(p,id))return;const s=ptsCompra(p,id),completa=copias(p,id,1)>=2||copias(p,id,2)>=2;
-        const ok=completa||(precisa&&s>=2.2)||(s>=(est<=2?3.4:4.8)&&p.ouro-d.c>=reserva);if(ok&&s>ms){ms=s;melhor=i;}});
+      p.loja.forEach((id,i)=>{if(!id)return;const d=U[id];if(p.ouro<precoLoja(p,i)||podeComprar(p,id,i))return;const s=ptsCompra(p,id),completa=copias(p,id,1)>=2||copias(p,id,2)>=2;
+        const ok=completa||(precisa&&s>=2.2)||(s>=(est<=2?3.4:4.8)&&p.ouro-precoLoja(p,i)>=reserva);if(ok&&s>ms){ms=s;melhor=i;}});
       if(melhor<0)break;if(!comprar(G,p,melhor))break;}};
-  comprarLoop();
+  poderBot(G,p,'cedo');comprarLoop();
   const maxR=Math.round(3*p.forca)+(p.hp<45?3:0);let k=0;
   while(k++<maxR&&p.ouro-2>=reserva+(est<=1?99:0)&&est>1&&!(vagaBanco(p)<0)){rolar(G,p);comprarLoop();}
   fundir(G,p);
   // vende o excesso do banco (o mais fraco fora da estratégia)
   while(vagaBanco(p)<0||todos(p).length>MAX_BANCO+p.nivel){const L=todos(p).filter(L=>L.onde==='banco').sort((a,b)=>potUn(a.inst)-potUn(b.inst))[0];if(!L)break;venderInst(G,p,L);if(vagaBanco(p)>=0)break;}
-  posicionarBot(p);equiparBot(G,p);}
+  posicionarBot(p);equiparBot(G,p);poderBot(G,p,'tarde');}
 function posicionarBot(p){const L=todos(p),N=p.nivel;
   // devolve tudo à lista e escolhe os N melhores com ganho marginal de sinergia
   const rest=L.slice(),sel=[];
@@ -1690,7 +1745,7 @@ function equiparBot(G,p){let g=0;while(g++<40&&passoItemBot(G,p));}
    Fluxo das rodadas
    ===================================================================================== */
 function iniciarRodada(G){const r=G.info=infoRodada(G.rodada);const vivos=vivosDe(G);G.luta=null;G.lutas={};G.pares=[];G.fase='prep';
-  vivos.forEach(p=>{p.pronto=false;});
+  vivos.forEach(p=>{p.pronto=false;p.podU=false;});
   if(G.rodada>0)vivos.forEach(p=>{const juros=Math.min(5,Math.floor(p.ouro/10)),sq=bonusSeq(p.seq);
     p.renda={base:5,juros,seq:sq,total:5+juros+sq};p.ouro+=p.renda.total;ganharXP(p,2);});
   // o humano sorteia a loja antes dos bots (justiça com o pool compartilhado)
@@ -1706,8 +1761,9 @@ function iniciarRodada(G){const r=G.info=infoRodada(G.rodada);const vivos=vivosD
 /* adversário (jogador) de p nesta rodada de PvP; o "fantasma" não luta de verdade, então não conta como adversário de ninguém */
 function opoDe(G,p){if(!G.pares0)return null;for(const x of G.pares0){if(x.a===p)return x.b;if(x.b===p&&!x.fant)return x.a;}return null;}
 /* equipes <-> JSON (o anfitrião manda as equipes da luta ao convidado; ele roda o mesmo motor com a mesma semente) */
-function eqSer(eq){return eq.un.map(s=>s.d.pve?{mon:s.d.mon,mf:s.d.mf,x:s.x,y:s.y}:{id:s.d.id,e:s.e,x:s.x,y:s.y,it:s.itens.slice()});}
-function eqDes(a){return {un:a.map(s=>s.mon?{d:monDef(s.mon,s.mf),e:1,x:s.x,y:s.y}:{d:U[s.id],e:s.e,x:s.x,y:s.y,itens:(s.it||[]).slice()})};}
+function eqSer(eq){return eq.un.map(s=>s.d.pve?{mon:s.d.mon,mf:s.d.mf,x:s.x,y:s.y}:{id:s.d.id,e:s.e,x:s.x,y:s.y,it:s.itens.slice(),es:s.esc?1:0});}
+const metaSer=eq=>({v:eq.voc||0,sd:eq.sd?1:0});      // poderes da equipe (passivo da vocação e Runa SD)
+function eqDes(a,m){return {un:a.map(s=>s.mon?{d:monDef(s.mon,s.mf),e:1,x:s.x,y:s.y}:{d:U[s.id],e:s.e,x:s.x,y:s.y,itens:(s.it||[]).slice(),esc:!!s.es}),voc:m&&m.v&&PODER[m.v]?m.v:null,sd:!!(m&&m.sd)};}
 /* um humano saiu: a IA assume a vaga (e age já, se for na preparação) */
 function virarBot(G,p){p.humano=false;p.remoto=false;p.eraHumano=true;p.cid=null;p.pronto=false;
   if(G.car)carAvancar(G);if(G.fase==='prep'&&!G.fim&&p.vivo){try{agirBot(G,p);}catch(e){}}}
@@ -1734,6 +1790,8 @@ function tracoDominante(un){const c=contarTracos(un.filter(s=>!s.inv).map(s=>s.d
 /* começa o combate: o humano ganha o combate visível (vis=true), todo o resto é resolvido em silêncio */
 function comecarCombate(G){const r=G.info;G.fase='combate';const vivos=vivosDe(G);G.resultados=[];G.luta=null;G.lutas={};G.pares=[];
   if(r.tipo==='car'){G.fase='resultado';return;}
+  try{comecarCombate2(G,r,vivos);}finally{vivos.forEach(p=>{p.podEsc=0;p.podRuna=false;});}}   // cargas do ativo valem só para esta luta
+function comecarCombate2(G,r,vivos){
   const on=!!G.opt.online;
   // registra a luta para cada humano que luta de verdade nela (a cópia "fantasma" não conta)
   const reg=(f,A,B)=>{[A,f.fant?null:B].forEach(q=>{if(q&&q.humano){G.lutas[q.id]=f;if(q.local)G.luta=f;}});};
@@ -1773,7 +1831,7 @@ function fecharRodada(G){const r=G.info,est=G.est,mortos=[];
   mm.forEach((p,i)=>{p.vivo=false;p.colocacao=antes-i;G.colocados.push(p);devolverTudoAoPool(G,p);});
   const vs=vivosDe(G);if(vs.length<=1){if(vs[0]){vs[0].colocacao=1;G.colocados.push(vs[0]);}G.fim=true;}
   G.rodada++;if(!G.fim)G.info=infoRodada(G.rodada);G.fase='resultado';}
-function devolverTudoAoPool(G,p){todos(p).forEach(L=>{G.pool[L.inst.id]+=Math.pow(3,L.inst.e-1);});devolverLoja(G,p);}
+function devolverTudoAoPool(G,p){todos(p).forEach(L=>{G.pool[L.inst.id]+=Math.pow(3,L.inst.e-1);});devolverLoja(G,p,true);}
 /* para bots/testes: avança uma rodada inteira sem render */
 function rodadaAuto(G){comecarCombate(G);fecharRodada(G);if(!G.fim)iniciarRodada(G);}
 
@@ -2087,6 +2145,14 @@ function desenharAvatares(now){if(UI.demo||!G||!UI.jog)return;
   // efeitos sobre o avatar (sangue ao perder vida)
   const A=UI.fxAv;for(let i=A.length-1;i>=0;i--){const e=A[i];if(!desenharFxPx(e.id,e.X,e.Y,now-e.b))A.splice(i,1);}}
 
+/* ---- poder da vocação na preparação: escudo do Utamo Tempo sobre a unidade marcada e brilho nas unidades no modo de escolha ---- */
+function desenharMarcaPoder(now){const p=UI.jog;if(!p||UI.demo||UI.C||UI.espiar!==null||UI.fase!=='prep')return;
+  const pos=L=>L.onde==='tab'?[BX+L.x*TS,BY+(L.y+4)*TS]:[BEN_X+L.i*TS,BEN_Y];
+  if(UI.alvoPoder==='un'){const a=UI.reduz?.5:.5+.25*Math.sin(now/260);
+    todos(p).forEach(L=>{const [X,Y]=pos(L);cx.fillStyle='rgba(111,184,255,'+(.16*a/.5).toFixed(3)+')';cx.fillRect(X+1,Y+1,TS-2,TS-2);cx.strokeStyle='rgba(159,216,255,'+(.95*a/.5).toFixed(3)+')';cx.lineWidth=1;cx.strokeRect(X+1.5,Y+1.5,TS-3,TS-3);});}
+  if(p.podEsc){const L=todos(p).find(L=>L.inst.uid===p.podEsc);if(!L)return;const [X,Y]=pos(L);
+    cx.save();cx.translate(X+2,Y+11);cx.beginPath();cx.moveTo(0,0);cx.lineTo(9,0);cx.lineTo(9,5);cx.quadraticCurveTo(9,9,4.5,11);cx.quadraticCurveTo(0,9,0,5);cx.closePath();
+    cx.fillStyle='#9fd8ff';cx.fill();cx.lineWidth=1.2;cx.strokeStyle='#07233a';cx.stroke();cx.fillStyle='#e9f7ff';cx.fillRect(2,2,2,5);cx.restore();}}
 /* ---- destaques leves: unidades do banco e do tabuleiro que combinam com a carta sob o mouse ou com o traço do painel ---- */
 function desenharDestaques(now){const tr=UI.hoverTr,id=UI.hoverCartaId;if((!tr&&!id)||!UI.jog||UI.demo||UI.espiar!==null)return;
   const comb=d=>!!d&&!d.pve&&((tr&&(d.o===tr||d.k===tr))||(id&&d.id===id));
@@ -2210,6 +2276,7 @@ function render(){if(!cx)return;const C=UI.C,rt=C?C.t+UI.acc:performance.now(),n
   if(C)renderCombate(C,rt);else{renderPrev(rt);desenharFx(UI.fxPrep,now);}
   desenharAvatares(now);
   if(UI.jog&&!UI.demo&&UI.espiar==null)renderBanco(C?now:rt);
+  desenharMarcaPoder(now);
   desenharDestaques(now);
   desenharAnims(now);
   if(C&&!UI.demo&&C.vis)desenharClimax(C,rt,now);
@@ -2388,6 +2455,10 @@ function previaCompra(p,id){const d=U[id],n1=copias(p,id,1),n2=copias(p,id,2),up
   const sobe=t=>novo&&nivelTraco(t,(cnt[t]||0)+1)>nivelTraco(t,cnt[t]||0);
   return {up,tem:todos(p).some(L=>L.inst.id===id),acO:sobe(d.o),acK:sobe(d.k),nO:nivelTraco(d.o,cnt[d.o]||0),nK:nivelTraco(d.k,cnt[d.k]||0)};}
 const LTIP=(a,b)=>`<div class="lin"><span>${a}</span><b>${b}</b></div>`;
+/* poder da vocação: ativo + passivo (mesmo texto do menu) */
+function tipPoder(v){const P=PODER[v];if(!P)return null;
+  return `<h4><span>${P.n}</span><b style="color:#fff1c4">${P.custo} ouro</b></h4><div class="sb">Poder ativo · 1x por rodada, só na preparação · tecla Q</div><div>${P.a()}</div>
+    <div class="sb" style="margin:6px 0 2px">Passivo · ${P.pn}</div><div>${P.p()}</div>`;}
 function htmlTip(k){const [t,a]=k.split(':'),p=UI.jog;
   if(t==='sin')return tipTraco(a);
   if(t==='item')return htmlTipItem(+a);
@@ -2401,6 +2472,7 @@ function htmlTip(k){const [t,a]=k.split(':'),p=UI.jog;
   if(t==='drops'){const di=dropsInfo(G.info.est,G.info.n);return `<h4><span>Butim da onda</span></h4><div class="sb">Só se você vencer a onda.</div>`+(di.ouro?LTIP('Ouro','+'+di.ouro):'')+LTIP('Itens',di.q+(di.q>1?' componentes':' componente'))+
     `<div class="sb" style="margin:5px 0 0">Cada item é um dos 8 componentes (Sword, Bow, Wand of Inferno, Plate Armor, Dwarven Shield, Mana Potion, Boots of Haste, Ring of Healing). Dois componentes viram um item completo.</div>`+
     (di.perg?LTIP('Chance de pergaminho de encantamento',Math.round(di.perg*100)+'%'):`<div class="sb" style="margin:5px 0 0">Pergaminhos de encantamento passam a cair no estágio 2.</div>`);}
+  if(t==='bt'&&a==='poder')return tipPoder(p.voc);
   if(t==='bt'){return {itens:'<h4><span>Inventário de itens</span></h4><div class="sb">Arraste um componente sobre outro (ou sobre uma unidade que já tenha um componente) para combiná-los em um item completo. Itens completos iguais podem ser forjados (+1 a +3). Pergaminhos encantam um item completo de uma unidade.</div>',forjar:'<h4><span>Forjar</span></h4><div class="sb">Funde dois itens completos iguais no mesmo item +1 (até +3): +20% / +40% / +65% nos números.</div>',rec:'<h4><span>Receitas</span></h4><div class="sb">Mostra o que cada duplo de componentes forma, a forja e os encantamentos.</div>',rolar:'<h4><span>Rolar a loja</span></h4><div class="sb">Custa 2 de ouro. Atalho: D</div>',xp:'<h4><span>Comprar experiência</span></h4><div class="sb">Custa 4 de ouro por +4 de XP. Mais nível = mais unidades no tabuleiro e melhores cartas. Atalho: F</div>',trava:'<h4><span>Travar a loja</span></h4><div class="sb">Mantém as cartas atuais na próxima rodada. Atalho: L</div>',pronto:'<h4><span>Pronto</span></h4><div class="sb">Começa o combate sem esperar o relógio. Atalho: Espaço</div>'}[a];}
   return null;}
 
@@ -2478,8 +2550,8 @@ function hudLoja(){const p=UI.jog;if(!p)return;
   $('cartas').innerHTML=p.loja.map((id,i)=>{const leque=`--r:${(i-2)*2}deg;--dy:${((i-2)*(i-2)*1.5).toFixed(1)}px`;       // leque: −4° a +4° em arco suave
     if(!id)return `<div class="cslot" data-i="${i}" style="${leque}"><div class="carta vend"></div></div>`;
     const d=U[id],cop=copias(p,id,1),pv=previaCompra(p,id),dest=pv.up?'pert'+(pv.up===3?' pert3':''):pv.tem?'tem':'';
-    return `<div class="cslot" data-i="${i}" style="${leque}"><div class="carta c${d.c} ${p.ouro<d.c?'pobre':''} ${dest}" style="--chao:url(tactics-assets/chao_${BIOMA_O[d.o]}.png)"><div class="cin"><div class="cn">${esc(d.nome)}</div>
-      <div class="art"><span class="tecla">${i+1}</span><span class="cu">${d.c}<img src="${ICO.ouro}" alt=""></span><canvas width="128" height="92" data-and="${id}" data-k="${i}"></canvas></div>
+    return `<div class="cslot" data-i="${i}" style="${leque}"><div class="carta c${d.c} ${p.ouro<precoLoja(p,i)?'pobre':''} ${dest} ${i===p.cong?'gelada':''}" style="--chao:url(tactics-assets/chao_${BIOMA_O[d.o]}.png)"><div class="cin"><div class="cn">${esc(d.nome)}</div>
+      <div class="art"><span class="tecla">${i+1}</span>${i===p.cong?'<span class="gelo-m">❄'+(d.c>precoLoja(p,i)?' -'+(d.c-precoLoja(p,i)):'')+'</span>':''}<span class="cu">${precoLoja(p,i)}<img src="${ICO.ouro}" alt=""></span><canvas width="128" height="92" data-and="${id}" data-k="${i}"></canvas></div>
       <div class="identidade">${seloPapel(d)}<span class="elementos-mini" aria-label="Elementos: ${elementosUnidade(d).map(e=>NOME_EL[e]).join(', ')}">${elementosUnidade(d).map(e=>`<i style="color:${EL[e].cor}" title="${NOME_EL[e]}">${EL_SIMBOLO[e]}</i>`).join('')}</span></div><div class="pie">${iconeTraco(d.o,pv.nO,pv.acO?'acende':'',true)}${iconeTraco(d.k,pv.nK,pv.acK?'acende':'',true)}${cop?`<span class="copias">${cop} no time</span>`:''}</div></div>${pv.up?`<span class="selo">${'★'.repeat(pv.up)}</span>`:''}</div><button class="detalhes-carta" type="button" data-detalhe="${i}" aria-label="Detalhes de ${esc(d.nome)}" title="Ver função, elementos e habilidade">i</button></div>`;}).join('');
   retratosPend($('cartas'));hudOdds();
   const k=UI.hoverCartaI;if(k>=0){const sl=$('cartas').children[k];if(sl&&p.loja[k]&&p.loja[k]===UI.hoverCartaId)cartaHover(sl,true);else cartaHover(null);}}   // o painel acompanha a carta sob o mouse
@@ -2607,6 +2679,12 @@ function mostrarReceitas(volta){abrirConsulta('Receitas e equipamentos',`
   atualizarReceitas();ligarGradeReceitas($('tela'));$('receita-busca').focus();}
 function hudBotoes(){const p=UI.jog;if(!p)return;const fase=UI.fase,car=G.info.tipo==='car';
   $('bt-rolar').disabled=p.ouro<2;$('bt-xp').disabled=p.ouro<4||p.nivel>=9;
+  {const P=PODER[p.voc],bp=$('bt-poder');                                                                    // poder da vocação
+    if(P&&!PODERES_OFF){bp.style.display='';
+      if(bp._v!==p.voc){bp._v=p.voc;$('poder-n').textContent=P.n;$('poder-c').textContent=P.n.split(' ')[0];$('poder-custo').textContent=P.custo;$('poder-av').dataset.av=p.voc;retratosPend($('botoes'));}
+      const usavel=fase==='prep'&&p.vivo&&!p.podU&&p.ouro>=P.custo&&!(p.voc==='druid'&&p.nivel>=9)&&!UI.espectador;
+      bp.disabled=!usavel;bp.classList.toggle('on',!!UI.alvoPoder);bp.classList.toggle('usado',!!p.podU);if(!usavel&&UI.alvoPoder)cancelarPoder();}
+    else bp.style.display='none';}
   $('bt-trava').classList.toggle('on',!!p.travada);$('bt-pronto').disabled=fase!=='prep'||car||!!(Online.ativo&&(p.pronto||!p.vivo));
   const bp=$('bt-pronto'),tx=(Online.ativo&&p.pronto&&fase==='prep')?'Aguardando ':'Pronto ';if(bp.firstChild.textContent!==tx)bp.firstChild.textContent=tx;}
 function atualizarSujos(){const s=UI.sujo;if(!G)return;
@@ -2638,6 +2716,21 @@ function acaoLocal(c){const p=UI.jog;if(!p)return false;
   return true;}
 function rolarUI(){if(acaoLocal({t:'rolar'})){marcar('topo','loja','btn');Sons.rolar();}}
 function xpUI(){if(acaoLocal({t:'xp'})){posAcao();Sons.xp();}}
+/* ---- poder da vocação (Q): sem alvo usa na hora; com alvo entra no modo de escolha (clique/toque na unidade ou na carta; Esc ou Q de novo cancela) ---- */
+function cancelarPoder(){if(!UI.alvoPoder)return;UI.alvoPoder=null;$('dica-poder').classList.remove('on');$('cartas').classList.remove('alvo-poder');marcar('btn');}
+function poderUI(){const p=UI.jog,P=p&&PODER[p.voc];if(!P||PODERES_OFF||UI.estado!=='jogo'||UI.pausado||UI.espectador)return;
+  if(UI.alvoPoder){cancelarPoder();return;}
+  if(!p.vivo){aviso('Você foi eliminado');return;}if(UI.fase!=='prep'){aviso('Só na preparação');return;}
+  if(p.podU){aviso('Poder já usado nesta rodada');return;}if(p.ouro<P.custo){aviso('Ouro insuficiente');return;}
+  if(p.voc==='druid'&&p.nivel>=9){aviso('Nível máximo');return;}
+  if(P.alvo){if(P.alvo==='un'&&!todos(p).length){aviso('Você não tem unidades');return;}
+    UI.alvoPoder=P.alvo;$('dica-poder').textContent=P.dica+' · Esc cancela';$('dica-poder').classList.add('on');$('cartas').classList.toggle('alvo-poder',P.alvo==='loja');marcar('btn');return;}
+  confirmarPoder({});}
+function confirmarPoder(extra){const p=UI.jog,P=PODER[p.voc];if(!acaoLocal(Object.assign({t:'poder'},extra)))return false;
+  cancelarPoder();Sons.poder(p.voc);aviso(P.n+'!',1400);
+  if(!UI.reduz){const A=posAvatarTab(true),b=performance.now(),efs={knight:['magic_blue','yellow_rings'],paladin:['holyarea','yellow_rings'],sorcerer:['purpleenergy','mortarea'],druid:['magic_green','green_rings']}[p.voc];
+    efs.forEach((n,i)=>UI.fxAv.push({id:E(n),X:A.X,Y:A.Y,b:b+i*110}));}
+  posAcao();marcar('jog');return true;}
 function travarUI(){if(acaoLocal({t:'travar'})){marcar('btn');aviso(UI.jog.travada?'Loja travada':'Loja destravada');}}
 function venderUI(L){if(!L||!L.inst)return;if(acaoLocal({t:'vender',de:locDe(L)})){posAcao();Sons.vender();}}
 function unidadeEm(cel){const p=UI.jog;if(!cel)return null;if(cel.onde==='banco'){const inst=p.banco[cel.i];return inst?{onde:'banco',i:cel.i,inst}:null;}
@@ -2785,7 +2878,9 @@ function unidadeCombateEm(cel,rt){const C=UI.C;if(!C||cel.onde==='banco'||cel.on
 function iniciarArrasto(d,ev){UI.drag=d;const g=$('ghost');g.style.display='block';g.style.left=ev.clientX+'px';g.style.top=ev.clientY+'px';
   if(d.tipo==='un'){g.innerHTML='<canvas width="56" height="56"></canvas>';pintarRetrato(g.firstChild,d.inst.id,0);}else g.innerHTML=htmlItem(d.id,{tip:false});
   esconderTip();cartaHover(null);UI.hoverTr=null;if(d.tipo==='un'){$('venda-v').textContent=valorVenda(d.inst);$('zona-venda').classList.add('on');}Sons.pegar();}
-function pointerDownCv(ev){if(UI.atq&&ev.button===0)pularAtaque();if(UI.estado!=='jogo'||ev.button!==0||UI.espiar!==null||UI.pausado)return;const cel=celAt(ev);if(!cel)return;const L=unidadeEm(cel);if(!L)return;
+function pointerDownCv(ev){if(UI.atq&&ev.button===0)pularAtaque();if(UI.estado!=='jogo'||ev.button!==0||UI.espiar!==null||UI.pausado)return;const cel=celAt(ev);if(!cel)return;const L=unidadeEm(cel);
+  if(UI.alvoPoder==='un'){UI.ignoraUp=true;if(L)confirmarPoder({alvo:locDe(L)});return;}   // modo de escolha do poder: o clique escolhe a unidade (não arrasta nem abre a ficha)
+  if(!L)return;
   if(L.onde==='tab'&&UI.fase!=='prep')return;UI.pd={tipo:'un',de:L,inst:L.inst,x:ev.clientX,y:ev.clientY};}
 function pointerDownItem(ev){const el=ev.target.closest('[data-slot]');if(!el||ev.button!==0||UI.estado!=='jogo'||UI.pausado)return;ev.preventDefault();const idx=+el.dataset.slot;UI.pd={tipo:'item',idx,id:UI.jog.itens[idx],x:ev.clientX,y:ev.clientY};}
 function pointerMove(ev){UI.mx=ev.clientX;UI.my=ev.clientY;const p=UI.jog;
@@ -2814,7 +2909,7 @@ function pointerMove(ev){UI.mx=ev.clientX;UI.my=ev.clientY;const p=UI.jog;
   if(ev.target===cv)return;UI.hoverCel=null;UI.hover=null;UI.hoverU=null;
   const el=ev.target.closest&&ev.target.closest('[data-tip]');
   if(el&&(UI.estado==='jogo'||/^(item|rec):/.test(el.dataset.tip))){const k=el.dataset.tip;if(UI.tipChave===k&&$('tip').style.display==='block')posTip(ev);else{const h=htmlTip(k);if(h)mostrarTip(h,ev,k);else esconderTip();}}else esconderTip();}
-function pointerUp(ev){const pd=UI.pd,d=UI.drag;UI.pd=null;if(!d){if(ev.button===0&&(!pd||Math.hypot(ev.clientX-pd.x,ev.clientY-pd.y)<=5))inspecionarNoCanvas(ev);return;}UI.drag=null;$('ghost').style.display='none';$('zona-venda').classList.remove('on','sobre');const p=UI.jog;
+function pointerUp(ev){if(UI.ignoraUp){UI.ignoraUp=false;UI.pd=null;return;}const pd=UI.pd,d=UI.drag;UI.pd=null;if(!d){if(ev.button===0&&(!pd||Math.hypot(ev.clientX-pd.x,ev.clientY-pd.y)<=5))inspecionarNoCanvas(ev);return;}UI.drag=null;$('ghost').style.display='none';$('zona-venda').classList.remove('on','sobre');const p=UI.jog;
   if(d.tipo==='un'){const el=document.elementFromPoint(ev.clientX,ev.clientY);
     if(sobreVenda(el)){const L=unidadeEm(d.de.onde==='banco'?{onde:'banco',i:d.de.i}:{onde:'tab',x:d.de.x,y:d.de.y});if(L&&L.inst===d.inst)venderUI(L);return;}
     const cel=celAt(ev);if(!cel||(cel.onde!=='tab'&&cel.onde!=='banco'))return;
@@ -2837,20 +2932,22 @@ function teclado(ev){if(consultaAtual){
   if(UI.estado!=='jogo'||UI.pausado||ev.ctrlKey||ev.metaKey||ev.altKey)return;const k=ev.key.toLowerCase();
   if(UI.atq&&(k===' '||k==='enter')){pularAtaque();ev.preventDefault();return;}
   if(UI.emoteAberto){if(k>='1'&&k<='5'){enviarEmote(+k-1);return;}if(k==='e'||k==='escape'){fecharEmotes();return;}}
+  if(UI.alvoPoder==='loja'&&k>='1'&&k<='5'){confirmarPoder({alvo:+k-1});return;}
+  if(k==='q'){poderUI();return;}
   if(k==='d'){rolarUI();}else if(k==='f'){xpUI();}else if(k==='l'){travarUI();}else if(k===' '){ev.preventDefault();pronto();}
   else if(k==='w'){const h=UI.hover;if(h)venderUI(h);else aviso('Passe o mouse sobre uma unidade sua e aperte W');}
   else if(k==='v'){alternarVel();}else if(k>='1'&&k<='5'){comprarUI(+k-1);}
   else if(k==='s'){alternarLoja();}else if(k==='e'){abrirEmotes();}else if(k==='p'){alternarMeter();}else if(k==='tab'){return;}else if(k==='m'){alternarMudo();}
-  else if(k==='escape'){if(UI.espiar!==null)sairEspiar();else pausar();}}
+  else if(k==='escape'){if(UI.alvoPoder)cancelarPoder();else if(UI.espiar!==null)sairEspiar();else pausar();}}
 function alternarVel(){if(Online.ativo)return;UI.vel=UI.vel===1?2:UI.vel===2?4:1;$('bt-vel').textContent=UI.vel+'x';}
 
 /* =====================================================================================
    Fluxo da partida
    ===================================================================================== */
-function resetUI(){UI.espectador=false;UI.fimGravado=false;UI.acabou=false;sairEspiar();fecharEmotes();fecharIntro();UI.stats=novasStats();UI.anims=[];UI.emotes={};UI.ultC=null;UI.avHit={};UI.fxAv=[];UI.voando={};UI._nv=undefined;UI.impIdx=0;UI.hoverU=null;UI.atq=null;UI.hpAtr=null;UI.hoverTr=null;UI.hoverCartaId=null;UI.hoverCartaI=-1;}
+function resetUI(){UI.alvoPoder=null;UI.espectador=false;UI.fimGravado=false;UI.acabou=false;sairEspiar();fecharEmotes();fecharIntro();UI.stats=novasStats();UI.anims=[];UI.emotes={};UI.ultC=null;UI.avHit={};UI.fxAv=[];UI.voando={};UI._nv=undefined;UI.impIdx=0;UI.hoverU=null;UI.atq=null;UI.hpAtr=null;UI.hoverTr=null;UI.hoverCartaId=null;UI.hoverCartaI=-1;}
 function novaPartida(){onlineSair();resetUI();fecharTela();$('app').classList.remove('menu');G=novoJogo({humano:true,nome:'Você'});UI.jog=G.jog[0];UI.jog.voc=UI.voc;UI.estado='jogo';UI.demo=false;UI.pausado=false;UI.vel=1;$('bt-vel').textContent='1x';
   $('app').style.visibility='visible';iniciarPrepUI(true);}
-function iniciarPrepUI(primeira){const r=G.info;UI.fase='prep';UI.C=null;UI.acc=0;UI.atq=null;UI.hpAtr=null;UI.fxPrep=[];UI.hoverU=null;fecharIntro();sairEspiar();UI.timerMax=r.tipo==='car'?25:r.est===1?45:30;UI.timer=UI.timerMax;
+function iniciarPrepUI(primeira){const r=G.info;cancelarPoder();UI.fase='prep';UI.C=null;UI.acc=0;UI.atq=null;UI.hpAtr=null;UI.fxPrep=[];UI.hoverU=null;fecharIntro();sairEspiar();UI.timerMax=r.tipo==='car'?25:r.est===1?45:30;UI.timer=UI.timerMax;
   UI.prevSujo=true;marcarTudo();atualizarSujos();banner(r.tipo==='car'?'Carrossel':'Preparação','Estágio '+r.nome+(r.tipo==='pve'?' · Monstros':r.tipo==='pvp'?' · Jogador x Jogador':''),'#d9b45a',1700);
   if(Online.host)Online.hostRodada();
   if(r.tipo==='car')abrirCarrosselUI();}
@@ -2949,13 +3046,17 @@ function alternarTelaCheia(){const el=document.documentElement;try{
   if(document.fullscreenElement||document.webkitFullscreenElement){(document.exitFullscreen||document.webkitExitFullscreen).call(document);return;}
   const f=el.requestFullscreen||el.webkitRequestFullscreen;if(!f)return;
   Promise.resolve(f.call(el)).then(()=>screen.orientation&&screen.orientation.lock&&screen.orientation.lock('landscape')).catch(()=>{});}catch(e){}}
+/* poder das vocações no menu: nome, custo, ativo e passivo da vocação escolhida */
+function htmlPoderInfo(){const v=UI.voc,P=PODER[v];if(!P)return '<div class="poder-info" id="poder-info"></div>';
+  return `<div class="poder-info" id="poder-info"><b>${P.n}</b> <span class="pc">· ativo, ${P.custo} ouro, 1x por rodada</span><p>${P.a()}</p><p><b>${P.pn}</b> <span class="pc">· passivo</span></p><p>${P.p()}</p></div>`;}
+function atualizarPoderInfo(){const e=$('poder-info');if(e)e.outerHTML=htmlPoderInfo();}
 function mostrarMenu(){UI.estado='menu';$('app').classList.remove('ver-itens','ver-jog','ver-sin');fecharTela();iniciarDemo();$('app').style.visibility='visible';$('app').classList.add('menu');
   telaHTML(`<div class="painel modal"><h1>Tibia Tactics</h1><div class="sub">Auto-battler de Tibia</div>
-    <div class="herois">${VOCS.map(v=>`<div class="heroi ${UI.voc===v?'sel':''}" data-v="${v}"><canvas width="56" height="56" data-av="${v}"></canvas>${{knight:'Knight',paladin:'Paladin',sorcerer:'Sorcerer',druid:'Druid'}[v]}</div>`).join('')}</div>
-    <div class="menu"><button class="bt primario" id="b-jogar">Jogar</button><button class="bt" id="b-online">Jogar online</button><button class="bt" id="b-como">Como jogar</button><button class="bt" id="b-rec">Recordes</button><button class="bt" id="b-cartas">Novas cartas</button>${telaCheiaOk()?'<button class="bt" id="b-tela">Tela cheia</button>':''}</div>${toque()&&celularEmPe()&&!UI.dicaGiroFechada?'<p class="dica-giro" id="dica-giro"><span>Dica: gire o celular para jogar deitado</span><button type="button" id="dica-giro-x" aria-label="Fechar dica">×</button></p>':''}<p class="versao-jogo">Fase 4 · Etapa 3 — jogo no celular</p></div>`);
+    <div class="herois">${VOCS.map(v=>`<div class="heroi ${UI.voc===v?'sel':''}" data-v="${v}"><canvas width="56" height="56" data-av="${v}"></canvas>${{knight:'Knight',paladin:'Paladin',sorcerer:'Sorcerer',druid:'Druid'}[v]}</div>`).join('')}</div>${htmlPoderInfo()}
+    <div class="menu"><button class="bt primario" id="b-jogar">Jogar</button><button class="bt" id="b-online">Jogar online</button><button class="bt" id="b-como">Como jogar</button><button class="bt" id="b-rec">Recordes</button><button class="bt" id="b-cartas">Novas cartas</button>${telaCheiaOk()?'<button class="bt" id="b-tela">Tela cheia</button>':''}</div>${toque()&&celularEmPe()&&!UI.dicaGiroFechada?'<p class="dica-giro" id="dica-giro"><span>Dica: gire o celular para jogar deitado</span><button type="button" id="dica-giro-x" aria-label="Fechar dica">×</button></p>':''}<p class="versao-jogo">Fase 5 · Etapa 1 — poderes das vocações</p></div>`);
   retratosPend();$('tela').classList.add('menu');$('b-jogar').onclick=novaPartida;$('b-online').onclick=()=>mostrarOnline();$('b-como').onclick=()=>mostrarComoJogar(mostrarMenu);$('b-rec').onclick=mostrarRecordes;$('b-cartas').onclick=mostrarNovasCartas;
   {const bt=$('b-tela');if(bt)bt.onclick=alternarTelaCheia;const dx=$('dica-giro-x');if(dx)dx.onclick=()=>{UI.dicaGiroFechada=true;$('dica-giro').remove();};}
-  document.querySelectorAll('.heroi').forEach(el=>el.onclick=()=>{UI.voc=el.dataset.v;document.querySelectorAll('.heroi').forEach(e=>e.classList.toggle('sel',e===el));});}
+  ligarHerois();}
 function voltarMenu(){onlineSair();G=null;UI.jog=null;UI.C=null;UI.prev=null;mostrarMenu();}
 function mostrarRecordes(){const r=lerRec();
   telaHTML(`<div class="painel modal"><h2>Recordes</h2><div class="rec"><div><b>${r.jogos}</b><span>Partidas</span></div><div><b>${r.vit}</b><span>Vitórias (1º)</span></div><div><b>${r.melhor?ROMANO(r.melhor):'-'}</b><span>Melhor colocação</span></div></div>
@@ -2993,7 +3094,8 @@ function iniciarDemo(){UI.demoBioma=BIOMAS[Math.floor(Math.random()*BIOMAS.lengt
    Camada de rede com dois transportes de mesma interface: PeerJS (WebRTC, real) e BroadcastChannel (?rede=local, duas abas).
    Mensagens JSON {t:tipo,...}; o handshake leva a versão do protocolo.
    ===================================================================================== */
-const PROTO=6; // 6: vida em combate x1,35 (VIDA_LUTA) e morte súbita aos 40 s; versões antigas não simulam o mesmo combate.
+const PROTO=7; // 7 (Fase 5): poderes das vocações (ativo + passivo viajam na equipe da luta); versões antigas não simulam o mesmo combate.
+// Histórico: const PROTO=6; // 6: vida em combate x1,35 (VIDA_LUTA) e morte súbita aos 40 s; versões antigas não simulam o mesmo combate.
 // Histórico: const PROTO=5;   // 5: oito novas cartas e counters; versões antigas não simulam o mesmo combate.
 // Histórico: const PROTO=4;   // 4 (Fase 2): itens viram códigos inteiros (id + forja + encantamento); comandos novos combinar, forjar e encantar; inventário de 15 vagas; o equipar não aceita mais pergaminho. Antes: 2: pub/rodada/res levam tb (tabuleiros públicos) e hh (histórico); mensagem 'emote'; desc do resultado ganha v e dano. 3: desc ganha dop (dano causado ao adversário) para o convidado tocar o ataque do avatar
 const MODO_REDE=(()=>{try{return new URLSearchParams(location.search).get('rede')==='local'?'local':'peerjs';}catch(e){return 'peerjs';}})();
@@ -3086,7 +3188,7 @@ function onlineSair(){clearInterval(Online.tq);Online.tq=null;
 /* tabuleiro público de um jogador (posições, estrelas e itens; nada da loja nem do ouro): [id,estrelas,x,y,itens|0] */
 const tbSer=q=>{const o=[];q.tab.forEach((l,y)=>l.forEach((inst,x)=>{if(inst)o.push([inst.id,inst.e,x,y,inst.itens.length?inst.itens.slice():0]);}));return o;};
 const pubList=com=>G.jog.map(q=>{const o={id:q.id,nome:q.nome,hp:q.hp,nivel:q.nivel,seq:q.seq,vivo:q.vivo,col:q.colocacao,voc:q.voc,hum:!!q.humano,pr:!!q.pronto,hh:(q.hist||[]).join('')};if(com)o.tb=tbSer(q);return o;});
-const snapPriv=p=>({ouro:p.ouro,xp:p.xp,nivel:p.nivel,hp:p.hp,seq:p.seq,travada:p.travada,vivo:p.vivo,colocacao:p.colocacao,banco:p.banco,tab:p.tab,itens:p.itens,loja:p.loja,renda:p.renda||null,drop:p.drop||null,nvitorias:p.nvitorias,pronto:!!p.pronto});
+const snapPriv=p=>({ouro:p.ouro,xp:p.xp,nivel:p.nivel,hp:p.hp,seq:p.seq,travada:p.travada,podU:p.podU,podEsc:p.podEsc,podRuna:p.podRuna,cong:p.cong,vivo:p.vivo,colocacao:p.colocacao,banco:p.banco,tab:p.tab,itens:p.itens,loja:p.loja,renda:p.renda||null,drop:p.drop||null,nvitorias:p.nvitorias,pronto:!!p.pronto});
 const carSer=()=>G.car?{itens:G.car.itens.slice(),ordem:G.car.ordem.map(q=>q.id),idx:G.car.idx,esc:G.car.esc}:null;
 function snapMsg(cl,t,extra){return Object.assign({t,rodada:G.rodada,fase:G.fase,info:G.info,fim:G.fim,jog:pubList(t==='rodada'||t==='res'),eu:snapPriv(cl.p),ack:cl.ack,car:carSer(),
   tempo:Math.max(0,Math.round(Online.prepFim-agoraMs())),tmax:UI.timerMax},extra||{});}
@@ -3161,7 +3263,7 @@ function onlineIniciar(){if(!Online.host||Online.emJogo||Online.sala.length<2)re
 Online.hostRodada=function(){Online.prepFim=agoraMs()+UI.timerMax*1000;Online.carOk=0;
   paraHumanos(cl=>{const p=cl.p;enviarSnapCl(cl,'rodada',{opo:G.opoDe[p.id]===undefined?-1:G.opoDe[p.id],opoEq:G.opoEq[p.id]||[]});});};
 function enviarLuta(cl,f){const p=cl.p;
-  Online.tr.paraCliente(cl.cid,{t:'luta',rodada:G.rodada,nome:G.info.nome,A:eqSer(f.eqA),B:eqSer(f.eqB),seed:f.seed,pve:!!f.pve,lado:f.b===p?1:0,vs:f.pve?'':(f.a===p?f.b:f.a).nome,dur:f.dur});}
+  Online.tr.paraCliente(cl.cid,{t:'luta',rodada:G.rodada,nome:G.info.nome,A:eqSer(f.eqA),B:eqSer(f.eqB),mA:metaSer(f.eqA),mB:metaSer(f.eqB),seed:f.seed,pve:!!f.pve,lado:f.b===p?1:0,vs:f.pve?'':(f.a===p?f.b:f.a).nome,dur:f.dur});}
 Online.hostLutas=function(){let mx=0;Object.keys(G.lutas).forEach(id=>{mx=Math.max(mx,durLuta(G.lutas[id]));});
   Online.combateFim=agoraMs()+(G.info.tipo==='car'?0:Math.max(mx,500)+2000+1300);        // a fase dura a luta mais longa entre humanos (+ folga para a latência)
   paraHumanos(cl=>{const f=G.lutas[cl.p.id];if(f)enviarLuta(cl,f);});};
@@ -3214,13 +3316,13 @@ Online.enviarCmd=function(c){Online.tr.paraHost({t:'cmd',n:++Online.cmdN,c});};
 function sombraG(m){const g={rodada:m.rodada,jog:[],pool:{},uid:0,fase:m.fase,fim:false,info:m.info,opt:{online:true,convidado:true},colocados:[],car:null,luta:null,lutas:{},pares:[],pares0:null,opoEq:{},opoDe:{},est:{}};
   LISTA_U.forEach(id=>{g.pool[id]=0;});
   m.jog.forEach(pj=>{g.jog[pj.id]={id:pj.id,nome:pj.nome,humano:false,local:false,hp:pj.hp,ouro:0,nivel:pj.nivel,xp:0,banco:new Array(MAX_BANCO).fill(null),tab:[0,1,2,3].map(()=>new Array(NC).fill(null)),
-    itens:[],loja:[null,null,null,null,null],travada:false,seq:0,vivo:true,colocacao:0,voc:pj.voc,addon:0,pronto:false,nvitorias:0,hum:pj.hum,hist:[]};});
+    itens:[],loja:[null,null,null,null,null],travada:false,podU:false,podEsc:0,podRuna:false,cong:-1,seq:0,vivo:true,colocacao:0,voc:pj.voc,addon:0,pronto:false,nvitorias:0,hum:pj.hum,hist:[]};});
   const me=g.jog[Online.meuId];me.humano=true;me.local=true;return g;}
 function pubAplicar(lista){lista.forEach(pj=>{const q=G.jog[pj.id];if(!q)return;q.hist=pj.hh?pj.hh.split(''):[];if(q===UI.jog)return;
   q.nome=pj.nome;q.hp=pj.hp;q.nivel=pj.nivel;q.seq=pj.seq;q.vivo=pj.vivo;q.colocacao=pj.col;q.voc=pj.voc;q.hum=pj.hum;q.pronto=pj.pr;q.hist=pj.hh?pj.hh.split(''):[];
     if(pj.tb){q.tab=[0,1,2,3].map(()=>new Array(NC).fill(null));pj.tb.forEach(([id,e,x,y,it],k)=>{if(U[id]&&y>=0&&y<4&&x>=0&&x<NC)q.tab[y][x]={uid:q.id*1000+k,id,e,itens:it||[]};});}});}
 function privAplicar(me,pv){const dr=UI.drag,uid=dr&&dr.tipo==='un'&&dr.inst?dr.inst.uid:null;
-  Object.assign(me,{ouro:pv.ouro,xp:pv.xp,nivel:pv.nivel,hp:pv.hp,seq:pv.seq,travada:pv.travada,vivo:pv.vivo,colocacao:pv.colocacao,banco:pv.banco,tab:pv.tab,itens:pv.itens,loja:pv.loja,renda:pv.renda,drop:pv.drop,nvitorias:pv.nvitorias,pronto:pv.pronto});
+  Object.assign(me,{ouro:pv.ouro,xp:pv.xp,nivel:pv.nivel,hp:pv.hp,seq:pv.seq,travada:pv.travada,podU:pv.podU,podEsc:pv.podEsc,podRuna:pv.podRuna,cong:pv.cong,vivo:pv.vivo,colocacao:pv.colocacao,banco:pv.banco,tab:pv.tab,itens:pv.itens,loja:pv.loja,renda:pv.renda,drop:pv.drop,nvitorias:pv.nvitorias,pronto:pv.pronto});
   if(uid!==null){const L=todos(me).find(x=>x.inst.uid===uid);if(L){dr.inst=L.inst;dr.de=L.onde==='banco'?{onde:'banco',i:L.i}:{onde:'tab',x:L.x,y:L.y};}else{UI.drag=null;$('ghost').style.display='none';$('zona-venda').classList.remove('on');}}}
 function guestSnap(m){
   if(!G||!G.opt.convidado){G=sombraG(m);resetUI();UI.jog=G.jog[Online.meuId];UI.estado='jogo';UI.demo=false;UI.pausado=false;UI.vel=1;UI.espectador=false;UI.fimGravado=false;UI.acabou=false;UI.C=null;UI.prev=null;
@@ -3238,7 +3340,7 @@ function guestRodada(m){const me=UI.jog;G.opoDe={};G.opoDe[me.id]=m.opo;G.opoEq=
   if(m.fase==='prep'){iniciarPrepUI();UI.timerMax=m.tmax;UI.timer=m.tempo/1000;}
   else{UI.fase='espera';UI.C=null;UI.prev=null;marcarTudo();}}
 function guestLuta(m){if(UI.estado!=='fim')fecharTela();G.fase='combate';UI.fase='combate';
-  const C=criarCombate(eqDes(m.A),eqDes(m.B),{vis:true,seed:m.seed,pve:m.pve});C.esp=m.lado===1;
+  const C=criarCombate(eqDes(m.A,m.mA),eqDes(m.B,m.mB),{vis:true,seed:m.seed,pve:m.pve});C.esp=m.lado===1;
   UI.C=C;UI.acc=0;UI.fimEm=0;UI.prev=null;Online.lutasVistas++;UI.impIdx=0;UI.hoverU=null;sairEspiar();fecharEmotes();marcar('jog','btn','topo','strip');
   mostrarIntro();}
 function guestRes(m){if(UI.estado!=='fim')fecharTela();
@@ -3255,8 +3357,8 @@ function msgOnline(t){const e=$('on-msg');if(e)e.textContent=t;}
 function onlineFalha(msg){const volta=UI.estado!=='menu';onlineSair();if(volta&&G){G=null;UI.jog=null;UI.C=null;UI.prev=null;mostrarMenu();}
   telaHTML(`<div class="painel modal" style="width:min(460px,94vw)"><h2>Conexão</h2><div class="txt" style="text-align:center">${esc(msg)}</div><div class="menu" style="margin-top:16px"><button class="bt primario" id="b-ok">Menu principal</button></div></div>`);
   $('tela').classList.add('menu');$('b-ok').onclick=()=>mostrarMenu();}
-function htmlHerois(){return `<div class="herois">${VOCS.map(v=>`<div class="heroi ${UI.voc===v?'sel':''}" data-v="${v}"><canvas width="56" height="56" data-av="${v}"></canvas>${{knight:'Knight',paladin:'Paladin',sorcerer:'Sorcerer',druid:'Druid'}[v]}</div>`).join('')}</div>`;}
-function ligarHerois(){document.querySelectorAll('.heroi').forEach(el=>el.onclick=()=>{UI.voc=el.dataset.v;document.querySelectorAll('.heroi').forEach(e=>e.classList.toggle('sel',e===el));});}
+function htmlHerois(){return `<div class="herois">${VOCS.map(v=>`<div class="heroi ${UI.voc===v?'sel':''}" data-v="${v}"><canvas width="56" height="56" data-av="${v}"></canvas>${{knight:'Knight',paladin:'Paladin',sorcerer:'Sorcerer',druid:'Druid'}[v]}</div>`).join('')}</div>${htmlPoderInfo()}`;}
+function ligarHerois(){document.querySelectorAll('.heroi').forEach(el=>el.onclick=()=>{UI.voc=el.dataset.v;document.querySelectorAll('.heroi').forEach(e=>e.classList.toggle('sel',e===el));atualizarPoderInfo();});}
 function mostrarOnline(codPre){Online.tela='online';const local=MODO_REDE==='local';
   telaHTML(`<div class="painel modal"><h2>Jogar online</h2>
     <div class="txt" style="text-align:center">Crie uma sala e passe o código aos amigos, ou entre numa sala com o código. O anfitrião inicia a partida (2 a 8 jogadores); as vagas que sobrarem viram bots.</div>
@@ -3352,6 +3454,7 @@ const Sons={
   comprar(){tom(1568,1568,.12,'sine',.2);tom(2093,2093,.2,'sine',.18,.07);tom(3136,3136,.1,'triangle',.05,.07);},
   vender(){tom(2093,2093,.08,'sine',.16);tom(1568,1568,.12,'sine',.16,.06);tom(1175,1175,.18,'sine',.14,.12);},
   rolar(){[0,.05,.1,.16].forEach((a,i)=>ruidoSom(.07,.26,3000+i*2500,1500,1.2,'bandpass',a));},
+  poder(v){const b={knight:[196,392],paladin:[523,1047],sorcerer:[262,131],druid:[392,784]}[v]||[392,784];tom(b[0],b[1],.28,v==='sorcerer'?'sawtooth':'triangle',.14);tom(b[1],b[1]*1.5,.22,'sine',.1,.08);ruidoSom(.25,.07,1500,6000,2,'highpass',.05);},
   xp(){tom(440,880,.16,'triangle',.16);tom(660,1320,.16,'triangle',.1,.06);},
   nivel(){[392,494,587,784].forEach((f,i)=>tom(f,f,.3,'triangle',.18,i*.08));tom(1568,1568,.4,'sine',.1,.3);},
   fundir(){[523,659,784,988,1319,1568].forEach((f,i)=>tom(f,f,.5,'sine',.12,i*.06));ruidoSom(.5,.12,2000,8000,2,'highpass');},
@@ -3440,10 +3543,10 @@ function iniciar(){cv=$('cv');cx=cv.getContext('2d');ajustarCanvas();observaCaix
   addEventListener('pointermove',pointerMove);addEventListener('pointerup',pointerUp);addEventListener('keydown',teclado);
   cv.addEventListener('pointerleave',()=>{if(!UI.drag){esconderTip();UI.hoverCel=null;UI.hover=null;UI.hoverU=null;}});
   document.body.addEventListener('pointerleave',()=>{esconderTip();cartaHover(null);UI.hoverTr=null;});
-  $('cartas').addEventListener('click',e=>{const info=e.target.closest('[data-detalhe]');if(info){mostrarDetalhesCarta(+info.dataset.detalhe);return;}const s=e.target.closest('.cslot');if(s&&!s.querySelector('.vend'))comprarUI(+s.dataset.i);});
+  $('cartas').addEventListener('click',e=>{const info=e.target.closest('[data-detalhe]');if(info){mostrarDetalhesCarta(+info.dataset.detalhe);return;}const s=e.target.closest('.cslot');if(s&&!s.querySelector('.vend')){if(UI.alvoPoder==='loja')confirmarPoder({alvo:+s.dataset.i});else comprarUI(+s.dataset.i);}});
   $('cartas').addEventListener('mouseover',e=>{if(!UI.drag)cartaHover(e.target.closest('.cslot'));});
   $('cartas').addEventListener('mouseleave',()=>cartaHover(null));
-  $('bt-forjar').onclick=forjarUI;$('bt-rec').onclick=()=>{if(UI.estado==='jogo')mostrarReceitas(()=>fecharTela());};$('bt-rolar').onclick=rolarUI;$('bt-m-rolar').onclick=rolarUI;$('bt-m-xp').onclick=xpUI;$('bt-m-loja').onclick=alternarLoja;$('bt-recolher').onclick=alternarLoja;$('bt-xp').onclick=xpUI;$('bt-trava').onclick=travarUI;$('bt-pronto').onclick=()=>pronto();$('bt-vel').onclick=alternarVel;$('bt-menu').onclick=pausar;$('logo').onclick=()=>{if(UI.estado==='jogo')pausar();};
+  $('bt-forjar').onclick=forjarUI;$('bt-rec').onclick=()=>{if(UI.estado==='jogo')mostrarReceitas(()=>fecharTela());};$('bt-rolar').onclick=rolarUI;$('bt-m-rolar').onclick=rolarUI;$('bt-m-xp').onclick=xpUI;$('bt-m-loja').onclick=alternarLoja;$('bt-recolher').onclick=alternarLoja;$('bt-xp').onclick=xpUI;$('bt-poder').onclick=poderUI;$('bt-trava').onclick=travarUI;$('bt-pronto').onclick=()=>pronto();$('bt-vel').onclick=alternarVel;$('bt-menu').onclick=pausar;$('logo').onclick=()=>{if(UI.estado==='jogo')pausar();};
   lerCfg();ligarCfg();addEventListener('pointerdown',somIniciar,{once:true});addEventListener('keydown',somIniciar,{once:true});
   $('jogadores').addEventListener('click',e=>{const r=e.target.closest('.jg');if(r){espiarJog(+r.dataset.id);if(celularEmPe())$('app').classList.remove('ver-jog');}});
   $('bt-t-itens').onclick=()=>alternarPainel('itens');$('bt-t-jog').onclick=()=>alternarPainel('jog');$('bt-t-sin').onclick=()=>alternarPainel('sin');
