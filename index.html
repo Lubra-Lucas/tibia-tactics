@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="versao-site" content="2026-10-15.4"><!-- a cada deploy: trocar aqui, em VERSAO_SITE e nos ?v= dos scripts locais -->
+<meta name="versao-site" content="2026-10-15.5"><!-- a cada deploy: trocar aqui, em VERSAO_SITE e nos ?v= dos scripts locais -->
 <script id="auto-update">
 /* auto-atualização: o GitHub Pages cacheia 10 min; compara a versão do index no servidor com a desta página e recarrega se mudou */
 (function(){
@@ -333,6 +333,31 @@ html.reduz .cslot:hover .carta:not(.vend){transform:translateY(var(--dy,0px)) ro
 #cartas.alvo-poder .cslot .carta{outline:2px dashed #6fb8ff;outline-offset:-2px;cursor:crosshair}
 .carta.gelada{box-shadow:0 0 0 2px #9fd8ff,0 0 14px #6fb8ffcc,inset 0 0 18px #bfe6ff66}.carta.gelada .art canvas{filter:drop-shadow(0 3px 2px #000a) hue-rotate(160deg) brightness(1.05)}
 .carta .gelo-m{position:absolute;left:4px;top:26px;z-index:3;background:#0b3a5ae6;border:1px solid #9fd8ff;color:#d8f2ff;border-radius:9px;padding:0 6px;font:700 11px Verdana}
+/* runas (Fase 5): carta de pedra na loja, mochila (3 vagas; as armadas brilham) e ícones armados no topo */
+.carta.runa{--tc:#7b7b86;--rc:#b9b3c9;background:linear-gradient(145deg,#c4c4cf 0%,#8e8e9a 18%,#5a5a66 50%,#9494a0 76%,#44444d 100%)}
+.carta.runa .cin{background:#15151c}
+.carta.runa .cn{background:linear-gradient(#34343f,#1c1c25)}
+.carta.runa .art{align-items:center;background:radial-gradient(ellipse at 50% 45%,#3d3d49,#1a1a21 78%)}
+.carta.runa .art::before{background:repeating-linear-gradient(45deg,#ffffff0a 0 3px,#00000016 3px 6px);filter:none;opacity:1}
+.carta.runa .art .rn-ic{position:relative;z-index:1;width:64px;height:64px;image-rendering:pixelated;filter:drop-shadow(0 0 7px var(--rc)) drop-shadow(0 3px 2px #000a)}
+.carta.runa .rn-pie{flex:none;height:42px;display:flex;flex-direction:column;justify-content:center;gap:1px;padding:0 6px;background:linear-gradient(#1d1c26,#101016);border-top:1px solid #000}
+.carta.runa .rn-tag{font:700 9px Cinzel,serif;letter-spacing:.16em;text-transform:uppercase;color:var(--rc)}
+.carta.runa .rn-ef{font:9.5px/1.2 Verdana;color:#cfc9b4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.carta.runa .rn-badge{display:none;position:absolute;left:2px;top:2px;z-index:2;font:700 7px Cinzel,serif;letter-spacing:.1em;background:#000b;color:var(--rc);padding:0 3px;border-radius:2px;border:1px solid #4a4a58}
+.carta.runa.pobre .rn-ic{filter:grayscale(.6) brightness(.8) drop-shadow(0 3px 2px #000a)}
+#runas{display:flex;align-items:center;gap:3px;margin-top:4px;padding:2px 4px;background:#0b0c12;border:1px solid #2f2a18;border-radius:3px}
+#runas .rn-t{font:700 8px Cinzel,serif;letter-spacing:.06em;color:#9a957f;text-transform:uppercase;line-height:1.05;margin-right:2px;flex:1;min-width:0}
+.rn-s{--rc:#b9b3c9;width:28px;height:28px;flex:none;box-sizing:border-box;border-radius:4px;background:#07080d;border:1px dashed #3a3624;padding:0;display:flex;align-items:center;justify-content:center;position:relative;color:inherit}
+.rn-s.cheio{border:1px solid #7a7a86;background:linear-gradient(#2a2a33,#131318);cursor:pointer;touch-action:none}
+.rn-s img{width:24px;height:24px;image-rendering:pixelated;pointer-events:none}
+.rn-s.cheio:hover{border-color:#e6d27a}
+.rn-s.sel{border-color:#9fd8ff;box-shadow:0 0 7px #6fb8ffaa}
+.rn-s.arm{border-color:var(--rc);box-shadow:0 0 6px var(--rc),inset 0 0 5px color-mix(in srgb,var(--rc) 55%,transparent)}
+.rn-s.arm::after{content:'';position:absolute;right:-2px;top:-2px;width:7px;height:7px;border-radius:50%;background:#ffe27a;border:1px solid #000}
+#runarm{display:flex;gap:3px;align-items:center}#runarm:empty{display:none}
+#runarm .rn-s{width:26px;height:26px;border-radius:50%;cursor:pointer}#runarm .rn-s img{width:20px;height:20px}
+#runas-dica{color:#9fd8ff}
+.rn-det{display:flex;gap:14px;align-items:center;margin:8px 0}.rn-det img{width:96px;height:96px;image-rendering:pixelated;flex:none;filter:drop-shadow(0 0 10px var(--rc))}.rn-det p{margin:0 0 6px}
 .poder-info{max-width:380px;margin:-6px auto 12px;text-align:left;font:11px/1.45 Verdana,sans-serif;color:#c9c4ad;background:#0b0d14;border:1px solid #3a321c;border-radius:3px;padding:7px 10px}
 .poder-info b{color:var(--ouro);font-family:Cinzel,serif}.poder-info .pc{color:#b2a26b}.poder-info p{margin:3px 0 0}
 #odds{margin-bottom:2px}
@@ -493,6 +518,59 @@ input{font:12px Verdana,Geneva,sans-serif;user-select:text;-webkit-user-select:t
 #salatag b{font:700 14px Cinzel,serif;letter-spacing:.14em;color:#ffe9a0}
 #app.menu #topo,#app.menu #esq,#app.menu #dir,#app.menu #base{visibility:hidden}
 #tela.menu .modal{background:linear-gradient(180deg,#191c29ee,#0f111aee)}
+/* ---------- bênçãos: escolha 1 de 3 (Prata / Ouro / Prismática) ---------- */
+@property --ang{syntax:'<angle>';initial-value:0deg;inherits:false}
+#bencao{position:fixed;inset:0;z-index:45;display:none;align-items:center;justify-content:center;background:radial-gradient(ellipse at center,#05060acc 0%,#05060af0 100%);padding:8px}
+#bencao.on{display:flex;animation:bn-ent .28s ease-out}
+@keyframes bn-ent{from{opacity:0}to{opacity:1}}
+#bencao.sai{animation:bn-sai .36s ease-in forwards;pointer-events:none}
+@keyframes bn-sai{to{opacity:0;transform:scale(1.04)}}
+.bn-caixa{width:min(1000px,96vw);max-height:calc(100dvh - 16px);overflow:auto;display:flex;flex-direction:column;gap:12px;text-align:center}
+.bn-cab .eyebrow{display:block;font:700 12px Cinzel,serif;letter-spacing:.3em;text-transform:uppercase;color:var(--tc)}
+.bn-cab h2{font:400 34px MedievalSharp,Cinzel,serif;color:#f6ecc4;margin:2px 0 0;border:0;padding:0;text-transform:none;letter-spacing:.04em;text-shadow:0 3px 0 #000}
+.bn-cartas{display:flex;gap:16px;justify-content:center;align-items:stretch}
+.bn-carta{--tc:#c9d3e0;flex:1 1 0;min-width:0;max-width:310px;display:flex;flex-direction:column;align-items:center;gap:10px;padding:34px 14px 18px;position:relative;cursor:pointer;color:var(--txt);font:inherit;
+  border:3px solid var(--tc);border-radius:8px;background:linear-gradient(180deg,color-mix(in srgb,var(--tc) 16%,#151826),#0b0c13);box-shadow:0 0 18px color-mix(in srgb,var(--tc) 28%,transparent),inset 0 0 22px #0008;transition:transform .14s,filter .14s,box-shadow .14s}
+.bn-carta:hover,.bn-carta:focus-visible{transform:translateY(-6px) scale(1.02);filter:brightness(1.18);box-shadow:0 0 30px color-mix(in srgb,var(--tc) 60%,transparent),inset 0 0 22px #0008;outline:none}
+.bn-carta.t0{--tc:#c9d3e0}.bn-carta.t1{--tc:#f0c744}
+.bn-carta.t2{--tc:#ff7ad9;border-color:transparent;background:linear-gradient(180deg,#1b1530,#0b0c13) padding-box,conic-gradient(from var(--ang),#ff5f6d,#ffd86b,#6bff9e,#6bd5ff,#b57bff,#ff5f6d) border-box;animation:bn-giro 5s linear infinite}
+@keyframes bn-giro{to{--ang:360deg}}
+.bn-carta .bn-cat{position:absolute;top:8px;left:50%;transform:translateX(-50%);font:700 10px Cinzel,serif;letter-spacing:.16em;text-transform:uppercase;padding:2px 10px;border-radius:10px;background:#000a;border:1px solid var(--tc);color:var(--tc);white-space:nowrap}
+.bn-carta .bn-cat.c1{color:#ff9a8a;border-color:#ff9a8a}.bn-carta .bn-cat.c0{color:#ffe08a;border-color:#ffe08a}.bn-carta .bn-cat.c2{color:#9fd0ff;border-color:#9fd0ff}.bn-carta .bn-cat.c3{color:#9fe8a0;border-color:#9fe8a0}
+.bn-carta .bn-ic{width:84px;height:84px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--tc) 30%,#0b0c13),#0b0c13 72%);border:2px solid var(--tc);flex:none}
+.bn-carta .bn-ic img{width:56px;height:56px;image-rendering:pixelated;object-fit:contain}
+.bn-carta .bn-txt{display:flex;flex-direction:column;gap:8px;min-width:0}
+.bn-carta b{font:700 18px Cinzel,serif;color:#fff1c4;letter-spacing:.03em}
+.bn-carta .bn-d{font:13px/1.45 Verdana,Geneva,sans-serif;color:#d4cdb4}
+.bn-carta kbd{position:absolute;right:8px;bottom:6px;opacity:.5;font-size:10px}
+.bn-cartas.gira .bn-carta{animation:bn-flip .45s ease-out}.bn-cartas.gira .bn-carta.t2{animation:bn-flip .45s ease-out,bn-giro 5s linear infinite}
+@keyframes bn-flip{from{transform:rotateY(90deg);opacity:0}to{transform:none;opacity:1}}
+#bencao.sai .bn-carta{filter:brightness(.6)}
+.bn-rod{display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap}
+.bn-rod .bt{min-height:40px;padding:8px 18px;font-size:13px}.bn-rod .bt:disabled{opacity:.45;cursor:default}
+#bencao.esp .bn-carta,#bencao.esp .bn-rod .bt{opacity:.5;pointer-events:none}
+#bn-pill{position:fixed;z-index:46;left:50%;transform:translateX(-50%);top:calc(var(--hh,60px) + 12px);display:none;padding:6px 16px;font-size:12px;box-shadow:0 0 16px #d9b45a88}
+#bn-pill.on{display:block}
+#bencaos{display:flex;gap:3px;align-items:center}
+#bencaos:empty{display:none}
+#bencaos .bi{width:26px;height:26px;border-radius:50%;border:2px solid var(--tc);background:#0b0c13;display:flex;align-items:center;justify-content:center;cursor:help;box-shadow:0 0 6px color-mix(in srgb,var(--tc) 55%,transparent)}
+#bencaos .bi img{width:18px;height:18px;image-rendering:pixelated;object-fit:contain}
+#bencaos .bi.t0,.bnl .bi.t0{--tc:#c9d3e0}#bencaos .bi.t1,.bnl .bi.t1{--tc:#f0c744}#bencaos .bi.t2,.bnl .bi.t2{--tc:#ff7ad9}
+#bencaos .bi.novo{animation:bn-novo 1.2s ease-out 2}
+@keyframes bn-novo{0%{transform:scale(2.2);filter:brightness(2.4)}100%{transform:none;filter:none}}
+.jg .bnl{margin-left:4px}.jg .bnl .bi{width:12px;height:12px}.jg .bnl .bi img{width:8px;height:8px}
+.bnl{display:flex;gap:2px}.bnl:empty{display:none}.bnl .bi{width:14px;height:14px;border-radius:50%;border:1px solid var(--tc);background:#0b0c13;display:flex;align-items:center;justify-content:center}.bnl .bi img{width:10px;height:10px;image-rendering:pixelated;object-fit:contain}
+#espia-bn{display:inline-flex;vertical-align:middle;margin-left:6px}#espia-bn:empty{display:none}
+html.reduz .bn-carta.t2,html.reduz .bn-cartas.gira .bn-carta{animation:none}html.reduz #bencao.on{animation:none}
+@media (max-width:640px){
+ .bn-caixa{gap:8px}.bn-cab h2{font-size:24px}.bn-cab .eyebrow{font-size:10px}
+ .bn-cartas{flex-direction:column;gap:8px}
+ .bn-carta{max-width:none;flex-direction:row;text-align:left;gap:10px;padding:22px 10px 8px 10px}
+ .bn-carta .bn-cat{top:4px;left:12px;transform:none;font-size:8px;padding:1px 7px}
+ .bn-carta .bn-ic{width:52px;height:52px}.bn-carta .bn-ic img{width:34px;height:34px}
+ .bn-carta b{font-size:14px}.bn-carta .bn-d{font-size:11px;line-height:1.35}.bn-carta kbd{display:none}
+ .bn-rod .bt{min-height:36px;padding:6px 12px;font-size:12px}
+}
 /* ---------- topo: trilha de rodadas, ouro, ícones ---------- */
 #trilha{display:flex;gap:7px;align-items:center}
 .rd{width:34px;height:34px;border:1px solid #3a321c;background:linear-gradient(#12141d,#0a0b11);border-radius:3px;display:flex;align-items:center;justify-content:center;opacity:.6;position:relative;transition:transform .2s}
@@ -798,6 +876,10 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
  #app#app #estagio{min-width:38px}#app#app #estagio b{font-size:16px}#app#app #estagio span{font-size:7px;letter-spacing:0}
  #app#app #tempo{flex:1 1 90px;min-width:56px;max-width:240px}#app#app #tempo .txt{font-size:8px;margin-bottom:1px}#app#app #tempo .txt b{font-size:12px}#app#app .barra{height:6px}
  #app#app #cabdir{flex:none;flex-wrap:nowrap;gap:6px;margin-left:auto}
+ #bencao{padding:4px}.bn-caixa{gap:6px}.bn-cab h2{font-size:20px;margin:0}.bn-cab .eyebrow{font-size:9px}
+ .bn-cartas{flex-direction:row;gap:8px}.bn-carta{flex-direction:column;gap:4px;padding:18px 8px 6px;border-width:2px;max-width:none}.bn-carta .bn-cat{top:3px;font-size:7px;padding:1px 6px}
+ .bn-carta .bn-ic{width:38px;height:38px}.bn-carta .bn-ic img{width:26px;height:26px}.bn-carta b{font-size:12px}.bn-carta .bn-d{font-size:10px;line-height:1.3}.bn-carta kbd{display:none}.bn-txt{gap:3px}
+ .bn-rod .bt{min-height:30px;padding:3px 12px;font-size:11px}#bencaos .bi{width:20px;height:20px}#bencaos .bi img{width:14px;height:14px}#bn-pill{top:44px;padding:3px 12px;font-size:11px}
  #app#app #cabdir .stat{gap:3px}#app#app #cabdir .stat img{width:18px;height:18px}#app#app #cabdir .stat b{font-size:13px}#app#app #cabdir .stat small{font-size:7px;letter-spacing:0}
  #app#app #nivelbox{min-width:60px}#app#app #nivelbox .nv{font-size:12px}#app#app #nivelbox .nv span{font-size:8px}
  #app#app #cabdir .bt{min-height:32px;min-width:34px;padding:2px 6px;font-size:10px}
@@ -832,6 +914,10 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
  #app#app .carta .selo{left:auto;right:38px;bottom:4px}
  #app#app .detalhes-carta{width:32px;height:32px;top:auto;bottom:3px;right:3px}
  #app#app #zona-venda .vt{font-size:10px;letter-spacing:.1em}#app#app #zona-venda .vv{font-size:20px}
+ /* runas: carta de pedra compacta, mochila no painel de itens e armadas no topo */
+ #app#app .carta.runa .art{align-items:center;justify-content:center}#app#app .carta.runa .art .rn-ic{width:40px;height:40px}#app#app .carta.runa .rn-pie{display:none}#app#app .carta.runa .rn-badge{display:block}
+ #app#app #runas{margin-top:6px;padding:3px;flex-wrap:wrap;justify-content:center}#app#app #runas .rn-s{width:34px;height:34px}#app#app #runas .rn-s img{width:28px;height:28px}#app#app #runas .rn-t{font-size:8px;flex:0 0 100%;text-align:center}
+ #app#app #runarm .rn-s{width:24px;height:24px}#app#app #runarm .rn-s img{width:18px;height:18px}
  /* coluna de botões: sempre a um toque */
  #app#app #botoes{grid-column:4;grid-row:2;padding:3px;gap:4px;justify-content:stretch}
  #app#app #botoes .bt{flex:1 1 0;min-height:40px;flex-direction:column;justify-content:center;align-items:center;gap:1px;padding:3px 2px;font-size:11px;letter-spacing:.02em;text-align:center}
@@ -868,6 +954,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
  #app#app #estagio{order:1;min-width:40px}#app#app #estagio b{font-size:16px}#app#app #estagio span{font-size:7px;letter-spacing:0}
  #app#app #tempo{order:1;flex:1 1 70px;min-width:50px;max-width:none}#app#app #tempo .txt{font-size:8px;margin-bottom:1px}#app#app #tempo .txt b{font-size:12px}#app#app .barra{height:6px}
  #app#app #cabdir .stat,#app#app #nivelbox{order:1}#app#app #cabdir .stat{gap:3px}#app#app #cabdir .stat img{width:18px;height:18px}#app#app #cabdir .stat b{font-size:13px}#app#app #cabdir .stat small{font-size:7px;letter-spacing:0}
+ #app#app #bencaos{order:1}#app#app #bencaos .bi{width:20px;height:20px}#app#app #bencaos .bi img{width:14px;height:14px}
  #app#app #nivelbox{min-width:56px}#app#app #nivelbox .nv{font-size:12px}#app#app #nivelbox .nv span{font-size:8px}
  #app#app #cabdir .bt{order:3;flex:1 1 0;min-height:34px;min-width:0;padding:2px 4px;font-size:10px}
  #app#app #cabdir #bt-t-itens,#app#app #cabdir #bt-t-jog,#app#app #cabdir #bt-t-sin{display:inline-flex;align-items:center;justify-content:center}
@@ -890,6 +977,12 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
  #app#app .carta .selo{left:auto;right:4px;bottom:28px}
  #app#app .detalhes-carta{width:32px;height:32px;top:3px;right:3px}
  #app#app #zona-venda .vt{font-size:10px;letter-spacing:.1em}#app#app #zona-venda .vv{font-size:20px}
+ /* runas: carta de pedra compacta; a mochila fica à direita do inventário (coluna vertical de 3 vagas); armadas também no topo */
+ #app#app .carta.runa .art{align-items:center;justify-content:center}#app#app .carta.runa .art .rn-ic{width:34px;height:34px}#app#app .carta.runa .rn-pie{display:none}#app#app .carta.runa .rn-badge{display:block;top:auto;bottom:3px;left:50%;transform:translateX(-50%)}
+ #app#app.ver-itens #itens{display:grid;grid-template-columns:minmax(0,1fr) 38px;grid-template-rows:auto minmax(0,1fr);column-gap:4px}
+ #app#app #itens h3{grid-column:1;grid-row:1}#app#app #grade-itens{grid-column:1;grid-row:2}
+ #app#app #runas{grid-column:2;grid-row:1/3;flex-direction:column;margin:0;padding:2px;gap:3px;justify-content:center}#app#app #runas .rn-t{display:none}#app#app #runas .rn-s{width:32px;height:32px}#app#app #runas .rn-s img{width:26px;height:26px}
+ #app#app #runarm .rn-s{width:22px;height:22px}#app#app #runarm .rn-s img{width:16px;height:16px}#app#app #runarm{order:1}
  #app#app #botoes{grid-column:1;grid-row:4;flex-direction:row;gap:4px;padding:3px;justify-content:stretch}
  #app#app #botoes .bt{flex:1 1 0;min-height:44px;flex-direction:column;justify-content:center;align-items:center;gap:1px;padding:3px 2px;font-size:11px;letter-spacing:.02em;text-align:center}
  #app#app #botoes .bt span{font-size:9px}#app#app #botoes #bt-trava span,#app#app #botoes #bt-pronto span,#app#app #botoes #bt-recolher,.bt .md{display:none}
@@ -914,6 +1007,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
       <div class="stat" id="salatag" style="display:none"><div><small>Sala</small><b id="sala-cod">----</b></div></div>
       <div id="nivelbox"><div class="nv"><span style="color:var(--mut)">Nível</span> <b id="nivel">3</b><span id="xp-t"></span></div><div class="barra"><i id="xp-b" style="width:0%"></i></div></div>
       <div class="stat"><div><small>Unidades</small><b id="unid">0/3</b></div></div>
+      <div id="bencaos"></div><div id="runarm"></div>
       <button class="bt peq mob" id="bt-t-sin" type="button" title="Sinergias">Sin.</button><button class="bt peq mob" id="bt-t-itens" type="button" title="Itens">Itens</button><button class="bt peq mob" id="bt-t-jog" type="button" title="Jogadores">Jogs.</button>
       <button class="bt peq ic" id="bt-mudo" title="Silenciar (M)"><svg viewBox="0 0 16 16"><path d="M2 6h3l4-3.5v11L5 10H2z"/><path d="M11 5.2a4 4 0 0 1 0 5.6M12.8 3.4a6.6 6.6 0 0 1 0 9.2" stroke="currentColor" stroke-width="1.3" fill="none" stroke-linecap="round"/></svg></button>
       <button class="bt peq ic" id="bt-cfg" title="Som e opções"><svg viewBox="0 0 16 16"><path d="M7 1h2l.4 1.8 1.4.6 1.6-1 1.4 1.4-1 1.6.6 1.4L15 7v2l-1.8.4-.6 1.4 1 1.6-1.4 1.4-1.6-1-1.4.6L9 15H7l-.4-1.8-1.4-.6-1.6 1-1.4-1.4 1-1.6-.6-1.4L1 9V7l1.8-.4.6-1.4-1-1.6 1.4-1.4 1.6 1 1.4-.6zM8 5.5A2.5 2.5 0 1 0 8 10.5 2.5 2.5 0 0 0 8 5.5z"/></svg></button>
@@ -927,7 +1021,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
     <div id="cvbox"><div id="cvw"><canvas id="cv"></canvas><div id="vinheta"></div><div id="faixa"></div><div id="aviso"></div><div id="dica-poder"></div>
       <button class="bt peq" id="bt-meter" title="Placar da luta: dano causado, recebido e cura (P)"><svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="9" width="3.5" height="6"/><rect x="6.2" y="2" width="3.5" height="13"/><rect x="11.5" y="6" width="3.5" height="9"/></svg>Placar</button>
       <div id="meter" class="painel"></div>
-      <div id="espia" class="painel"><span>Tabuleiro de <b id="espia-nome"></b></span><button class="bt peq" id="bt-espia-v">Voltar</button></div>
+      <div id="espia" class="painel"><span>Tabuleiro de <b id="espia-nome"></b><span id="espia-bn" class="bnl"></span></span><button class="bt peq" id="bt-espia-v">Voltar</button></div>
       <div id="emotes" class="painel"></div>
     </div></div>
   </main>
@@ -935,7 +1029,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
   <div id="mini" class="painel"><div class="ou"><img src="tibia-assets/sprites15/ui/gold.png" alt=""><b id="mini-ouro">0</b></div>
     <button class="bt" id="bt-m-rolar">Rolar <span>2 · D</span></button><button class="bt" id="bt-m-xp">Comprar XP <span>4 · F</span></button><button class="bt primario" id="bt-m-loja">Abrir loja <span>S</span></button></div>
   <footer id="base">
-    <div id="itens" class="painel"><h3><span data-tip="bt:itens">Itens</span><span class="bts"><button class="bt peq" id="bt-forjar" data-tip="bt:forjar" style="display:none">Forjar</button><button class="bt peq" id="bt-rec" data-tip="bt:rec">Receitas</button></span></h3><div id="grade-itens"></div></div>
+    <div id="itens" class="painel"><h3><span data-tip="bt:itens">Itens</span><span class="bts"><button class="bt peq" id="bt-forjar" data-tip="bt:forjar" style="display:none">Forjar</button><button class="bt peq" id="bt-rec" data-tip="bt:rec">Receitas</button></span></h3><div id="grade-itens"></div><div id="runas"></div></div>
     <div id="loja" class="painel"><div id="cartas"></div><div id="zona-venda"><div class="vt">Vender por</div><div class="vv"><img src="tibia-assets/sprites15/ui/gold.png" alt=""><span id="venda-v">0</span></div></div></div>
     <div id="botoes" class="painel">
       <div id="odds" data-tip="odds:x"></div>
@@ -949,6 +1043,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
   </footer>
 </div>
 <div id="tela"></div>
+<div id="bencao" role="dialog" aria-modal="true" aria-labelledby="bn-tit"></div><button id="bn-pill" class="bt primario" type="button">Escolher bênção</button>
 <div id="vs"></div>
 <div id="cfg" class="painel"></div>
 <div id="tip"></div>
@@ -957,11 +1052,11 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
 <div id="ghost"></div>
 
 <script async src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
-<script src="tibia-assets/sprites15.js?v=2026-10-15.4"></script>
-<script src="tibia-assets/combate15.js?v=2026-10-15.4"></script>
+<script src="tibia-assets/sprites15.js?v=2026-10-15.5"></script>
+<script src="tibia-assets/combate15.js?v=2026-10-15.5"></script>
 <script>
 'use strict';
-const VERSAO_SITE='2026-10-15.4';   // bumpar junto com <meta versao-site> e os ?v= dos scripts a cada deploy
+const VERSAO_SITE='2026-10-15.5';   // bumpar junto com <meta versao-site> e os ?v= dos scripts a cada deploy
 /* =====================================================================================
    TIBIA TACTICS  -  auto-battler estilo TFT com visual do Tibia
    Parte 1: dados (unidades, sinergias, itens, monstros). Nada aqui toca o DOM.
@@ -1287,7 +1382,7 @@ function criarCombate(eqA,eqB,o){o=o||{};
   [eqA,eqB].forEach((eq,lado)=>{
     C.tr[lado]=contarTracos(eq.un.filter(s=>!s.inv&&!s.d.pve).map(s=>s.d.id));
     Object.keys(C.tr[lado]).forEach(t=>{C.niv[lado][t]=nivelTraco(t,C.tr[lado][t]);});
-    eq.un.forEach(s=>{const u=novoUnit(C,s,lado);if(s.esc)u.escPoder=true;});});
+    eq.un.forEach(s=>{const u=novoUnit(C,s,lado);if(s.esc)u.escPoder=true;if(s.ru&&s.ru.length)u.runas=s.ru;});});
   aplicarTracos(C);
   C.un.forEach(u=>{u.hp=u.hpM;});
   // efeitos de itens que valem desde o início da luta: escudo (Blessed Shield), furtividade (Stealth Ring) e aura de armadura (Royal Helmet)
@@ -1295,6 +1390,17 @@ function criarCombate(eqA,eqB,o){o=o||{};
     if(ie.escIni){darEscudo(C,u,u.hpM*ie.escIni,8000);fx(C,'magic_blue',u.x,u.y);}
     if(ie.furtivo)u.furtivoAte=ie.furtivo;
     if(ie.auraArm)C.un.forEach(v=>{if(v!==u&&v.lado===u.lado&&cheb(u,v)<=1)v.arm+=ie.auraArm;});});
+  // bênçãos de combate (vêm em eq.bn, então host e convidados simulam o mesmo): 5 vida, 6 vel. de ataque, 10 fúria, 11 último suspiro, 15 ascensão, 18 regeneração
+  [eqA,eqB].forEach((eq,lado)=>{const bn=eq.bn;if(!bn||!bn.length)return;const meus=C.un.filter(u=>u.lado===lado&&!u.inv&&!u.pve);
+    if(bn.includes(5))meus.forEach(u=>{u.hpM=Math.round(u.hpM*(1+BN.pele));u.hp=u.hpM;});
+    if(bn.includes(6))meus.forEach(u=>{u.asB+=BN.mao;});
+    if(bn.includes(18))meus.forEach(u=>{u.regen+=BN.reg;});
+    if(bn.includes(10)){let n=0;const f=()=>{n++;meus.forEach(u=>{u.dmgB+=BN.furia;});if(n<BN.furiaMax)agendar(C,BN.furiaT,f);};agendar(C,BN.furiaT,f);}
+    if(bn.includes(15))agendar(C,BN.ascT,()=>{meus.forEach(u=>{u.dmgB+=BN.asc;});});
+    if(bn.includes(11)){if(!C.sus)C.sus=[0,0];C.sus[lado]=1;}});      // 1 = ainda não explodiu
+  // runas armadas (vêm no spec: s.ru na unidade, eq.ru no time; eq.re = estágio, que escala o dano)
+  C.un.forEach(u=>{if(u.runas)u.runas.forEach(k=>runaUn(C,u,k));});
+  [eqA,eqB].forEach((eq,lado)=>{if(eq.ru&&eq.ru.length)eq.ru.forEach(k=>runaTime(C,lado,k,escRn(eq.re)));});
   // poderes das vocações: passivos + cargas do ativo (vêm no spec da equipe, então host e convidados simulam o mesmo)
   [eqA,eqB].forEach((eq,lado)=>{const voc=eq.voc;if(!voc)return;const meus=C.un.filter(u=>u.lado===lado&&!u.inv&&!u.pve);
     if(voc==='knight')meus.forEach(u=>{if(u.y===(lado===0?TAB_Y:3)){u.arm+=PODN.frente;u.rm+=PODN.frente;}});             // Linha de Frente
@@ -1305,6 +1411,34 @@ function criarCombate(eqA,eqB,o){o=o||{};
     if(eq.sd)agendar(C,PODN.sdT,()=>{let al=null;C.un.forEach(u=>{if(u.vivo&&u.lado!==lado&&!u.inv&&(!al||u.hp>al.hp))al=u;});   // Runa SD: maior vida atual, empate = primeira unidade
       if(!al)return;tiro(C,'suddendeath',{x:al.x,y:al.y-5},al);fx(C,'mortarea',al.x,al.y);fx(C,'explosionarea',al.x,al.y,60);causar(C,null,al,al.hpM*PODN.sd,'death',{magia:true,sem:true,crit:true});});});
   return C;}
+
+/* ---- runas ---- */
+/* runas de unidade: UH (flag lida em causar), Magic Wall (imunidade lida em causar) e Haste (buff 'ace', lido em asEff/movEff) */
+function runaUn(C,u,k){const R=RN;
+  if(k===1)u.uh=true;
+  else if(k===6){u.muroAte=R.mw.dur;agendar(C,150,()=>{if(!u.vivo)return;fx(C,'magic_blue',u.x,u.y);txt(C,u.x,u.y-.5,'Magic Wall','#6fb8ff');});}
+  else if(k===7){u.b.ace={ate:R.hs.dur,v:R.hs.ace};agendar(C,150,()=>{if(!u.vivo)return;fx(C,'magic_green',u.x,u.y);txt(C,u.x,u.y-.5,'Haste','#7dff9a');});}}
+/* centro da explosão: a casa com mais inimigos no raio 1 (desempate: mais vida somada; depois a primeira da varredura) */
+function centroRuna(C,lado){let b=null,bn=-1,bh=-1;
+  for(let y=0;y<NR;y++)for(let x=0;x<NC;x++){let n=0,h=0;C.un.forEach(v=>{if(v.vivo&&v.lado!==lado&&cheb({x,y},v)<=1){n++;h+=v.hp;}});if(n>bn||(n===bn&&h>bh)){bn=n;bh=h;b=[x,y];}}
+  return bn>0?b:null;}
+function areaRuna(C,lado,cx,cy,dano,el,ef,f){const atingidos=[];
+  for(let y=cy-1;y<=cy+1;y++)for(let x=cx-1;x<=cx+1;x++){if(!dentro(x,y))continue;fx(C,ef,x,y,((x+y)&1)*40);
+    const id=C.occ[y*NC+x],v=id&&C.map[id];if(v&&v.vivo&&v.lado!==lado){causar(C,null,v,dano,el,{magia:true,sem:true,rn:true});atingidos.push(v);if(f&&v.vivo)f(v);}}
+  return atingidos;}
+/* runas sem alvo: agendadas no tempo certo para o time; src = null (dano "do ambiente", sem crédito no placar) */
+function runaTime(C,lado,k,es){const R=RN,inim=()=>C.un.filter(v=>v.vivo&&v.lado!==lado);
+  if(k===2)agendar(C,R.sd.t,()=>{let al=null;inim().forEach(u=>{if(!al||u.hp>al.hp)al=u;});if(!al)return;   // Sudden Death: maior vida atual (empate: a primeira unidade)
+    tiro(C,'suddendeath',{x:al.x,y:al.y-5},al);fx(C,'mortarea',al.x,al.y);fx(C,'explosionarea',al.x,al.y,60);txt(C,al.x,al.y-.5,'Sudden Death','#d8d2ee');causar(C,null,al,al.hpM*R.sd.p,'death',{magia:true,sem:true,crit:true,rn:true});});
+  else if(k===3)agendar(C,R.gfb.t,()=>{const c=centroRuna(C,lado);if(!c)return;txt(C,c[0],c[1]-.5,'Great Fireball','#ffa040');fx(C,'explosionarea',c[0],c[1]);areaRuna(C,lado,c[0],c[1],R.gfb.d*es,'fire','firearea');});
+  else if(k===4)agendar(C,R.ava.t,()=>{const c=centroRuna(C,lado);if(!c)return;txt(C,c[0],c[1]-.5,'Avalanche','#7fd4ff');
+    areaRuna(C,lado,c[0],c[1],R.ava.d*es,'ice','icearea',v=>aplicarDeb(C,v,{lento:R.ava.lento,dur:R.ava.dur}));});
+  else if(k===5)agendar(C,R.par.t,()=>{let al=null;inim().forEach(u=>{if(!al||u.atk>al.atk)al=u;});if(!al)return;   // Paralyze: maior ataque
+    fx(C,'purpleenergy',al.x,al.y);txt(C,al.x,al.y-.5,'Paralyze','#c9a0ff');atordoar(C,al,R.par.stun);});
+  else if(k===8)agendar(C,R.eb.t,()=>{const ini=inim();if(!ini.length)return;   // Energy Bomb: campo 3x3 no centro do exército inimigo; 1 tique por segundo
+    let sx=0,sy=0;ini.forEach(v=>{sx+=v.x;sy+=v.y;});const cx=clamp(Math.round(sx/ini.length),1,NC-2),cy=clamp(Math.round(sy/ini.length),1,NR-2);
+    txt(C,cx,cy-.5,'Energy Bomb','#d58cff');
+    const tique=n=>{areaRuna(C,lado,cx,cy,R.eb.d*es,'energy','energyarea');if(n<R.eb.n)agendar(C,1000,()=>tique(n+1));};tique(1);});}
 
 /* soma as estatísticas de um item (já com forja e encantamento) na unidade; os efeitos marcantes ficam em u.ie e são lidos pelo motor */
 const EFK=FX_ORD.concat(['pen']);
@@ -1377,17 +1511,18 @@ function agendar(C,ms,f){C.ev.push({t:C.t+ms,f});C.ev.sort((a,b)=>a.t-b.t);}
 
 /* ---- cálculo de atributos dinâmicos ---- */
 const bv=(u,n,C)=>{const b=u.b[n];return b&&b.ate>u.C.t?b.v:0;};
-function asEff(u){let a=u.as*(1+u.asB+bv(u,'as'));if(u.furia)a*=1+u.orcFuria;
+function asEff(u){let a=u.as*(1+u.asB+bv(u,'as')+bv(u,'ace'));if(u.furia)a*=1+u.orcFuria;
   if(u.ie.hasteIni&&u.C.t<6000)a*=1+u.ie.hasteIni;            // Time Ring: arrancada nos primeiros 6 s
   if(!u.ie.semLento)a*=1-bv(u,'lento');return Math.max(.2,a);}
 const armEff=u=>u.arm*u.armMul*(1-bv(u,'armR'));
-const movEff=u=>Math.max(.4,u.mov*(u.ie.semLento?1:1-bv(u,'lento')));
+const movEff=u=>Math.max(.4,(u.mov+bv(u,'ace'))*(u.ie.semLento?1:1-bv(u,'lento')));
 
 /* ---- dano, cura, morte ---- */
 /* fator de mitigação de um elemento no alvo (armadura para físico; resistência mágica e resistência elemental para o resto) */
 function fatorEl(u,el,pen){if(el==='phys')return 100/(100+Math.max(-60,armEff(u)*(1-(pen||0))));return 100/(100+u.rm)*(1-Math.min(.6,u.res[el]||0));}
 function darEscudo(C,u,v,dur){v=Math.round(v);if(v<=0)return;const es=u.b.escudo;if(es&&es.ate>C.t&&es.v>0){es.v+=v;es.ate=Math.max(es.ate,C.t+dur);}else u.b.escudo={ate:C.t+dur,v};}
 function causar(C,src,u,bruto,el,o){o=o||{};if(!u.vivo)return 0;
+  if(u.muroAte&&C.t<u.muroAte){fx(C,'blockhit',u.x,u.y);txt(C,u.x,u.y,'imune','#6fb8ff');return 0;}                     // Magic Wall (runa)
   if(o.basico&&u.esq>0&&C.r()<u.esq){fx(C,'dodge',u.x,u.y);txt(C,u.x,u.y,'esquivou','#7fe6ff');return 0;}
   let d=bruto*(C.sd?1+C.sd*.08:1);
   if(o.hab&&src&&src.ie.magCrit&&C.r()<src.ie.magCrit){d*=1.5;o.crit=true;fx(C,'critical_damage',u.x,u.y);}   // Wand of Starstorm: magia crítica
@@ -1402,13 +1537,14 @@ function causar(C,src,u,bruto,el,o){o=o||{};if(!u.vivo)return 0;
   if(o.crit)txt(C,u.x,u.y,d+'!','#ffe14a',true);else txt(C,u.x,u.y,''+d,o.magia?(EL[el]||EL.phys).cor:'#f2efe0');
   if(src){C.dano[src.lado]+=d;if(src.st)src.st.d+=d;}u.st.r+=d;
   if(C.vis&&o.crit&&d>=450&&d>=u.hpM*.15)imp(C,'crit');
-  if(u.manaM)u.mana=Math.min(u.manaM,u.mana+Math.min(15,d/10));
+  if(u.manaM&&!o.rn)u.mana=Math.min(u.manaM,u.mana+Math.min(15,d/10));      // dano de runa não carrega a mana de quem apanha
   if(src&&src.roubo&&o.basico)curar(C,src,d*src.roubo,true);
   if(src&&src.rouboM&&o.hab)curar(C,src,d*src.rouboM,true);                      // Vampirismo também cura nas magias
   if(u.ie.manaHurt&&u.manaM)u.mana=Math.min(u.manaM,u.mana+u.ie.manaHurt);      // Knight Armor: mana ao apanhar
   if(src&&src!==u&&!o.refl&&src.vivo){                                           // reflexo: Golden Armor (golpes corpo a corpo) e Demon Shield (dano mágico)
     if(o.basico&&u.ie.refl&&cheb(src,u)<=1){fx(C,'blockhit',src.x,src.y);causar(C,u,src,d*u.ie.refl,'phys',{refl:true,sem:true});}
     else if(o.magia&&u.ie.reflMag&&!o.sem){fx(C,'blockhit',src.x,src.y);causar(C,u,src,d*u.ie.reflMag,el,{refl:true,sem:true,magia:true});}}
+  if(u.uh&&u.hp>0&&u.hp<u.hpM*RN.uh.lim){u.uh=false;curar(C,u,u.hpM*RN.uh.cura);fx(C,'green_rings',u.x,u.y);fx(C,'hearts',u.x,u.y,100);txt(C,u.x,u.y-.5,'Ultimate Healing','#ff7a9a',true);}   // Ultimate Healing (runa): uma vez
   if(u.ie.escMeio&&!u.escMeioUsado&&u.hp>0&&u.hp<u.hpM*.5){u.escMeioUsado=true;darEscudo(C,u,u.hpM*u.ie.escMeio,6000);fx(C,'magic_blue',u.x,u.y);txt(C,u.x,u.y,'barreira','#9fe8a0');}   // Magic Plate Armor
   if(u.orcFuria&&!u.furia&&u.hp<u.hpM*.5&&u.hp>0){u.furia=true;fx(C,'magic_red',u.x,u.y);txt(C,u.x,u.y,'Fúria!','#ff6a4a');}
   if(u.hp<=0)morrer(C,u,src);
@@ -1419,6 +1555,8 @@ function morrer(C,u,src){if(!u.vivo)return;
     fx(C,'holyarea',u.x,u.y);fx(C,'hearts',u.x,u.y,150);txt(C,u.x,u.y,'Ressuscitou!','#ffe680',true);return;}
   u.vivo=false;u.hp=0;if(C.occ[u.y*NC+u.x]===u.uid)C.occ[u.y*NC+u.x]=0;C.vivos[u.lado]--;if(C.vivos[u.lado]<=0)imp(C,'final');
   C.mortos.push({u,t:C.t,x:u.x,y:u.y});fx(C,'poff',u.x,u.y);
+  if(C.sus&&C.sus[u.lado]===1&&!u.inv&&!u.pve){C.sus[u.lado]=2;fx(C,'firearea',u.x,u.y);      // Último Suspiro: só a primeira morte de cada lado
+    C.un.filter(v=>v.vivo&&v.lado!==u.lado&&cheb(v,u)<=1).forEach(v=>{fx(C,'firearea',v.x,v.y);causar(C,u,v,u.hpM*BN.sus,'fire',{magia:true,sem:true});});}
   if(u.morteFogo){const inimigos=C.un.filter(v=>v.vivo&&v.lado!==u.lado&&cheb(v,u)<=1);fx(C,'firearea',u.x,u.y);
     inimigos.forEach(v=>{fx(C,'firearea',v.x,v.y);causar(C,u,v,u.atk*u.morteFogo,'fire',{magia:true});});}
   if(src&&src!==u&&src.vivo&&src.ie.killHeal){curar(C,src,src.hpM*src.ie.killHeal);fx(C,'green_rings',src.x,src.y);}}
@@ -1596,6 +1734,54 @@ const PODER={
   druid:{n:'Dádiva da Natureza',custo:2,alvo:null,pn:'Seiva',
     a:()=>`Ganha +${PODN.xp} de XP agora.`,p:()=>`Cura recebida pelas suas unidades: +${Math.round(PODN.cura*100)}%.`}};
 
+/* ---------- bênçãos (Fase 5, etapa 3): "escolha 1 de 3" no começo da preparação de 2-1 (Prata), 3-2 (Ouro) e 4-2 (Prismática) ----------
+   Economia/itens/unidades aplicam na hora (execCmd, no anfitrião); persistentes (7, 8, 14) são lidas de p.bn; as de combate (5, 6, 10, 11, 15, 18) viajam na equipe (eq.bn) */
+const BN={ouro:8,xp:6,pele:.08,mao:.08,jurosMax:7,thais:2,furia:.02,furiaT:2000,furiaMax:10,sus:.2,asc:.50,ascT:10000,tes:40,reg:.015,recr:3};   // números (a interface lê daqui)
+const BEN_ROD={'2-1':0,'3-2':1,'4-2':2},BEN_TIER=['Prata','Ouro','Prismática'],BEN_CAT=['Economia','Combate','Itens','Unidades'];
+const UIG='tibia-assets/sprites15/ui/';
+const pct=v=>String(+(v*100).toFixed(1)).replace(".",",");
+const BEN=[null,
+  {t:0,c:0,n:'Bolsa de Ouro',ic:UIG+'gold.png',d:()=>`+${BN.ouro} de ouro agora.`},
+  {t:0,c:2,n:'Mochila do Aventureiro',ic:UIG+'inventario.png',d:()=>'2 componentes de item aleatórios.'},
+  {t:0,c:0,n:'Estudos em Edron',ic:icoItem(268),d:()=>`+${BN.xp} de XP agora.`},
+  {t:0,c:3,n:'Recruta',ic:icoItem(3264),d:()=>`1 unidade aleatória de custo 2 no banco e +${BN.recr} de ouro.`},
+  {t:0,c:1,n:'Pele Grossa',ic:icoItem(3357),d:()=>`Suas unidades têm +${pct(BN.pele)}% de vida máxima em combate.`},
+  {t:0,c:1,n:'Mãos Rápidas',ic:icoItem(3079),d:()=>`Suas unidades têm +${pct(BN.mao)}% de velocidade de ataque.`},
+  {t:1,c:0,n:'Juros Compostos',ic:icoItem(3050),d:()=>`O máximo de juros passa de 5 para ${BN.jurosMax} (1 a cada 10 de ouro).`},
+  {t:1,c:0,n:'Banco de Thais',ic:UIG+'loot.png',d:()=>`+${BN.thais} de ouro em toda rodada pelo resto da partida.`},
+  {t:1,c:2,n:'Forja Anã',ic:icoItem(3281),d:()=>'1 item completo aleatório.'},
+  {t:1,c:1,n:'Fúria de Batalha',ic:icoItem(3319),d:()=>`Em combate, suas unidades ganham +${pct(BN.furia)}% de dano a cada ${BN.furiaT/1000} s (máx. +${pct(BN.furia*BN.furiaMax)}%).`},
+  {t:1,c:1,n:'Último Suspiro',ic:icoItem(3057),d:()=>`A primeira unidade sua que morrer em cada luta explode, causando ${pct(BN.sus)}% da vida máxima dela de dano aos inimigos adjacentes.`},
+  {t:1,c:3,n:'Mercenário',ic:icoItem(3387),d:()=>'1 unidade aleatória de custo 4 no banco.'},
+  {t:2,c:3,n:'Herói Lendário',ic:icoItem(3392),d:()=>'1 unidade aleatória de custo 5 e 1 componente de item.'},
+  {t:2,c:0,n:'Exército Maior',ic:icoItem(3428),d:()=>'+1 unidade permitida no tabuleiro (limite do nível +1).'},
+  {t:2,c:1,n:'Ascensão',ic:icoItem(31617),d:()=>`Após ${BN.ascT/1000} s de luta, suas unidades causam +${pct(BN.asc)}% de dano.`},
+  {t:2,c:0,n:'Tesouro de Ferumbras',ic:UIG+'gold.png',d:()=>`+${BN.tes} de ouro agora.`},
+  {t:2,c:2,n:'Arsenal',ic:icoItem(3366),d:()=>'2 itens completos aleatórios.'},
+  {t:2,c:1,n:'Sangue de Dragão',ic:icoItem(3386),d:()=>`Suas unidades regeneram ${pct(BN.reg)}% da vida máxima por segundo em combate.`}];
+BEN.forEach((b,i)=>{if(b)b.id=i;});
+const BEN_IDS=[0,1,2].map(t=>BEN.filter(b=>b&&b.t===t).map(b=>b.id));
+const temBn=(p,id)=>!!(p.bn&&p.bn.includes(id));
+const limUn=p=>p.nivel+(temBn(p,14)?1:0);                  // limite de unidades no tabuleiro (Exército Maior: +1)
+const jurosMax=p=>temBn(p,7)?BN.jurosMax:5;                 // Juros Compostos
+const jurosDe=p=>Math.min(jurosMax(p),Math.floor(p.ouro/10));
+/* ---------- runas (Fase 5, etapa 3): consumíveis da loja ----------
+   Aparecem a partir do estágio 2 (25% por loja, 1 carta no máximo, fora do pool). Compra: vão para a mochila (bolsa + armadas <= 3). Na preparação, até 2 viram "armadas" e são gastas na PRÓXIMA luta;
+   com alvo (unidade) viajam na unidade do spec (s.ru), sem alvo viajam no time (eq.ru + estágio eq.re para o dano). Dano em área/fixo escala com o estágio: base x (1 + esc x (estágio - 2)) */
+const RN={chance:.25,estMin:2,mochila:3,armMax:2,esc:.35,
+  uh:{lim:.4,cura:.35},sd:{t:2000,p:.55},gfb:{t:3000,d:380},ava:{t:3000,d:280,lento:.3,dur:3000},par:{t:1000,stun:5000},mw:{dur:7000},hs:{ace:.6,dur:10000},eb:{t:2000,d:120,n:4}};   // números (a interface lê daqui)
+const escRn=est=>1+RN.esc*Math.max(0,(est||2)-2);
+const RUNA=[null,
+  {n:'Ultimate Healing',sg:'UH',custo:2,alvo:true,cor:'#ff7a9a',c:()=>`Cura ${pct(RN.uh.cura)}% da vida abaixo de ${pct(RN.uh.lim)}%`,d:()=>`Na próxima luta, quando a unidade cair abaixo de ${pct(RN.uh.lim)}% da vida, ela se cura em ${pct(RN.uh.cura)}% da vida máxima (uma vez).`},
+  {n:'Sudden Death',sg:'SD',custo:3,alvo:false,cor:'#f4efff',c:()=>`Aos ${RN.sd.t/1000} s: ${pct(RN.sd.p)}% da vida máx. do inimigo mais cheio`,d:()=>`Aos ${RN.sd.t/1000} s da próxima luta, atinge o inimigo com mais vida atual com dano de morte igual a ${pct(RN.sd.p)}% da vida máxima dele.`},
+  {n:'Great Fireball',sg:'GFB',custo:3,alvo:false,cor:'#ff8a30',c:()=>`Aos ${RN.gfb.t/1000} s: explosão de fogo (${RN.gfb.d}+)`,d:()=>`Aos ${RN.gfb.t/1000} s da próxima luta, uma explosão de fogo de raio 1 atinge a casa com mais inimigos ao redor: ${RN.gfb.d} de dano base (cresce ${pct(RN.esc)}% por estágio a partir do 2).`},
+  {n:'Avalanche',sg:'AVA',custo:3,alvo:false,cor:'#7fd4ff',c:()=>`Aos ${RN.ava.t/1000} s: gelo ${RN.ava.d}+ e lentidão`,d:()=>`Aos ${RN.ava.t/1000} s da próxima luta, gelo de raio 1 na casa com mais inimigos: ${RN.ava.d} de dano base (cresce ${pct(RN.esc)}% por estágio) e ${pct(RN.ava.lento)}% de lentidão (ataque e movimento) por ${RN.ava.dur/1000} s.`},
+  {n:'Paralyze',sg:'PAR',custo:2,alvo:false,cor:'#c9a0ff',c:()=>`Aos ${RN.par.t/1000} s: atordoa o maior ataque por ${RN.par.stun/1000} s`,d:()=>`Aos ${RN.par.t/1000} s da próxima luta, atordoa por ${RN.par.stun/1000} s o inimigo com maior ataque.`},
+  {n:'Magic Wall',sg:'MW',custo:2,alvo:true,cor:'#6fb8ff',c:()=>`Imune a dano nos ${RN.mw.dur/1000} s iniciais`,d:()=>`A unidade não recebe dano nos primeiros ${RN.mw.dur/1000} s da próxima luta.`},
+  {n:'Haste',sg:'HS',custo:1,alvo:true,cor:'#7dff9a',c:()=>`+${pct(RN.hs.ace)}% de velocidade por ${RN.hs.dur/1000} s`,d:()=>`A unidade ganha +${pct(RN.hs.ace)}% de velocidade de ataque e de movimento nos primeiros ${RN.hs.dur/1000} s da próxima luta.`},
+  {n:'Energy Bomb',sg:'EB',custo:3,alvo:false,cor:'#d58cff',c:()=>`Aos ${RN.eb.t/1000} s: campo de energia ${RN.eb.d}/s+`,d:()=>`Aos ${RN.eb.t/1000} s da próxima luta, um campo de energia 3x3 no centro do exército inimigo causa ${RN.eb.d} de dano base por segundo durante ${RN.eb.n} s (cresce ${pct(RN.esc)}% por estágio).`}];
+RUNA.forEach((r,i)=>{if(r)r.id=i;});
+const runasTotal=p=>(p.mr||[]).length+(p.ra||[]).length;
 function infoRodada(i){if(i<3)return {est:1,n:i+1,tipo:'pve',nome:'1-'+(i+1)};const k=i-3,est=2+Math.floor(k/6),n=k%6+1;
   return {est,n,tipo:n<=4?'pvp':n===5?'car':'pve',nome:est+'-'+n};}
 const curvaNivel=i=>i>=27?9:i>=21?8:i>=15?7:i>=10?6:i>=7?5:i>=3?4:3;
@@ -1603,7 +1789,7 @@ const bonusSeq=s=>{s=Math.abs(s);return s>=5?3:s>=4?2:s>=2?1:0;};
 
 /* ---------- jogadores ---------- */
 function novoJog(G,i,nome,humano){const p={id:i,nome,humano:!!humano,hp:100,ouro:humano?10:10,nivel:3,xp:0,banco:new Array(MAX_BANCO).fill(null),
-  tab:[0,1,2,3].map(()=>new Array(NC).fill(null)),itens:[],loja:[null,null,null,null,null],travada:false,seq:0,vivo:true,colocacao:0,podU:false,podEsc:0,podRuna:false,cong:-1,
+  tab:[0,1,2,3].map(()=>new Array(NC).fill(null)),itens:[],loja:[null,null,null,null,null],travada:false,seq:0,vivo:true,colocacao:0,podU:false,podEsc:0,podRuna:false,cong:-1,bn:[],ob:null,rl:null,mr:[],ra:[],
   voc:VOCS[i%4],addon:rint(0,3),forca:.9+rnd()*.25,estrat:null,rolados:0,nvitorias:0,ult:null,vit:0,der:0,hist:[]};
   p.estrat=sortearEstrategia();return p;}
 function sortearEstrategia(){const ors=Object.keys(TRACOS).filter(t=>TRACOS[t].t==='origem'),cls=Object.keys(TRACOS).filter(t=>TRACOS[t].t==='classe');
@@ -1656,8 +1842,25 @@ function sortearCarta(G,p){const odds=ODDS[p.nivel];
     const ids=LISTA_U.filter(id=>U[id].c===c&&G.pool[id]>0);if(!ids.length)continue;
     let tot=0;ids.forEach(id=>tot+=G.pool[id]);let x=rnd()*tot;for(const id of ids){x-=G.pool[id];if(x<0){G.pool[id]--;return id;}}}
   return null;}
-function devolverLoja(G,p,tudo){p.loja.forEach((id,i)=>{if(!id||(!tudo&&i===p.cong))return;G.pool[id]++;p.loja[i]=null;});if(tudo)p.cong=-1;}   // a carta congelada (Caçada) não volta ao pool
-function rolarLoja(G,p){devolverLoja(G,p);for(let i=0;i<5;i++)if(!(i===p.cong&&p.loja[i]))p.loja[i]=sortearCarta(G,p);}
+function devolverLoja(G,p,tudo){p.loja.forEach((id,i)=>{if(!id||(!tudo&&i===p.cong))return;G.pool[id]++;p.loja[i]=null;});if(tudo){p.cong=-1;p.rl=null;}}   // a runa da loja (p.rl) não vem do pool   // a carta congelada (Caçada) não volta ao pool
+/* runa na loja: a partir do estágio 2, 25% de chance de UM slot (nunca o congelado) virar uma runa; sorteio semeado do jogo */
+function sortearRunaLoja(G,p){p.rl=null;if(G.opt.semRunas||G.info.est<RN.estMin||rnd()>=RN.chance)return;
+  const livres=[0,1,2,3,4].filter(i=>!(i===p.cong&&p.loja[i]));if(!livres.length)return;
+  p.rl={i:pick(livres),k:1+Math.floor(rnd()*(RUNA.length-1))};}
+function rolarLoja(G,p){devolverLoja(G,p);sortearRunaLoja(G,p);for(let i=0;i<5;i++)if(!(i===p.cong&&p.loja[i])&&!(p.rl&&p.rl.i===i))p.loja[i]=sortearCarta(G,p);}
+/* runas: comprar (ouro + vaga na mochila: bolsa + armadas <= 3), armar (preparação; máx. 2 por luta) e desarmar; as armadas são gastas na próxima luta (consumirRunas) */
+function comprarRuna(p,i){const r=p.rl;if(!r||r.i!==i||!RUNA[r.k])return 'x';const R=RUNA[r.k];
+  if(p.ouro<R.custo)return 'Ouro insuficiente';if(runasTotal(p)>=RN.mochila)return 'Mochila de runas cheia';
+  p.ouro-=R.custo;p.mr.push(r.k);p.rl=null;return null;}
+function armarRuna(G,p,c){if(G.fase!=='prep')return 'Só na preparação';if(!ehInt(c.i,0,RN.mochila-1)||p.mr[c.i]===undefined)return 'x';const k=p.mr[c.i],R=RUNA[k];
+  let u=0;if(R.alvo){const L=unidadeDe(p,locOk(c.un,p));if(!L)return 'x';u=L.inst.uid;}
+  if(p.ra.length>=RN.armMax)return `No máximo ${RN.armMax} runas armadas por luta`;
+  if(p.ra.some(a=>a.k===k))return 'Já há uma runa igual armada';
+  p.mr.splice(c.i,1);p.ra.push({k,u});return null;}
+function desarmarRuna(G,p,c){if(G.fase!=='prep')return 'Só na preparação';if(!ehInt(c.i,0,RN.armMax-1)||!p.ra[c.i])return 'x';p.mr.push(p.ra[c.i].k);p.ra.splice(c.i,1);return null;}
+/* a runa de unidade só vale se a unidade estiver NO TABULEIRO na hora da luta; senão (vendida, fundida ou no banco) volta para a mochila */
+const runaValida=(p,a)=>!RUNA[a.k].alvo||todos(p).some(L=>L.onde==='tab'&&L.inst.uid===a.u);
+function consumirRunas(p){p.ra.forEach(a=>{if(!runaValida(p,a))p.mr.push(a.k);});p.ra=[];}
 const precoLoja=(p,i)=>{const id=p.loja[i];if(!id)return 0;return Math.max(1,U[id].c-(i===p.cong?PODN.desc:0));};
 function podeComprar(p,id,i){const d=U[id];if(p.ouro<(i===undefined?d.c:precoLoja(p,i)))return 'ouro';if(vagaBanco(p)<0&&copias(p,id,1)<2)return 'banco';return null;}
 function comprar(G,p,i){const id=p.loja[i];if(!id)return false;if(podeComprar(p,id,i))return false;
@@ -1673,7 +1876,7 @@ function moverUn(p,de,para,emCombate){
   if((de.onde==='tab'||para.onde==='tab')&&emCombate)return false;
   const dest=para.onde==='banco'?p.banco[para.i]:p.tab[para.y][para.x],orig=de.onde==='banco'?p.banco[de.i]:p.tab[de.y][de.x];
   if(!orig)return false;
-  if(de.onde==='banco'&&para.onde==='tab'&&!dest&&contarTab(p)>=p.nivel)return false;
+  if(de.onde==='banco'&&para.onde==='tab'&&!dest&&contarTab(p)>=limUn(p))return false;
   if(de.onde===para.onde&&((de.onde==='banco'&&de.i===para.i)||(de.onde==='tab'&&de.x===para.x&&de.y===para.y)))return true;
   if(de.onde==='banco'){p.banco[de.i]=dest||null;}else p.tab[de.y][de.x]=dest||null;
   if(para.onde==='banco'){p.banco[para.i]=orig;}else p.tab[para.y][para.x]=orig;
@@ -1708,7 +1911,7 @@ function unidadeDe(p,l){if(!l)return null;if(l.onde==='banco'){const inst=p.banc
 function usarPoder(G,p,c){const P=PODER[p.voc];if(!P||PODERES_OFF)return 'Poderes desligados';
   if(G.fase!=='prep')return 'Só na preparação';if(p.podU)return 'Poder já usado nesta rodada';if(p.ouro<P.custo)return 'Ouro insuficiente';
   if(p.voc==='knight'){const L=unidadeDe(p,locOk(c.alvo,p));if(!L)return 'x';p.podEsc=L.inst.uid;}
-  else if(p.voc==='paladin'){if(!ehInt(c.alvo,0,4)||!p.loja[c.alvo])return 'x';p.cong=c.alvo;}
+  else if(p.voc==='paladin'){if(!ehInt(c.alvo,0,4))return 'x';if(p.rl&&p.rl.i===c.alvo)return 'Runas não podem ser congeladas';if(!p.loja[c.alvo])return 'x';p.cong=c.alvo;}
   else if(p.voc==='sorcerer')p.podRuna=true;
   else{if(p.nivel>=9)return 'Nível máximo';ganharXP(p,PODN.xp);}
   p.ouro-=P.custo;p.podU=true;return null;}
@@ -1719,6 +1922,11 @@ function execCmd(G,p,c){if(!p||!p.vivo)return 'Você foi eliminado';if(!c||typeo
     case 'xp':if(p.nivel>=9)return 'Nível máximo';return comprarXP(p)?null:'Ouro insuficiente';
     case 'travar':p.travada=!p.travada;return null;
     case 'poder':return usarPoder(G,p,c);
+    case 'comprarRuna':{if(!ehInt(c.i,0,4))return 'x';return comprarRuna(p,c.i);}
+    case 'armar':return armarRuna(G,p,c);
+    case 'desarmar':return desarmarRuna(G,p,c);
+    case 'bencao':{if(!prep)return 'Só na preparação';if(!p.ob)return 'Você não tem bênção para escolher';if(!ehInt(c.i,0,2))return 'x';return escolherBn(G,p,c.i);}
+    case 'bencaoRr':{if(!prep)return 'Só na preparação';if(!p.ob)return 'Você não tem bênção para escolher';if(p.ob.rr<=0)return 'Rerrolagem já usada';rerolarBn(G,p);return null;}
     case 'mover':{const de=locOk(c.de,p),pa=locOk(c.para,p);if(!de||!pa)return 'x';
       if(de.onde==='banco'&&de.i>=p.banco.length)return 'x';
       if(!moverUn(p,de,pa,!prep))return pa.onde==='tab'?(!prep?'Só é possível reposicionar na preparação':'Limite de unidades do nível atingido'):'x';return null;}
@@ -1732,6 +1940,36 @@ function execCmd(G,p,c){if(!p||!p.vivo)return 'Você foi eliminado';if(!c||typeo
     case 'carrossel':{if(!G.car||!ehInt(c.i,0,G.car.itens.length-1))return 'x';return carEscolher(G,c.i,p)?null:'Não é a sua vez';}
   }return 'x';}
 
+/* ---------- bênçãos: oferta, rerrolagem, escolha e efeitos imediatos (tudo no anfitrião, com o sorteio semeado do jogo) ---------- */
+const ITENS_COMPLETOS=ITENS.filter(i=>i.rec).map(i=>i.id);
+function sortearOpBn(p,t,evitar){const ids=BEN_IDS[t].filter(id=>!temBn(p,id));let c=ids.filter(id=>!evitar||!evitar.includes(id));if(c.length<3)c=ids;return embaralhar(c.slice()).slice(0,3);}
+function ofertarBn(G,p){const t=BEN_ROD[G.info.nome];if(t===undefined||p.ob||!p.vivo)return;p.ob={t,op:sortearOpBn(p,t),rr:1};}
+function rerolarBn(G,p){const o=p.ob;o.rr--;o.op=sortearOpBn(p,o.t,o.op);}
+const darItemBn=(p,cod,ouro)=>{if(p.itens.length<MAX_ITENS)p.itens.push(cod);else p.ouro+=ouro;};   // inventário cheio: vira ouro
+function darUnidadeBn(G,p,custo){const ids=LISTA_U.filter(id=>U[id].c===custo&&G.pool[id]>0);let tot=0;ids.forEach(id=>tot+=G.pool[id]);
+  if(!ids.length){p.ouro+=custo;return null;}
+  let x=rnd()*tot,id=ids[ids.length-1];for(const i of ids){x-=G.pool[i];if(x<0){id=i;break;}}
+  const v=vagaBanco(p);if(v<0&&copias(p,id,1)<2){p.ouro+=custo;return null;}      // banco cheio (e sem fusão possível): vira ouro = custo
+  G.pool[id]--;const inst=novoInst(G,id);if(v>=0)p.banco[v]=inst;else p.banco.push(inst);      // como na compra: sem vaga só passa se completar uma fusão
+  fundir(G,p);while(p.banco.length>MAX_BANCO&&p.banco[p.banco.length-1]===null)p.banco.pop();return id;}
+function aplicarBn(G,p,id){switch(id){
+  case 1:p.ouro+=BN.ouro;break;
+  case 2:for(let i=0;i<2;i++)darItemBn(p,pick(COMPS),2);break;
+  case 3:ganharXP(p,BN.xp);break;
+  case 4:darUnidadeBn(G,p,2);p.ouro+=BN.recr;break;
+  case 9:darItemBn(p,pick(ITENS_COMPLETOS),4);break;
+  case 12:darUnidadeBn(G,p,4);break;
+  case 13:darUnidadeBn(G,p,5);darItemBn(p,pick(COMPS),2);break;
+  case 16:p.ouro+=BN.tes;break;
+  case 17:for(let i=0;i<2;i++)darItemBn(p,pick(ITENS_COMPLETOS),4);break;}}   // 5, 6, 7, 8, 10, 11, 14, 15, 18: persistentes ou de combate (ver temBn / criarCombate)
+function escolherBn(G,p,i){const o=p.ob;if(!o)return 'Você não tem bênção para escolher';if(!ehInt(i,0,2)||o.op[i]===undefined)return 'x';
+  const id=o.op[i];p.ob=null;(p.bn||(p.bn=[])).push(id);aplicarBn(G,p,id);return null;}
+/* bot: nota = aleatório + leve preferência por unidades (sem depender da força do bot, para não enviesar as estatísticas); às vezes gasta a rerrolagem quando nada empolga */
+function escolherBot(G,p){const o=p.ob;if(!o)return;
+  const nota=id=>{const c=BEN[id].c;return 1+(c===3?.25:0)+rnd()*.8;};
+  let ns=o.op.map(nota);if(o.rr>0&&Math.max(...ns)<1.45&&rnd()<.4){rerolarBn(G,p);ns=o.op.map(nota);}
+  escolherBn(G,p,ns.indexOf(Math.max(...ns)));}
+
 /* ---------- itens: sorteio por estágio ---------- */
 /* drop: um componente sorteado; a partir do estágio 2 também podem cair pergaminhos de encantamento */
 function sortearItem(est){if(est>=2&&rnd()<PERG_CHANCE)return pick(ENCANTOS).pid;return pick(COMPS);}
@@ -1740,8 +1978,10 @@ const tierCar=id=>ITEM[id]&&ITEM[id].perg?2:1;
 /* =====================================================================================
    Equipes para o combate (coordenadas da arena)
    ===================================================================================== */
-function espDeJog(p,lado){const un=[];p.tab.forEach((l,y)=>l.forEach((inst,x)=>{if(!inst)return;
-  un.push({d:U[inst.id],e:inst.e,x:lado===0?x:7-x,y:lado===0?TAB_Y+y:3-y,itens:inst.itens.slice(),inst,esc:p.podEsc&&inst.uid===p.podEsc});}));return {un,voc:PODERES_OFF?null:p.voc,sd:!PODERES_OFF&&p.voc==='sorcerer'&&p.podRuna};}
+function espDeJog(p,lado,est){const ar=est===undefined?[]:(p.ra||[]).filter(a=>runaValida(p,a));   // runas armadas só entram na equipe de uma luta de verdade (est = estágio); pré-visualizações ficam sem
+  const un=[];p.tab.forEach((l,y)=>l.forEach((inst,x)=>{if(!inst)return;
+  const s={d:U[inst.id],e:inst.e,x:lado===0?x:7-x,y:lado===0?TAB_Y+y:3-y,itens:inst.itens.slice(),inst,esc:p.podEsc&&inst.uid===p.podEsc},ru=ar.filter(a=>a.u&&a.u===inst.uid).map(a=>a.k);if(ru.length)s.ru=ru;un.push(s);}));
+  return {un,voc:PODERES_OFF?null:p.voc,sd:!PODERES_OFF&&p.voc==='sorcerer'&&p.podRuna,bn:(p.bn||[]).slice(),ru:ar.filter(a=>!a.u).map(a=>a.k),re:est||0};}
 function monDef(id,f){const m=MON[id],sp=SPR.criaturas[id];
   return {id:'m_'+id,mon:id,mf:f,nome:m.n,spr:id,voc:null,c:0,o:'pve',k:'pve',pve:true,hp:Math.round(m.hp*f*HPG),atk:Math.round(m.atk*f),arm:m.arm,al:m.al,as:m.as,sk:Math.round((m.sk||0)*f),
     hit:m.hit||'drawblood',atq:m.atq||null,el:m.el||'phys',hab:m.hab||null,mana:m.hab?70:0,m0:m.hab?25:0,cad:sp&&sp.cad};}
@@ -1760,9 +2000,19 @@ function valorTr(ids){const c=contarTracos(ids);let v=0;for(const t in c){const 
 function ptsCompra(p,id,tr){const d=U[id];let s=d.c*1.2;if(p.estrat.tr.includes(d.o))s+=2.2;if(p.estrat.tr.includes(d.k))s+=2.2;
   const n=copias(p,id,1),n2=copias(p,id,2);s+=n>=2?7:n===1?2.5:0;if(n2>=2)s+=5;else if(n2===1)s+=1.5;return s;}
 /* ativo da vocação do bot: gasta só se não perder juros (ou da fase 4 em diante / vida baixa); Paladin congela antes de comprar, Knight escolhe depois de montar o tabuleiro */
+/* runas dos bots: compram quando não quebram a economia (juros preservados, ou a partir do estágio 4 com folga de 2 de ouro) e armam na hora (as de alvo, na unidade mais forte do tabuleiro) */
+const BOT_RUNA={estLivre:4,folga:2};   // ajustes de balanceamento
+function runaBot(G,p){const r=p.rl;if(!r)return;const R=RUNA[r.k],est=G.info.est;
+  if(G.opt.semRunas||p.ouro<R.custo||runasTotal(p)>=RN.armMax)return;
+  const juros=o=>Math.min(jurosMax(p),Math.floor(o/10));
+  if(juros(p.ouro-R.custo)>=juros(p.ouro)||(est>=BOT_RUNA.estLivre&&p.ouro>=R.custo+BOT_RUNA.folga))execCmd(G,p,{t:'comprarRuna',i:r.i});}
+function armarBot(G,p){let g=0;
+  while(g++<RN.armMax+4&&p.mr.length&&p.ra.length<RN.armMax){const bi=p.mr.findIndex(k=>!p.ra.some(a=>a.k===k));if(bi<0)break;const k=p.mr[bi];let un;
+    if(RUNA[k].alvo){let b=null,bs=-1;todos(p).forEach(L=>{if(L.onde!=='tab')return;const s=potUn(L.inst);if(s>bs){bs=s;b=L;}});if(!b){break;}un=locDe(b);}
+    if(execCmd(G,p,{t:'armar',i:bi,un})!==null)break;}}
 const BOT_PODER={estLivre:99,res_druid:true,res_knight:false,res_sorcerer:false,min_druid:2};   // min_*: estágio mínimo para o bot usar o ativo   // estLivre: estágio a partir do qual o bot ignora os juros (99 = nunca)   // ajustes de balanceamento
 function poderBot(G,p,quando){const P=PODER[p.voc];if(!P||PODERES_OFF||p.podU||G.fase!=='prep'||G.info.est<(BOT_PODER['min_'+p.voc]||1))return;
-  const juros=o=>Math.min(5,Math.floor(o/10)),ok=p.ouro>=P.custo&&(juros(p.ouro-P.custo)>=juros(p.ouro)||G.info.est>=BOT_PODER.estLivre||p.hp<45)&&(!BOT_PODER['res_'+p.voc]||p.ouro-P.custo>=(p._res||0));
+  const juros=o=>Math.min(jurosMax(p),Math.floor(o/10)),ok=p.ouro>=P.custo&&(juros(p.ouro-P.custo)>=juros(p.ouro)||G.info.est>=BOT_PODER.estLivre||p.hp<45)&&(!BOT_PODER['res_'+p.voc]||p.ouro-P.custo>=(p._res||0));
   if(!ok)return;
   if(p.voc==='paladin'&&quando==='cedo'){let b=-1,bs=-9;p.loja.forEach((id,i)=>{if(!id||i===p.cong||p.ouro<precoLoja(p,i)-1)return;const s=ptsCompra(p,id)+rnd()*.01;if(s>bs){bs=s;b=i;}});
     if(b>=0)execCmd(G,p,{t:'poder',alvo:b});}
@@ -1771,10 +2021,11 @@ function poderBot(G,p,quando){const P=PODER[p.voc];if(!P||PODERES_OFF||p.podU||G
   else if(p.voc==='sorcerer'&&quando==='tarde')execCmd(G,p,{t:'poder'});
   else if(p.voc==='druid'&&quando==='cedo'&&p.nivel<9)execCmd(G,p,{t:'poder'});}
 function agirBot(G,p){const r=G.info;
+  if(p.ob)escolherBot(G,p);
   p.nivel=Math.max(p.nivel,curvaNivel(G.rodada));
   const est=r.est,reserva=p.hp<45?0:Math.round((est<=1?4:est<=2?14:est<=3?30:50)*(1.2-.2*p.forca));p._res=reserva;
-  const comprarLoop=()=>{let guard=0;
-    while(guard++<12){const total=todos(p).length,precisa=total<p.nivel+(est<=1?0:1);let melhor=-1,ms=-9;
+  const comprarLoop=()=>{let guard=0;runaBot(G,p);
+    while(guard++<12){const total=todos(p).length,precisa=total<limUn(p)+(est<=1?0:1);let melhor=-1,ms=-9;
       p.loja.forEach((id,i)=>{if(!id)return;const d=U[id];if(p.ouro<precoLoja(p,i)||podeComprar(p,id,i))return;const s=ptsCompra(p,id),completa=copias(p,id,1)>=2||copias(p,id,2)>=2;
         const ok=completa||(precisa&&s>=2.2)||(s>=(est<=2?3.4:4.8)&&p.ouro-precoLoja(p,i)>=reserva);if(ok&&s>ms){ms=s;melhor=i;}});
       if(melhor<0)break;if(!comprar(G,p,melhor))break;}};
@@ -1784,8 +2035,8 @@ function agirBot(G,p){const r=G.info;
   fundir(G,p);
   // vende o excesso do banco (o mais fraco fora da estratégia)
   while(vagaBanco(p)<0||todos(p).length>MAX_BANCO+p.nivel){const L=todos(p).filter(L=>L.onde==='banco').sort((a,b)=>potUn(a.inst)-potUn(b.inst))[0];if(!L)break;venderInst(G,p,L);if(vagaBanco(p)>=0)break;}
-  posicionarBot(p);equiparBot(G,p);poderBot(G,p,'tarde');}
-function posicionarBot(p){const L=todos(p),N=p.nivel;
+  posicionarBot(p);equiparBot(G,p);poderBot(G,p,'tarde');armarBot(G,p);}
+function posicionarBot(p){const L=todos(p),N=limUn(p);
   // devolve tudo à lista e escolhe os N melhores com ganho marginal de sinergia
   const rest=L.slice(),sel=[];
   while(sel.length<N&&rest.length){const ids=sel.map(s=>s.inst.id),base=valorTr(ids);let bi=0,bs=-1e9;
@@ -1801,7 +2052,7 @@ function posicionarBot(p){const L=todos(p),N=p.nivel;
   g.frente.forEach(i=>poe(i,0,cols));g.ass.forEach(i=>poe(i,1,[0,7,1,6,2,5,3,4]));g.meio.forEach(i=>poe(i,2,cols));g.fundo.forEach(i=>poe(i,3,cols));}
 /* preenche o tabuleiro com unidades do banco (usado quando o relógio do humano acaba com vagas livres) */
 function autoPosicionar(p){let mudou=false;const cols=[3,4,2,5,1,6,0,7];
-  while(contarTab(p)<p.nivel){const L=todos(p).filter(L=>L.onde==='banco').sort((a,b)=>potUn(b.inst)-potUn(a.inst))[0];if(!L)break;const d=U[L.inst.id];
+  while(contarTab(p)<limUn(p)){const L=todos(p).filter(L=>L.onde==='banco').sort((a,b)=>potUn(b.inst)-potUn(a.inst))[0];if(!L)break;const d=U[L.inst.id];
     const ordem=d.k==='assassino'?[1,2,0,3]:d.al>=3?[3,2,1,0]:d.al===2?[2,1,3,0]:[0,1,2,3];let ok=false;
     for(const y of ordem){for(const x of cols){if(!p.tab[y][x]){p.tab[y][x]=L.inst;p.banco[L.i]=null;ok=true;break;}}if(ok)break;}
     if(!ok)break;mudou=true;}
@@ -1851,8 +2102,10 @@ function equiparBot(G,p){let g=0;while(g++<40&&passoItemBot(G,p));}
    ===================================================================================== */
 function iniciarRodada(G){const r=G.info=infoRodada(G.rodada);const vivos=vivosDe(G);G.luta=null;G.lutas={};G.pares=[];G.fase='prep';
   vivos.forEach(p=>{p.pronto=false;p.podU=false;});
-  if(G.rodada>0)vivos.forEach(p=>{const juros=Math.min(5,Math.floor(p.ouro/10)),sq=bonusSeq(p.seq);
-    p.renda={base:5,juros,seq:sq,total:5+juros+sq};p.ouro+=p.renda.total;ganharXP(p,2);});
+  if(G.rodada>0)vivos.forEach(p=>{const juros=jurosDe(p),sq=bonusSeq(p.seq),th=temBn(p,8)?BN.thais:0;
+    p.renda={base:5,juros,seq:sq,ben:th,total:5+juros+sq+th};p.ouro+=p.renda.total;ganharXP(p,2);});
+  // bênção: cada jogador vivo recebe as suas 3 opções; os bots escolhem já (antes de comprar), o humano escolhe no modal (ou a 1ª opção é tomada ao fim da preparação)
+  if(!G.opt.semBencaos&&BEN_ROD[r.nome]!==undefined)vivos.forEach(p=>{ofertarBn(G,p);if(!p.humano)escolherBot(G,p);});
   // o humano sorteia a loja antes dos bots (justiça com o pool compartilhado)
   vivos.filter(p=>p.humano).forEach(p=>{if(!p.travada||p.loja.every(x=>!x))rolarLoja(G,p);});
   vivos.filter(p=>!p.humano).forEach(p=>{rolarLoja(G,p);});
@@ -1866,9 +2119,9 @@ function iniciarRodada(G){const r=G.info=infoRodada(G.rodada);const vivos=vivosD
 /* adversário (jogador) de p nesta rodada de PvP; o "fantasma" não luta de verdade, então não conta como adversário de ninguém */
 function opoDe(G,p){if(!G.pares0)return null;for(const x of G.pares0){if(x.a===p)return x.b;if(x.b===p&&!x.fant)return x.a;}return null;}
 /* equipes <-> JSON (o anfitrião manda as equipes da luta ao convidado; ele roda o mesmo motor com a mesma semente) */
-function eqSer(eq){return eq.un.map(s=>s.d.pve?{mon:s.d.mon,mf:s.d.mf,x:s.x,y:s.y}:{id:s.d.id,e:s.e,x:s.x,y:s.y,it:s.itens.slice(),es:s.esc?1:0});}
-const metaSer=eq=>({v:eq.voc||0,sd:eq.sd?1:0});      // poderes da equipe (passivo da vocação e Runa SD)
-function eqDes(a,m){return {un:a.map(s=>s.mon?{d:monDef(s.mon,s.mf),e:1,x:s.x,y:s.y}:{d:U[s.id],e:s.e,x:s.x,y:s.y,itens:(s.it||[]).slice(),esc:!!s.es}),voc:m&&m.v&&PODER[m.v]?m.v:null,sd:!!(m&&m.sd)};}
+function eqSer(eq){return eq.un.map(s=>s.d.pve?{mon:s.d.mon,mf:s.d.mf,x:s.x,y:s.y}:Object.assign({id:s.d.id,e:s.e,x:s.x,y:s.y,it:s.itens.slice(),es:s.esc?1:0},s.ru&&s.ru.length?{ru:s.ru.slice()}:{}));}
+const metaSer=eq=>({v:eq.voc||0,sd:eq.sd?1:0,bn:eq.bn&&eq.bn.length?eq.bn.slice():0,ru:eq.ru&&eq.ru.length?eq.ru.slice():0,re:eq.re||0});      // poderes da equipe (passivo da vocação, Runa SD e bênçãos)
+function eqDes(a,m){return {un:a.map(s=>s.mon?{d:monDef(s.mon,s.mf),e:1,x:s.x,y:s.y}:{d:U[s.id],e:s.e,x:s.x,y:s.y,itens:(s.it||[]).slice(),esc:!!s.es,ru:Array.isArray(s.ru)?s.ru.filter(k=>ehInt(k,1,RUNA.length-1)&&RUNA[k].alvo).slice(0,RN.armMax):[]}),voc:m&&m.v&&PODER[m.v]?m.v:null,sd:!!(m&&m.sd),ru:m&&Array.isArray(m.ru)?m.ru.filter(k=>ehInt(k,1,RUNA.length-1)&&!RUNA[k].alvo).slice(0,RN.armMax):[],re:m&&ehInt(m.re,0,99)?m.re:0,bn:m&&Array.isArray(m.bn)?m.bn.filter(i=>ehInt(i,1,BEN.length-1)):[]};}
 /* um humano saiu: a IA assume a vaga (e age já, se for na preparação) */
 function virarBot(G,p){p.humano=false;p.remoto=false;p.eraHumano=true;p.cid=null;p.pronto=false;
   if(G.car)carAvancar(G);if(G.fase==='prep'&&!G.fim&&p.vivo){try{agirBot(G,p);}catch(e){}}}
@@ -1895,17 +2148,18 @@ function tracoDominante(un){const c=contarTracos(un.filter(s=>!s.inv).map(s=>s.d
 /* começa o combate: o humano ganha o combate visível (vis=true), todo o resto é resolvido em silêncio */
 function comecarCombate(G){const r=G.info;G.fase='combate';const vivos=vivosDe(G);G.resultados=[];G.luta=null;G.lutas={};G.pares=[];
   if(r.tipo==='car'){G.fase='resultado';return;}
-  try{comecarCombate2(G,r,vivos);}finally{vivos.forEach(p=>{p.podEsc=0;p.podRuna=false;});}}   // cargas do ativo valem só para esta luta
+  vivos.forEach(p=>{if(p.ob)escolherBn(G,p,0);});      // bênção não escolhida até o fim da preparação: fica a primeira opção
+  try{comecarCombate2(G,r,vivos);}finally{vivos.forEach(p=>{p.podEsc=0;p.podRuna=false;consumirRunas(p);});}}   // cargas do ativo e runas armadas valem só para esta luta
 function comecarCombate2(G,r,vivos){
   const on=!!G.opt.online;
   // registra a luta para cada humano que luta de verdade nela (a cópia "fantasma" não conta)
   const reg=(f,A,B)=>{[A,f.fant?null:B].forEach(q=>{if(q&&q.humano){G.lutas[q.id]=f;if(q.local)G.luta=f;}});};
-  if(r.tipo==='pve'){vivos.forEach(p=>{const eqA=espDeJog(p,0),eqB=espPvE(r.est,r.n),seed=sementeLuta();
+  if(r.tipo==='pve'){vivos.forEach(p=>{const eqA=espDeJog(p,0,r.est),eqB=espPvE(r.est,r.n),seed=sementeLuta();
       const C=criarCombate(eqA,eqB,{vis:!!p.local&&!G.opt.semVis,pve:true,seed});
       const f={a:p,b:null,C,pve:true,seed,eqA,eqB};reg(f,p,null);
       if(!p.local)simular(C);if(on&&p.humano)durLuta(f);G.pares.push(f);});return;}
   G.pares=(G.pares0||emparelhar(G)).map(par=>{const A=par.a,B=par.b,loc=!!(A.local||(B.local&&!par.fant));
-    const eqA=espDeJog(A,0),eqB=espDeJog(B,1),seed=sementeLuta();
+    const eqA=espDeJog(A,0,r.est),eqB=espDeJog(B,1,r.est),seed=sementeLuta();
     const C=criarCombate(eqA,eqB,{vis:loc&&!G.opt.semVis,seed});
     const f={a:A,b:B,C,fant:par.fant,seed,eqA,eqB};reg(f,A,B);
     if(!loc)simular(C);if(on&&(A.humano||(B.humano&&!par.fant)))durLuta(f);return f;});}
@@ -1986,7 +2240,7 @@ let cv=null,cx=null,Z=2,ZD=2,DPR=1;   // Z = escala de desenho (inteira), ZD = p
 const UI={estado:'menu',vel:1,acc:0,fimEm:0,C:null,demo:false,prev:null,prevSujo:true,drag:null,mx:0,my:0,hover:null,fxPrep:[],sujo:{},sujoRet:false,
   voc:'knight',timer:30,timerMax:30,fimShow:0,ultPassoReal:0,jogoParado:false,
   espiar:null,fxAv:[],anims:[],voando:{},emotes:{},avHit:{},hoverU:null,tipChave:null,reduz:false,meterAberto:false,meterAba:'d',ultC:null,intro:0,freezeAte:0,shake:null,impIdx:0,stats:null,
-  hoverTr:null,hoverCartaId:null,hoverCartaI:-1,atq:null,hpAtr:null};
+  hoverTr:null,hoverCartaId:null,hoverCartaI:-1,atq:null,hpAtr:null,alvoRuna:null};
 
 /* ---- folhas de sprite (cache de imagens) ---- */
 const FOLHAS={};
@@ -2128,7 +2382,7 @@ function desenharTabuleiro(rt){
     cx.fillStyle='rgba(80,140,255,.07)';cx.fillRect(BX,BY+4*TS,NC*TS,4*TS);}
   // destaques de arrastar e soltar: casas válidas, casa de destino e alcance da unidade
   const dr=UI.drag;
-  if(dr&&dr.tipo==='un'){const p=UI.jog,cheio=contarTab(p)>=p.nivel;
+  if(dr&&dr.tipo==='un'){const p=UI.jog,cheio=contarTab(p)>=limUn(p);
     for(let y=0;y<4;y++)for(let x=0;x<NC;x++){if(!(UI.fase==='prep'&&(p.tab[y][x]||dr.de.onde==='tab'||!cheio)))continue;const X=BX+x*TS,Y=BY+(y+4)*TS;
       cx.fillStyle='rgba(110,230,120,.13)';cx.fillRect(X+1,Y+1,TS-2,TS-2);cx.strokeStyle='rgba(150,255,160,.38)';cx.lineWidth=1;cx.strokeRect(X+1.5,Y+1.5,TS-3,TS-3);}
     for(let i=0;i<9;i++){cx.fillStyle='rgba(110,230,120,.10)';cx.fillRect(BEN_X+i*TS+1,BEN_Y+1,TS-2,TS-2);}
@@ -2254,8 +2508,11 @@ function desenharAvatares(now){if(UI.demo||!G||!UI.jog)return;
 /* ---- poder da vocação na preparação: escudo do Utamo Tempo sobre a unidade marcada e brilho nas unidades no modo de escolha ---- */
 function desenharMarcaPoder(now){const p=UI.jog;if(!p||UI.demo||UI.C||UI.espiar!==null||UI.fase!=='prep')return;
   const pos=L=>L.onde==='tab'?[BX+L.x*TS,BY+(L.y+4)*TS]:[BEN_X+L.i*TS,BEN_Y];
-  if(UI.alvoPoder==='un'){const a=UI.reduz?.5:.5+.25*Math.sin(now/260);
+  if(UI.alvoPoder==='un'||(UI.alvoRuna!==null&&p.mr[UI.alvoRuna]!==undefined&&RUNA[p.mr[UI.alvoRuna]].alvo)){const a=UI.reduz?.5:.5+.25*Math.sin(now/260);
     todos(p).forEach(L=>{const [X,Y]=pos(L);cx.fillStyle='rgba(111,184,255,'+(.16*a/.5).toFixed(3)+')';cx.fillRect(X+1,Y+1,TS-2,TS-2);cx.strokeStyle='rgba(159,216,255,'+(.95*a/.5).toFixed(3)+')';cx.lineWidth=1;cx.strokeRect(X+1.5,Y+1.5,TS-3,TS-3);});}
+  p.ra.forEach(a=>{if(!a.u)return;const L=todos(p).find(L=>L.inst.uid===a.u);if(!L)return;const [X,Y]=pos(L),R=RUNA[a.k];       // selo da runa armada sobre a unidade
+    cx.fillStyle='#000c';cx.beginPath();cx.arc(X+TS-9,Y+9,8,0,7);cx.fill();cx.strokeStyle=R.cor;cx.lineWidth=1.5;cx.stroke();
+    if(R.img&&R.img.complete)cx.drawImage(R.img,X+TS-16,Y+2,14,14);});
   if(p.podEsc){const L=todos(p).find(L=>L.inst.uid===p.podEsc);if(!L)return;const [X,Y]=pos(L);
     cx.save();cx.translate(X+2,Y+11);cx.beginPath();cx.moveTo(0,0);cx.lineTo(9,0);cx.lineTo(9,5);cx.quadraticCurveTo(9,9,4.5,11);cx.quadraticCurveTo(0,9,0,5);cx.closePath();
     cx.fillStyle='#9fd8ff';cx.fill();cx.lineWidth=1.2;cx.strokeStyle='#07233a';cx.stroke();cx.fillStyle='#e9f7ff';cx.fillRect(2,2,2,5);cx.restore();}}
@@ -2567,12 +2824,16 @@ function tipPoder(v){const P=PODER[v];if(!P)return null;
     <div class="sb" style="margin:6px 0 2px">Passivo · ${P.pn}</div><div>${P.p()}</div>`;}
 function htmlTip(k){const [t,a]=k.split(':'),p=UI.jog;
   if(t==='sin')return tipTraco(a);
+  if(t==='bn'){const b=BEN[+a];if(!b)return null;return `<h4><span>${esc(b.n)}</span><b style="color:${COR_BN[b.t]}">${nomeBnTier(b.t)}</b></h4><div class="sb">${BEN_CAT[b.c]}</div><div>${esc(b.d())}</div>`;}
   if(t==='item')return htmlTipItem(+a);
+  if(t==='rn'){const R=RUNA[+a];if(!R)return null;
+    return `<h4><span>${esc(R.n)}</span><b style="color:#fff1c4">${R.custo} ouro</b></h4><div class="sb">Runa de ${R.alvo?'unidade':'time'} · só na próxima luta</div><div>${esc(R.d())}</div><div class="sb" style="margin:6px 0 0">${R.alvo?'Mochila: clique e escolha uma unidade (ou arraste até ela).':'Mochila: clique para armar.'} Máx. ${RN.armMax} armadas por luta.</div>`;}
+  if(t==='bt'&&a==='runas')return `<h4><span>Mochila de runas</span></h4><div>Guarda até ${RN.mochila} runas (as armadas também ocupam vaga). Na preparação, clique numa runa para armá-la; clique numa armada (brilhando) para devolver. As armadas são gastas na PRÓXIMA luta.</div>`;
   if(t==='jog'){const q=G.jog[+a],hs=(q.hist||[]);return `<h4><span>${esc(q.nome)}</span></h4>`+LTIP('Vida',Math.max(0,q.hp))+LTIP('Nível',q.nivel)+LTIP('Sequência',q.seq>0?q.seq+' vitórias':q.seq<0?(-q.seq)+' derrotas':'-')+
-    (hs.length?LTIP('Últimas rodadas',hs.map(r=>({v:'V',d:'D',e:'E'}[r])).join(' ')):'')+(q.vivo?`<div class="sb" style="margin:4px 0 0">${q===p?'Clique para voltar ao seu tabuleiro':'Clique para ver o tabuleiro'}</div>`:`<div class="sb">Eliminado em ${ROMANO(q.colocacao)} lugar</div>`);}
-  if(t==='ouro'){const juros=Math.min(5,Math.floor(p.ouro/10)),sq=bonusSeq(p.seq),tot=5+juros+sq;
-    let h=`<h4><span>Ouro</span><b style="color:#fff1c4">${p.ouro}</b></h4><div class="sb">Previsão para a próxima rodada</div>`+LTIP('Base','+5')+LTIP('Juros (1 a cada 10, máx. 5)','+'+juros)+LTIP('Sequência de '+(p.seq<0?'derrotas':'vitórias'),'+'+sq)+LTIP('Total','+'+tot);
-    h+=`<div class="sb" style="margin:5px 0 0">Mais +2 de XP por rodada.${juros<5?' Guarde '+(10*(juros+1)-p.ouro)+' de ouro para +1 de juros.':' Juros no máximo.'}</div>`;return h;}
+    (hs.length?LTIP('Últimas rodadas',hs.map(r=>({v:'V',d:'D',e:'E'}[r])).join(' ')):'')+(q.bn&&q.bn.length?`<div class="sb" style="margin:4px 0 0">Bênçãos: ${q.bn.map(id=>esc(BEN[id].n)).join(', ')}</div>`:'')+(q.vivo?`<div class="sb" style="margin:4px 0 0">${q===p?'Clique para voltar ao seu tabuleiro':'Clique para ver o tabuleiro'}</div>`:`<div class="sb">Eliminado em ${ROMANO(q.colocacao)} lugar</div>`);}
+  if(t==='ouro'){const jm=jurosMax(p),juros=jurosDe(p),sq=bonusSeq(p.seq),th=temBn(p,8)?BN.thais:0,tot=5+juros+sq+th;
+    let h=`<h4><span>Ouro</span><b style="color:#fff1c4">${p.ouro}</b></h4><div class="sb">Previsão para a próxima rodada</div>`+LTIP('Base','+5')+LTIP('Juros (1 a cada 10, máx. '+jm+')','+'+juros)+LTIP('Sequência de '+(p.seq<0?'derrotas':'vitórias'),'+'+sq)+(th?LTIP('Banco de Thais','+'+th):'')+LTIP('Total','+'+tot);
+    h+=`<div class="sb" style="margin:5px 0 0">Mais +2 de XP por rodada.${juros<jm?' Guarde '+(10*(juros+1)-p.ouro)+' de ouro para +1 de juros.':' Juros no máximo.'}</div>`;return h;}
   if(t==='odds'){const o=ODDS[p.nivel];return `<h4><span>Chances da loja · nível ${p.nivel}</span></h4><div class="sb">Probabilidade de cada carta ser de cada custo.</div>`+o.map((v,i)=>`<div class="lin"><span style="color:${TIER_COR[i+1]}">Custo ${i+1}</span><b>${v}%</b></div>`).join('');}
   if(t==='mon'){const w=ondaPvE(G.info.est,G.info.n);return tipUnidade(monDef(a,w?w.f:1),1,null,null);}
   if(t==='drops'){const di=dropsInfo(G.info.est,G.info.n);return `<h4><span>Butim da onda</span></h4><div class="sb">Só se você vencer a onda.</div>`+(di.ouro?LTIP('Ouro','+'+di.ouro):'')+LTIP('Itens',di.q+(di.q>1?' componentes':' componente'))+
@@ -2597,10 +2858,11 @@ function hudTopo(){if(!G)return;const r=G.info,p=UI.jog;$('est-n').textContent=r
   $('trilha').innerHTML=TIPOS_ROD(r.est).map((t,i)=>`<div class="rd ${i+1===r.n?'atual':i+1<r.n?'feito':''}" title="${r.est}-${i+1}: ${NOME_ROD[t]}"><img src="${ICO[t]}" alt=""><i>${i+1}</i></div>`).join('');
   if(UI._nv!==undefined&&p.nivel>UI._nv)Sons.nivel();UI._nv=p.nivel;
   $('ouro').textContent=p.ouro;$('nivel').textContent=p.nivel;
-  const juros=Math.min(5,Math.floor(p.ouro/10)),sq=Math.abs(p.seq);
+  {const bb=$('bencaos'),h=(p.bn||[]).map(id=>iconeBn(id,id===UI.bnNovo?' novo':'')).join('');UI.bnNovo=0;if(bb._h!==h){bb._h=h;bb.innerHTML=h;}}      // bênçãos que você já tem
+  const juros=jurosDe(p),sq=Math.abs(p.seq);
   $('ouro-ex').innerHTML=`<span style="${juros?'':'opacity:.45'}">+${juros} juros</span>`+(sq>=2?`<span class="${p.seq>0?'w':'l'}">${FLAME} ${sq} ${p.seq>0?'vitórias':'derrotas'}</span>`:'');
   $('xp-t').textContent=p.nivel>=9?'MÁX':p.xp+' / '+NEED[p.nivel];$('xp-b').style.width=(p.nivel>=9?100:100*p.xp/NEED[p.nivel])+'%';
-  const nb=contarTab(p);$('unid').textContent=nb+'/'+p.nivel;$('unid').style.color=nb>p.nivel?'#e0574a':'';}
+  const nb=contarTab(p);$('unid').textContent=nb+'/'+limUn(p);$('unid').style.color=nb>limUn(p)?'#e0574a':'';}
 /* faixa acima do tabuleiro: monstros e butim da próxima onda (PvE), adversário e suas sinergias (PvP) ou aviso do carrossel */
 function hudStrip(){const el=$('faixa-rodada');if(!el)return;if(!G||!UI.jog){el.innerHTML='';return;}const r=G.info,p=UI.jog;let h='';
   if(r.tipo==='pve'){const ser=(G.opoEq&&G.opoEq[p.id])||[],cont={};ser.forEach(s=>{cont[s.mon]=(cont[s.mon]||0)+1;});
@@ -2635,7 +2897,7 @@ function retratosPend(r){r=r||document;
 const OLHO='<svg class="olho" viewBox="0 0 14 10"><path d="M1 5C3 1.5 11 1.5 13 5 11 8.5 3 8.5 1 5z" fill="none" stroke="#79b8ff" stroke-width="1.2"/><circle cx="7" cy="5" r="1.8" fill="#79b8ff"/></svg>';
 function hudJogadores(){if(!G)return;const cont=$('jogadores'),opo=oponenteLocal();
   if(cont._g!==G||cont.children.length!==G.jog.length){cont._g=G;
-    cont.innerHTML=G.jog.map(q=>`<div class="jg" data-id="${q.id}" data-tip="jog:${q.id}"><span class="pos"></span><div class="av"><canvas width="40" height="40"></canvas><span class="lv"></span></div><div class="inf"><div class="nm"><img src="${ICO.pvp}" alt="" style="display:none"><span class="n"></span><em></em></div><div class="hpb"><i class="ch" style="width:100%"></i><i class="h" style="width:100%"></i><span class="hpn"></span></div><div class="rod"><span class="hs"></span><span class="seq"></span></div></div>${OLHO}</div>`).join('');}
+    cont.innerHTML=G.jog.map(q=>`<div class="jg" data-id="${q.id}" data-tip="jog:${q.id}"><span class="pos"></span><div class="av"><canvas width="40" height="40"></canvas><span class="lv"></span></div><div class="inf"><div class="nm"><img src="${ICO.pvp}" alt="" style="display:none"><span class="n"></span><em></em></div><div class="hpb"><i class="ch" style="width:100%"></i><i class="h" style="width:100%"></i><span class="hpn"></span></div><div class="rod"><span class="hs"></span><span class="bnl"></span><span class="seq"></span></div></div>${OLHO}</div>`).join('');}
   const ord=G.jog.slice().sort((a,b)=>(b.vivo-a.vivo)||(a.vivo?b.hp-a.hp:a.colocacao-b.colocacao));
   ord.forEach((q,i)=>{const el=cont.children[q.id];if(!el)return;const hum=(q.humano||q.hum)&&!q.local;
     el.style.order=i;el.className='jg'+(q.local?' eu':'')+(hum?' hum':'')+(opo===q?' opo':'')+(q.vivo?'':' morto')+(UI.espiar===q.id?' espiando':'');
@@ -2647,6 +2909,7 @@ function hudJogadores(){if(!G)return;const cont=$('jogadores'),opo=oponenteLocal
     const hpv=(UI.hpAtr&&UI.hpAtr.id===q.id)?UI.hpAtr.hp:q.hp,pc=Math.max(0,Math.min(100,hpv)),b=el.querySelector('.h');b.style.width=pc+'%';b.style.backgroundColor=corVida(pc/100);el.querySelector('.ch').style.width=pc+'%';el.querySelector('.hpn').textContent=Math.max(0,hpv);
     const hs=(q.hist||[]).slice(-5),pad=5-hs.length,hh=Array.from({length:5},(_,k)=>k<pad?'<b></b>':`<b class="${hs[k-pad]}"></b>`).join('');
     const hsEl=el.querySelector('.hs');if(hsEl._h!==hh){hsEl._h=hh;hsEl.innerHTML=hh;hsEl.style.display='flex';hsEl.style.gap='3px';}
+    {const bl=el.querySelector('.bnl'),bh=iconesBn(q.bn);if(bl._h!==bh){bl._h=bh;bl.innerHTML=bh;}}
     const sq=Math.abs(q.seq),sEl=el.querySelector('.seq'),sh=sq>=2?`${FLAME}${sq}`:'';if(sEl._h!==sh){sEl._h=sh;sEl.innerHTML=sh;}sEl.className='seq '+(q.seq>0?'w':'l');});}
 /* balão de emote (fala amarela do Tibia) sobre a linha do jogador */
 function falaNaLista(id,txt){const el=$('jogadores').children[id];if(!el)return;el.querySelectorAll('.fala').forEach(e=>e.remove());const s=document.createElement('span');s.className='fala';s.textContent=txt;el.appendChild(s);setTimeout(()=>s.remove(),3100);}
@@ -2654,6 +2917,10 @@ function falaNaLista(id,txt){const el=$('jogadores').children[id];if(!el)return;
 /* ---------- loja ---------- */
 function hudLoja(){const p=UI.jog;if(!p)return;
   $('cartas').innerHTML=p.loja.map((id,i)=>{const leque=`--r:${(i-2)*2}deg;--dy:${((i-2)*(i-2)*1.5).toFixed(1)}px`;       // leque: −4° a +4° em arco suave
+    if(p.rl&&p.rl.i===i&&RUNA[p.rl.k]){const R=RUNA[p.rl.k];
+      return `<div class="cslot" data-i="${i}" style="${leque}"><div class="carta runa ${p.ouro<R.custo?'pobre':''}" style="--rc:${R.cor}" data-tip="rn:${p.rl.k}"><div class="cin"><div class="cn">${esc(R.n)}</div>
+        <div class="art"><span class="tecla">${i+1}</span><span class="rn-badge">RUNA</span><span class="cu">${R.custo}<img src="${ICO.ouro}" alt=""></span><img class="rn-ic" src="${R.ic}" alt=""></div>
+        <div class="rn-pie"><span class="rn-tag">Runa${R.alvo?' · unidade':''}</span><span class="rn-ef">${esc(R.c())}</span></div></div><button class="detalhes-carta" type="button" data-detalhe-runa="${i}" aria-label="Detalhes de ${esc(R.n)}" title="Ver o efeito da runa">i</button></div></div>`;}
     if(!id)return `<div class="cslot" data-i="${i}" style="${leque}"><div class="carta vend"></div></div>`;
     const d=U[id],cop=copias(p,id,1),pv=previaCompra(p,id),dest=pv.up?'pert'+(pv.up===3?' pert3':''):pv.tem?'tem':'';
     return `<div class="cslot" data-i="${i}" style="${leque}"><div class="carta c${d.c} ${p.ouro<precoLoja(p,i)?'pobre':''} ${dest} ${i===p.cong?'gelada':''}" style="--chao:url(tactics-assets/chao_${BIOMA_O[d.o]}.png)"><div class="cin"><div class="cn">${esc(d.nome)}</div>
@@ -2734,7 +3001,58 @@ function forjarUI(){const p=UI.jog;if(!p||UI.estado!=='jogo')return;const par=ac
   usarPlano({tipo:'forjar',a:par.c,b:par.c,r:codForjar(par.c,par.c),cmd:{t:'forjar',a:par.a,ca:par.c,b:par.b,cb:par.c}},{slot:par.a,slot2:par.b});}
 function hudItens(){const p=UI.jog;if(!p)return;let h='';
   for(let i=0;i<MAX_ITENS;i++){const c=p.itens[i];h+=`<div class="slot ${c!==undefined?'cheio':''}" data-s="${i}">${c!==undefined?htmlItem(c,{slot:i}):''}</div>`;}
-  $('grade-itens').innerHTML=h;const f=$('bt-forjar');if(f)f.style.display=acharParForja(p)?'':'none';if($('receita-lista'))atualizarReceitas();}
+  $('grade-itens').innerHTML=h;const f=$('bt-forjar');if(f)f.style.display=acharParForja(p)?'':'none';if($('receita-lista'))atualizarReceitas();hudRunas();}
+/* ---------- runas: ícones em pixel art (pedra cinza + glifo colorido, 32x32, desenhados em canvas no início; nenhum arquivo) ---------- */
+const GLIFOS={1:['...###...','...###...','...###...','#########','#########','#########','...###...','...###...','...###...'],
+  2:['.#######.','#########','##.###.##','##.###.##','#########','.#######.','..#.#.#..','..#####..','.........'],
+  3:['....#....','...##....','...###...','..#+##...','..#+###..','.##+++##.','.#+++++#.','.##+++##.','..#####..'],
+  4:['....#....','.#..#..#.','..#.#.#..','...###...','#########','...###...','..#.#.#..','.#..#..#.','....#....'],
+  5:['....###..','...###...','..###....','.######..','...###...','..###....','.###.....','.##......','#........'],
+  6:['#########','#...#...#','#########','..#...#..','#########','#...#...#','#########','..#...#..','#########'],
+  7:['.#...#...','..#...#..','...#...#.','....#...#','...#...#.','..#...#..','.#...#...','.........','.........'],
+  8:['...###...','..#+++#..','.#++#++#.','#++###++#','#+++#+++#','#++###++#','.#++#++#.','..#+++#..','...###...']};
+function fazIconesRuna(){if(typeof document==='undefined')return;
+  const mix=(h,t)=>{const n=parseInt(h.slice(1),16),r=n>>16,g=n>>8&255,b=n&255,f=c=>Math.round(c+(255-c)*t);return `rgb(${f(r)},${f(g)},${f(b)})`;};
+  for(let k=1;k<RUNA.length;k++){const R=RUNA[k],c=document.createElement('canvas');c.width=c.height=32;const g=c.getContext('2d');g.imageSmoothingEnabled=false;
+    const px=(x,y,col,w,h)=>{g.fillStyle=col;g.fillRect(x,y,w||1,h||1);};
+    const corpo=(x,y,m)=>{const dx=Math.min(x-5,26-x),dy=Math.min(y-3,28-y);return x>=5-m&&x<=26+m&&y>=3-m&&y<=28+m&&dx+dy>=2-m*2;};
+    for(let y=1;y<30;y++)for(let x=3;x<29;x++)if(corpo(x,y,1)&&!corpo(x,y,0))px(x,y,'#000');                       // contorno
+    for(let y=3;y<=28;y++)for(let x=5;x<=26;x++){if(!corpo(x,y,0))continue;
+      let col=(x*7+y*13)%11===0?'#7d7d89':'#8c8c98';if(x<=6||y<=4)col='#b8b8c4';if(x>=25||y>=27)col='#585864';if((x<=6&&y>=27)||(x>=25&&y<=4))col='#8c8c98';px(x,y,col);}
+    const G=GLIFOS[k],ox=7,oy=7;
+    G.forEach((ln,j)=>{for(let i=0;i<9;i++)if(ln[i]!=='.')px(ox+i*2+1,oy+j*2+1,'#26262f',2,2);});                  // sombra
+    G.forEach((ln,j)=>{for(let i=0;i<9;i++)if(ln[i]!=='.')px(ox+i*2,oy+j*2,ln[i]==='+'?mix(R.cor,.55):R.cor,2,2);});
+    R.ic=c.toDataURL();R.img=new Image();R.img.src=R.ic;}}
+const chipRuna=(k,cls,extra)=>`<span class="rn-s cheio ${cls||''}" style="--rc:${RUNA[k].cor}" data-tip="rn:${k}" ${extra||''}><img src="${RUNA[k].ic}" alt="${esc(RUNA[k].n)}"></span>`;
+/* mochila: 3 vagas = armadas (brilham) + guardadas; clicar numa guardada arma (as de alvo pedem uma unidade), clicar numa armada devolve; arrastar uma runa de alvo até a unidade também vale */
+function hudRunas(){const p=UI.jog,el=$('runas');if(!p||!el||!RUNA[1].ic)return;
+  if(UI.alvoRuna!==null&&(UI.fase!=='prep'||p.mr[UI.alvoRuna]===undefined))cancelarRuna(true);
+  const todas=p.ra.map(a=>({k:a.k,arm:1})).concat(p.mr.map(k=>({k}))),sel=UI.alvoRuna===null?-1:p.ra.length+UI.alvoRuna;
+  let h='<span class="rn-t" data-tip="bt:runas">Mochila de runas</span>';
+  for(let i=0;i<RN.mochila;i++){const r=todas[i];h+=r?chipRuna(r.k,(r.arm?'arm':'')+(i===sel?' sel':''),`data-s="${i}"`):'<span class="rn-s"></span>';}
+  if(el._h!==h){el._h=h;el.innerHTML=h;}
+  const ha=p.ra.map((a,i)=>chipRuna(a.k,'arm',`data-a="${i}"`)).join('');const ar=$('runarm');if(ar._h!==ha){ar._h=ha;ar.innerHTML=ha;}}
+function cancelarRuna(mudo){if(UI.alvoRuna===null)return;UI.alvoRuna=null;if(!UI.alvoPoder)$('dica-poder').classList.remove('on');if(!mudo)marcar('itens');}
+function armarUI(bi,L){const p=UI.jog,k=p.mr[bi];if(k===undefined)return false;const cmd={t:'armar',i:bi};if(L)cmd.un=locDe(L);
+  if(!acaoLocal(cmd))return false;cancelarRuna();Sons.equipar();aviso(RUNA[k].n+' armada: vale na próxima luta',1800);
+  if(L&&!UI.reduz){const pos=tilePos(L);UI.fxPrep.push({id:E('magic_blue'),x:pos.x,y:pos.y,b:performance.now()});}
+  posAcao();return true;}
+function desarmarUI(i){const p=UI.jog;if(!p.ra[i])return;const k=p.ra[i].k;if(acaoLocal({t:'desarmar',i})){Sons.pegar&&Sons.pegar();aviso(RUNA[k].n+' voltou para a mochila',1500);posAcao();}}
+function runaClique(s){const p=UI.jog;if(!p||UI.estado!=='jogo'||UI.pausado||UI.espectador)return;
+  if(performance.now()-(UI.rnArrastou||0)<350)return;
+  const na=p.ra.length;if(s<na){desarmarUI(s);return;}
+  const bi=s-na,k=p.mr[bi];if(k===undefined)return;
+  if(UI.fase!=='prep'){aviso('Só na preparação');return;}
+  if(UI.alvoRuna===bi){cancelarRuna();return;}
+  cancelarPoder();cancelarRuna(true);
+  if(p.ra.length>=RN.armMax){aviso(`No máximo ${RN.armMax} runas armadas por luta`);return;}
+  if(RUNA[k].alvo){if(!todos(p).length){aviso('Você não tem unidades');return;}
+    UI.alvoRuna=bi;$('dica-poder').textContent=RUNA[k].n+' · escolha uma unidade · Esc cancela';$('dica-poder').classList.add('on');marcar('itens');return;}
+  armarUI(bi,null);}
+function comprarRunaUI(i){const p=UI.jog;if(!p||!p.rl||p.rl.i!==i)return;const R=RUNA[p.rl.k];
+  if(!acaoLocal({t:'comprarRuna',i}))return;Sons.comprar&&Sons.comprar();aviso(R.n+' na mochila',1500);marcar('topo','loja','itens','btn');}
+function mostrarDetalhesRuna(i){const p=UI.jog;if(!p||!p.rl||p.rl.i!==i)return;const R=RUNA[p.rl.k];
+  abrirConsulta(R.n,`<div class="detalhe-unidade"><div class="rn-det" style="--rc:${R.cor}"><img src="${R.ic}" alt=""><div><p><b>Runa de ${R.alvo?'unidade':'time'}</b> · ${R.custo} de ouro</p><p>${esc(R.d())}</p><p>${R.alvo?'Na preparação, clique na runa da mochila e depois numa unidade sua (ou arraste a runa até ela).':'Na preparação, clique na runa da mochila para armá-la.'} Vale só na próxima luta; no máximo ${RN.armMax} armadas por luta.</p></div></div></div><p class="consulta-nota">Consultar não compra a runa. Feche e clique na carta para comprar.</p>`);}
 /* ---------- tela de receitas: grade 8x8 de componentes, forja e encantamentos ---------- */
 function htmlGradeReceitas(){let h='<table class="grd"><tr><th></th>'+COMPS.map(c=>`<th>${htmlItem(c)}</th>`).join('')+'</tr>';
   COMPS.forEach(a=>{h+=`<tr><th>${htmlItem(a)}</th>`+COMPS.map(b=>`<td class="${a===b?'dg':''}" data-pa="${a}" data-pb="${b}">${htmlItem(RECEITA[a+'_'+b])}</td>`).join('')+'</tr>';});
@@ -2811,6 +3129,7 @@ const locDe=L=>L.onde==='banco'?{onde:'banco',i:L.i}:{onde:'tab',x:L.x,y:L.y};
 function acaoLocal(c){const p=UI.jog;if(!p)return false;
   if(Online.guest){
     if(!p.vivo){aviso('Você foi eliminado');return false;}
+    if(c.t==='bencao'||c.t==='bencaoRr'){if(!p.ob||(c.t==='bencaoRr'&&p.ob.rr<=0)||(c.t==='bencao'&&!ehInt(c.i,0,2)))return false;Online.enviarCmd(c);return true;}   // sorteio e unidades do pool: só o anfitrião
     if(c.t==='rolar'||c.t==='carrossel'){                       // dependem do sorteio / da vez: esperam o anfitrião
       if(c.t==='rolar'&&p.ouro<2){aviso('Ouro insuficiente');return false;}
       if(c.t==='carrossel'&&(!G.car||G.car.ordem[G.car.idx]!==p)){aviso('Ainda não é a sua vez');return false;}
@@ -2830,7 +3149,7 @@ function poderUI(){const p=UI.jog,P=p&&PODER[p.voc];if(!P||PODERES_OFF||UI.estad
   if(p.podU){aviso('Poder já usado nesta rodada');return;}if(p.ouro<P.custo){aviso('Ouro insuficiente');return;}
   if(p.voc==='druid'&&p.nivel>=9){aviso('Nível máximo');return;}
   if(P.alvo){if(P.alvo==='un'&&!todos(p).length){aviso('Você não tem unidades');return;}
-    UI.alvoPoder=P.alvo;$('dica-poder').textContent=P.dica+' · Esc cancela';$('dica-poder').classList.add('on');$('cartas').classList.toggle('alvo-poder',P.alvo==='loja');marcar('btn');return;}
+    cancelarRuna(true);UI.alvoPoder=P.alvo;$('dica-poder').textContent=P.dica+' · Esc cancela';$('dica-poder').classList.add('on');$('cartas').classList.toggle('alvo-poder',P.alvo==='loja');marcar('btn');return;}
   confirmarPoder({});}
 function confirmarPoder(extra){const p=UI.jog,P=PODER[p.voc];if(!acaoLocal(Object.assign({t:'poder'},extra)))return false;
   cancelarPoder();Sons.poder(p.voc);aviso(P.n+'!',1400);
@@ -2859,7 +3178,7 @@ function voarCompra(el,L,dur){const r=el.getBoundingClientRect(),cr=cv.getBoundi
   const a=g.animate([{transform:'translate(0px,0px) scale(1)',opacity:1},{transform:`translate(${tx-r.left-r.width*s/2}px,${ty-r.top-r.height*s/2}px) scale(${s})`,opacity:.8}],{duration:dur,easing:'cubic-bezier(.5,.05,.8,.5)',fill:'forwards'});
   a.onfinish=()=>{g.remove();UI.fxPrep.push({id:E('poff'),x:(X-BX)/TS,y:(Y-BY)/TS,b:performance.now()});};
   setTimeout(()=>g.remove(),dur+400);}
-function comprarUI(i){const p=UI.jog;if(!p||!p.loja[i])return;const antes=capturarPos(),el=document.querySelector('#cartas .cslot[data-i="'+i+'"] .carta');
+function comprarUI(i){const p=UI.jog;if(p&&p.rl&&p.rl.i===i){comprarRunaUI(i);return;}if(!p||!p.loja[i])return;const antes=capturarPos(),el=document.querySelector('#cartas .cslot[data-i="'+i+'"] .carta');
   if(!acaoLocal({t:'comprar',i}))return;
   Sons.comprar&&Sons.comprar();
   const novo=todos(p).find(L=>!antes[L.inst.uid]);                 // a cópia que acabou de chegar (não existe se a compra fundiu)
@@ -2883,7 +3202,7 @@ function posAcao(antes,atraso){const p=UI.jog;UI.prevSujo=true;marcar('topo','si
 function espiarJog(id){if(!G||!UI.jog||UI.estado!=='jogo'||UI.pausado)return;const q=G.jog[id];if(!q)return;
   if(q===UI.jog||UI.espiar===id){sairEspiar();return;}
   if(UI.fase!=='prep'||UI.C){aviso('Só dá para espiar tabuleiros na preparação');return;}
-  UI.espiar=id;UI.prevSujo=true;$('espia-nome').textContent=q.nome;$('espia').classList.add('on');cancelarArrasto();marcar('jog');}
+  UI.espiar=id;UI.prevSujo=true;$('espia-nome').textContent=q.nome;$('espia-bn').innerHTML=iconesBn(q.bn);$('espia').classList.add('on');cancelarArrasto();marcar('jog');}
 function sairEspiar(){if(UI.espiar===null)return;UI.espiar=null;UI.prevSujo=true;$('espia').classList.remove('on');$('espia-analise').hidden=true;marcar('jog');}
 function hudAnaliseEspia(){const el=$('espia-analise'),q=G.jog[UI.espiar],un=UI.prev&&UI.prev.un||[];el.hidden=false;
   if(!un.length){el.innerHTML='<h3>Tabuleiro vazio</h3><p>Este jogador ainda não posicionou unidades.</p>';return;}
@@ -2982,19 +3301,23 @@ function celAt(ev){const r=cv.getBoundingClientRect(),lx=(ev.clientX-r.left)/r.w
 function unidadeCombateEm(cel,rt){const C=UI.C;if(!C||cel.onde==='banco'||cel.onde==='fora')return null;const cx_=cel.x,cy_=cel.onde==='tab'?cel.y+4:cel.y;
   return C.un.find(u=>{if(!u.vivo)return false;const p=posU(u,rt);return Math.round(p.x)===cx_&&Math.round(p.y)===cy_;})||null;}
 function iniciarArrasto(d,ev){UI.drag=d;const g=$('ghost');g.style.display='block';g.style.left=ev.clientX+'px';g.style.top=ev.clientY+'px';
-  if(d.tipo==='un'){g.innerHTML='<canvas width="56" height="56"></canvas>';pintarRetrato(g.firstChild,d.inst.id,0);}else g.innerHTML=htmlItem(d.id,{tip:false});
+  if(d.tipo==='un'){g.innerHTML='<canvas width="56" height="56"></canvas>';pintarRetrato(g.firstChild,d.inst.id,0);}else if(d.tipo==='runa')g.innerHTML=`<img src="${RUNA[d.k].ic}" alt="" style="width:40px;height:40px;image-rendering:pixelated">`;else g.innerHTML=htmlItem(d.id,{tip:false});
   esconderTip();cartaHover(null);UI.hoverTr=null;if(d.tipo==='un'){$('venda-v').textContent=valorVenda(d.inst);$('zona-venda').classList.add('on');}Sons.pegar();}
 function pointerDownCv(ev){if(UI.atq&&ev.button===0)pularAtaque();if(UI.estado!=='jogo'||ev.button!==0||UI.espiar!==null||UI.pausado)return;const cel=celAt(ev);if(!cel)return;const L=unidadeEm(cel);
+  if(UI.alvoRuna!==null){UI.ignoraUp=true;if(L)armarUI(UI.alvoRuna,L);return;}   // modo de escolha da runa: o clique escolhe a unidade
   if(UI.alvoPoder==='un'){UI.ignoraUp=true;if(L)confirmarPoder({alvo:locDe(L)});return;}   // modo de escolha do poder: o clique escolhe a unidade (não arrasta nem abre a ficha)
   if(!L)return;
   if(L.onde==='tab'&&UI.fase!=='prep')return;UI.pd={tipo:'un',de:L,inst:L.inst,x:ev.clientX,y:ev.clientY};}
+function pointerDownRuna(ev){const el=ev.target.closest('[data-s]');if(!el||ev.button!==0||UI.estado!=='jogo'||UI.pausado||UI.espectador||UI.fase!=='prep')return;const p=UI.jog,s=+el.dataset.s,bi=s-p.ra.length;
+  if(bi<0||p.mr[bi]===undefined)return;ev.preventDefault();UI.pd={tipo:'runa',bi,k:p.mr[bi],x:ev.clientX,y:ev.clientY};}
 function pointerDownItem(ev){const el=ev.target.closest('[data-slot]');if(!el||ev.button!==0||UI.estado!=='jogo'||UI.pausado)return;ev.preventDefault();const idx=+el.dataset.slot;UI.pd={tipo:'item',idx,id:UI.jog.itens[idx],x:ev.clientX,y:ev.clientY};}
 function pointerMove(ev){UI.mx=ev.clientX;UI.my=ev.clientY;const p=UI.jog;
   if(!UI.drag){const tg=ev.target.closest?ev.target:null;cartaHover(tg&&tg.closest('.cslot'));const tr=tg&&tg.closest('[data-tr]');UI.hoverTr=tr?tr.dataset.tr:null;}   // acende no tabuleiro e no banco as unidades da carta/traço sob o mouse
   if(UI.pd&&!UI.drag&&Math.hypot(ev.clientX-UI.pd.x,ev.clientY-UI.pd.y)>5){iniciarArrasto(UI.pd,ev);}
   if(UI.drag){const g=$('ghost');g.style.left=ev.clientX+'px';g.style.top=ev.clientY+'px';const d=UI.drag,cel=celAt(ev);$('zona-venda').classList.toggle('sobre',d.tipo==='un'&&!!(ev.target.closest&&sobreVenda(ev.target)));
     if(d.tipo==='un'){d.cel=cel&&(cel.onde==='tab'||cel.onde==='banco')?cel:null;d.ok=false;
-      if(d.cel){const dest=unidadeEm(d.cel);d.ok=d.cel.onde==='banco'||(UI.fase==='prep'&&(dest||d.de.onde==='tab'||contarTab(p)<p.nivel));}}
+      if(d.cel){const dest=unidadeEm(d.cel);d.ok=d.cel.onde==='banco'||(UI.fase==='prep'&&(dest||d.de.onde==='tab'||contarTab(p)<limUn(p)));}}
+    else if(d.tipo==='runa'){d.cel=cel&&(cel.onde==='tab'||cel.onde==='banco')?cel:null;d.ok=!!d.cel;}
     else{d.pl=null;d.alvo=null;d.ok=false;d.slotAlvo=-1;                                                       // item: sobre outro item do inventário ou sobre uma unidade
       if(p.itens[d.idx]===d.id){const el=document.elementFromPoint(ev.clientX,ev.clientY),sl=el&&el.closest&&el.closest('#grade-itens .slot');
         if(sl){const j=+sl.dataset.s;if(p.itens[j]!==undefined&&j!==d.idx){d.pl=planoSobreItem(p,d.idx,j);d.slotAlvo=j;}}
@@ -3022,13 +3345,15 @@ function pointerUp(ev){if(UI.ignoraUp){UI.ignoraUp=false;UI.pd=null;return;}cons
     const para=cel.onde==='tab'?{onde:'tab',x:cel.x,y:cel.y}:{onde:'banco',i:cel.i};
     acaoLocal({t:'mover',de:locDe(d.de),para});
     posAcao();}
+  else if(d.tipo==='runa'){UI.rnArrastou=performance.now();if(p.mr[d.bi]!==d.k)return;const cel=celAt(ev);if(!cel||(cel.onde!=='tab'&&cel.onde!=='banco'))return;
+    if(RUNA[d.k].alvo){const L=unidadeEm(cel);if(!L){aviso('Solte a runa sobre uma unidade sua');return;}armarUI(d.bi,L);}else armarUI(d.bi,null);}
   else{esconderPrevia();document.querySelectorAll('#grade-itens .slot.alvo').forEach(e=>e.classList.remove('alvo','ruim'));
     if(p.itens[d.idx]!==d.id)return;                                                     // o inventário mudou durante o arrasto (snapshot do anfitrião)
     const el=document.elementFromPoint(ev.clientX,ev.clientY),sl=el&&el.closest&&el.closest('#grade-itens .slot');
     if(sl){const j=+sl.dataset.s;if(j!==d.idx&&p.itens[j]!==undefined)usarPlano(planoSobreItem(p,d.idx,j),{slot:d.idx,slot2:j});return;}
     const cel=celAt(ev);if(!cel)return;const L=unidadeEm(cel);if(!L)return;
     usarPlano(planoSobreUn(p,d.idx,L),{L});}}
-function teclado(ev){if(consultaAtual){
+function teclado(ev){if(!consultaAtual&&bencaoTecla(ev))return;if(consultaAtual){
     if(ev.key==='Escape'){ev.preventDefault();fecharConsulta();}
     else if(ev.key==='Tab'){const els=[...$('tela').querySelectorAll('button,input,select,summary,[tabindex="0"]')].filter(el=>!el.disabled&&el.getClientRects().length),first=els[0],last=els[els.length-1];
       if(ev.shiftKey&&document.activeElement===first){ev.preventDefault();last.focus();}else if(!ev.shiftKey&&document.activeElement===last){ev.preventDefault();first.focus();}}
@@ -3044,26 +3369,28 @@ function teclado(ev){if(consultaAtual){
   else if(k==='w'){const h=UI.hover;if(h)venderUI(h);else aviso('Passe o mouse sobre uma unidade sua e aperte W');}
   else if(k==='v'){alternarVel();}else if(k>='1'&&k<='5'){comprarUI(+k-1);}
   else if(k==='s'){alternarLoja();}else if(k==='e'){abrirEmotes();}else if(k==='p'){alternarMeter();}else if(k==='tab'){return;}else if(k==='m'){alternarMudo();}
-  else if(k==='escape'){if(UI.alvoPoder)cancelarPoder();else if(UI.espiar!==null)sairEspiar();else pausar();}}
+  else if(k==='escape'){if(UI.alvoRuna!==null)cancelarRuna();else if(UI.alvoPoder)cancelarPoder();else if(UI.espiar!==null)sairEspiar();else pausar();}}
 function alternarVel(){if(Online.ativo)return;UI.vel=UI.vel===1?2:UI.vel===2?4:1;$('bt-vel').textContent=UI.vel+'x';}
 
 /* =====================================================================================
    Fluxo da partida
    ===================================================================================== */
-function resetUI(){UI.alvoPoder=null;UI.espectador=false;UI.fimGravado=false;UI.acabou=false;sairEspiar();fecharEmotes();fecharIntro();UI.stats=novasStats();UI.anims=[];UI.emotes={};UI.ultC=null;UI.avHit={};UI.fxAv=[];UI.voando={};UI._nv=undefined;UI.impIdx=0;UI.hoverU=null;UI.atq=null;UI.hpAtr=null;UI.hoverTr=null;UI.hoverCartaId=null;UI.hoverCartaI=-1;}
+function resetUI(){UI.alvoPoder=null;UI.alvoRuna=null;UI.espectador=false;UI.fimGravado=false;UI.acabou=false;sairEspiar();fecharEmotes();fecharIntro();UI.stats=novasStats();UI.anims=[];UI.emotes={};UI.ultC=null;UI.avHit={};UI.fxAv=[];UI.voando={};UI._nv=undefined;UI.impIdx=0;UI.hoverU=null;UI.atq=null;UI.hpAtr=null;UI.hoverTr=null;UI.hoverCartaId=null;UI.hoverCartaI=-1;}
 function novaPartida(){onlineSair();resetUI();fecharTela();$('app').classList.remove('menu');G=novoJogo({humano:true,nome:'Você'});UI.jog=G.jog[0];UI.jog.voc=UI.voc;UI.estado='jogo';UI.demo=false;UI.pausado=false;UI.vel=1;$('bt-vel').textContent='1x';
   $('app').style.visibility='visible';iniciarPrepUI(true);}
 function iniciarPrepUI(primeira){const r=G.info;cancelarPoder();UI.fase='prep';UI.C=null;UI.acc=0;UI.atq=null;UI.hpAtr=null;UI.fxPrep=[];UI.hoverU=null;fecharIntro();sairEspiar();UI.timerMax=r.tipo==='car'?25:r.est===1?45:30;UI.timer=UI.timerMax;
   UI.prevSujo=true;marcarTudo();atualizarSujos();banner(r.tipo==='car'?'Carrossel':'Preparação','Estágio '+r.nome+(r.tipo==='pve'?' · Monstros':r.tipo==='pvp'?' · Jogador x Jogador':''),'#d9b45a',1700);
+  if(UI.jog&&UI.jog.ob){const t=UI.jog.ob.t;banner(nomeBnTier(t),'Estágio '+r.nome+' · escolha 1 de 3',COR_BN[t],1500);setTimeout(bencaoSinc,UI.reduz?0:900);}   // anuncia e abre o modal logo depois
   if(Online.host)Online.hostRodada();
-  if(r.tipo==='car')abrirCarrosselUI();}
+  if(r.tipo==='car')abrirCarrosselUI();else if(!(UI.jog&&UI.jog.ob))bencaoSinc();}
 function banner(t,s,cor,ms,peq){const f=$('faixa');f.className='';$('vinheta').classList.remove('on');f.innerHTML=`<b style="color:${cor};${peq?'font-size:38px':''}">${esc(t)}</b>${s?`<span>${esc(s)}</span>`:''}`;f.classList.add('on');clearTimeout(banner.t);banner.t=setTimeout(()=>f.classList.remove('on'),ms);}
 function pronto(auto){if(UI.estado!=='jogo'||UI.fase!=='prep')return;if(G.info.tipo==='car'&&!carPronto(G))return;const p=UI.jog;
+  if(!Online.ativo&&p.ob&&auto!==true){aviso('Escolha uma bênção');bencaoVer(false);return;}      // solo: Pronto reabre o modal (o relógio zerado passa direto: vale a 1ª opção)
   if(Online.ativo){if(p.pronto||!p.vivo)return;if(acaoLocal({t:'pronto'})){marcar('btn');aviso('Aguardando os outros jogadores',2500);}return;}   // online: o anfitrião inicia quando todos estiverem prontos
   if(auto===true){if(autoPosicionar(p)){posAcao();}}
   else if(contarTab(p)===0&&todos(p).length>0&&G.info.tipo!=='car'){aviso('Arraste uma unidade do banco para o tabuleiro');return;}
   iniciarCombateUI();}
-function iniciarCombateUI(){UI.lojaAberta=false;if(UI.estado!=='fim')fecharTela();sairEspiar();fecharEmotes();comecarCombate(G);UI.fase='combate';
+function iniciarCombateUI(){UI.lojaAberta=false;if(UI.estado!=='fim')fecharTela();sairEspiar();fecharEmotes();comecarCombate(G);UI.fase='combate';cancelarRuna(true);marcar('itens','topo');bencaoSinc();
   if(Online.host)Online.hostLutas();
   if(G.info.tipo==='car'){finalizarRodadaUI();return;}
   if(!G.luta){UI.C=null;UI.prev=null;marcar('jog','btn','topo');banner('Combate','Estágio '+G.info.nome+' · você está eliminado','#e0574a',1300,true);return;}   // espectador (eliminado)
@@ -3172,6 +3499,49 @@ function abrirCarrosselUI(){const c=G.car;if(!c||UI.pausado||UI.estado!=='jogo')
   document.querySelectorAll('.ci').forEach(el=>el.onclick=()=>{if(!minha)return;if(!acaoLocal({t:'carrossel',i:+el.dataset.i}))return;fecharTela();marcar('itens');aviso('Item adicionado ao seu inventário');
     if(!Online.ativo)setTimeout(()=>{if(UI.fase==='prep'&&G.info.tipo==='car')pronto(true);},900);});}
 
+/* ---------- bênçãos: modal "escolha 1 de 3" (a lógica fica em escolherBn / execCmd; aqui só a interface) ---------- */
+const nomeBnTier=t=>t===2?'Bênção Prismática':'Bênção de '+BEN_TIER[t];
+const COR_BN=['#c9d3e0','#f0c744','#ff7ad9'];
+const iconeBn=(id,extra)=>`<span class="bi t${BEN[id].t}${extra||''}" data-tip="bn:${id}"><img src="${BEN[id].ic}" alt="${esc(BEN[id].n)}"></span>`;
+const iconesBn=lista=>(lista||[]).map(id=>BEN[id]?`<span class="bi t${BEN[id].t}"><img src="${BEN[id].ic}" alt=""></span>`:'').join('');
+const bnPausaTimer=()=>!Online.ativo&&!!(UI.jog&&UI.jog.ob)&&!!UI.bnAberta&&!UI.bnVer;        // solo: o relógio só espera enquanto o modal está aberto (em "Ver tabuleiro" ele corre; online sempre corre)
+function htmlBencao(o){const cartas=o.op.map((id,i)=>{const b=BEN[id];
+  return `<button class="bn-carta t${o.t}" data-i="${i}" type="button"><span class="bn-cat c${b.c}">${BEN_CAT[b.c]}</span><span class="bn-ic"><img src="${b.ic}" alt=""></span><span class="bn-txt"><b>${esc(b.n)}</b><span class="bn-d">${esc(b.d())}</span></span><kbd>${i+1}</kbd></button>`;}).join('');
+  return `<div class="bn-caixa" style="--tc:${COR_BN[o.t]}"><div class="bn-cab"><span class="eyebrow">${nomeBnTier(o.t)}</span><h2 id="bn-tit">Escolha 1 de 3</h2></div><div class="bn-cartas">${cartas}</div>
+    <div class="bn-rod"><button class="bt" type="button" id="bn-rr" ${o.rr>0?'':'disabled'}>Rerrolar (${o.rr})</button><button class="bt" type="button" id="bn-ver">Ver tabuleiro</button></div></div>`;}
+/* abre, atualiza ou fecha o modal conforme p.ob (host, solo e convidado chamam depois de qualquer mudança de estado) */
+function bencaoSinc(){const p=UI.jog,el=$('bencao'),pill=$('bn-pill');if(!el)return;
+  const deve=!!(p&&G&&p.ob&&p.vivo&&UI.estado==='jogo'&&UI.fase==='prep'&&G.fase==='prep'&&!UI.espectador);
+  if(!deve){if(!UI.bnAberta)return;
+    const pegou=!!p&&(p.bn||[]).length>UI.bnN,id=pegou?p.bn[p.bn.length-1]:0;UI.bnAberta=false;UI.bnChave='';UI.bnEsp=false;UI.bnVer=false;pill.classList.remove('on');el.classList.remove('esp');
+    if(pegou){Sons.bencaoEscolha(BEN[id].t);aviso(BEN[id].n+'!',1800);UI.bnNovo=id;marcarTudo();}
+    if(pegou&&!UI.reduz&&el.classList.contains('on')){el.classList.add('sai');setTimeout(()=>{if(!UI.bnAberta)el.classList.remove('on','sai');},360);}else el.classList.remove('on','sai');
+    return;}
+  const o=p.ob,chave=o.t+':'+o.op.join(',')+':'+o.rr,abrindo=!UI.bnAberta;
+  if(abrindo){UI.bnAberta=true;UI.bnVer=false;UI.bnChave='';UI.bnN=(p.bn||[]).length;cancelarPoder();Sons.bencao(o.t);}
+  UI.bnEsp=false;el.classList.remove('esp','sai');
+  if(UI.bnChave!==chave){const antes=UI.bnChave!=='';UI.bnChave=chave;el.innerHTML=htmlBencao(o);
+    if(antes&&!UI.reduz){const c=el.querySelector('.bn-cartas');c.classList.add('gira');setTimeout(()=>c.classList.remove('gira'),500);Sons.rolar();}}
+  el.classList.toggle('on',!UI.bnVer);pill.classList.toggle('on',UI.bnVer);pill.textContent=nomeBnTier(o.t)+': escolher';
+  if(abrindo){const c=el.querySelector('.bn-carta');if(c)c.focus();}}
+function bencaoVer(v){UI.bnVer=v;bencaoSinc();if(!v){const c=$('bencao').querySelector('.bn-carta');if(c)c.focus();}}
+function bencaoEscolher(i){const p=UI.jog;if(!p||!p.ob||UI.bnEsp||UI.bnVer)return;if(!acaoLocal({t:'bencao',i}))return;
+  if(Online.guest){UI.bnEsp=true;$('bencao').classList.add('esp');return;}      // convidado: espera o anfitrião confirmar
+  bencaoSinc();}
+function bencaoRr(){const p=UI.jog;if(!p||!p.ob||UI.bnEsp||UI.bnVer||p.ob.rr<=0)return;if(!acaoLocal({t:'bencaoRr'}))return;
+  if(Online.guest){UI.bnEsp=true;$('bencao').classList.add('esp');return;}
+  bencaoSinc();}
+/* teclado com o modal aberto: 1-3 escolhe, R rerrola, Esc/V espia o tabuleiro; o resto das teclas do jogo fica bloqueado */
+function bencaoTecla(ev){if(!UI.bnAberta)return false;const k=ev.key.toLowerCase();
+  if(UI.bnVer){if(k==='escape'){ev.preventDefault();bencaoVer(false);return true;}return false;}
+  if(ev.target.closest&&ev.target.closest('button')&&(k===' '||k==='enter'))return true;      // deixa o botão focado agir
+  if(k==='1'||k==='2'||k==='3'){ev.preventDefault();bencaoEscolher(+k-1);}
+  else if(k==='r'){ev.preventDefault();bencaoRr();}
+  else if(k==='escape'||k==='v'){ev.preventDefault();bencaoVer(true);}
+  else if(k==='tab'){const els=[...$('bencao').querySelectorAll('button')].filter(e=>!e.disabled),first=els[0],last=els[els.length-1];
+    if(ev.shiftKey&&document.activeElement===first){ev.preventDefault();last.focus();}else if(!ev.shiftKey&&document.activeElement===last){ev.preventDefault();first.focus();}}
+  return true;}
+
 /* ---------- telas ---------- */
 function telaHTML(h,leve){limparConsulta();esconderTip();const t=$('tela');t.innerHTML=h;t.className='on'+(leve?' leve':'');}
 function fecharTela(){limparConsulta();esconderTip();const t=$('tela');t.className='';t.innerHTML='';}
@@ -3206,7 +3576,7 @@ function mostrarMenu(){UI.estado='menu';$('app').classList.remove('ver-itens','v
   telaHTML(`${htmlBrasas()}<div class="painel modal menu-ini"><div class="mi-esq"><h1 class="logo-t">Tibia Tactics</h1><div class="sub sub-ini">Auto-battler de Tibia</div>
     <div class="palco" id="heroi-palco">${htmlPalcoHeroi()}</div>
     <div class="herois">${VOCS.map(v=>`<div class="heroi ${UI.voc===v?'sel':''}" data-v="${v}"><canvas width="56" height="56" data-av="${v}"></canvas>${{knight:'Knight',paladin:'Paladin',sorcerer:'Sorcerer',druid:'Druid'}[v]}</div>`).join('')}</div></div>
-    <div class="mi-dir">${htmlStatsMenu()}<div class="menu menu-p"><button class="bt primario" id="b-jogar">Jogar</button><button class="bt" id="b-online">Jogar online</button><button class="bt" id="b-como">Como jogar</button><button class="bt" id="b-rec">Recordes</button><button class="bt" id="b-cartas">Novas cartas</button>${telaCheiaOk()?'<button class="bt" id="b-tela">Tela cheia</button>':''}</div>${toque()&&celularEmPe()&&!UI.dicaGiroFechada?'<p class="dica-giro" id="dica-giro"><span>Dica: gire o celular para jogar deitado</span><button type="button" id="dica-giro-x" aria-label="Fechar dica">×</button></p>':''}<p class="versao-jogo">Fase 5 · Etapa 2 — nova tela inicial e finais de partida</p></div></div>`);
+    <div class="mi-dir">${htmlStatsMenu()}<div class="menu menu-p"><button class="bt primario" id="b-jogar">Jogar</button><button class="bt" id="b-online">Jogar online</button><button class="bt" id="b-como">Como jogar</button><button class="bt" id="b-rec">Recordes</button><button class="bt" id="b-cartas">Novas cartas</button>${telaCheiaOk()?'<button class="bt" id="b-tela">Tela cheia</button>':''}</div>${toque()&&celularEmPe()&&!UI.dicaGiroFechada?'<p class="dica-giro" id="dica-giro"><span>Dica: gire o celular para jogar deitado</span><button type="button" id="dica-giro-x" aria-label="Fechar dica">×</button></p>':''}<p class="versao-jogo">Fase 5 · Etapa 3 — Bênçãos e runas</p></div></div>`);
   retratosPend();pintarHeroiAnim(performance.now());$('tela').classList.add('menu');$('b-jogar').onclick=novaPartida;$('b-online').onclick=()=>mostrarOnline();$('b-como').onclick=()=>mostrarComoJogar(mostrarMenu);$('b-rec').onclick=mostrarRecordes;$('b-cartas').onclick=mostrarNovasCartas;
   {const bt=$('b-tela');if(bt)bt.onclick=alternarTelaCheia;const dx=$('dica-giro-x');if(dx)dx.onclick=()=>{UI.dicaGiroFechada=true;$('dica-giro').remove();};}
   ligarHerois();}
@@ -3221,6 +3591,8 @@ function mostrarComoJogar(volta){
     <h3>Objetivo</h3><p>Você enfrenta 7 adversários controlados pela IA. Todos começam com 100 de vida; quem perde uma luta PvP leva dano (2 + estágio + estrelas das unidades inimigas vivas). O último de pé vence.</p>
     <h3>Rodadas</h3><p>Cada rodada tem uma preparação (30 s) e um combate automático. O estágio 1 é só contra monstros; depois cada estágio traz 4 rodadas PvP, 1 carrossel de itens e 1 rodada contra monstros que dão ouro e itens.</p>
     <h3>Economia</h3><p>+5 de ouro por rodada, +1 de juros a cada 10 guardados (até +5) e bônus por sequência de vitórias ou derrotas. Rolar a loja custa 2; comprar 4 de XP custa 4. O nível define quantas unidades você pode colocar no tabuleiro.</p>
+    <h3>Bênçãos</h3><p>No começo da preparação das rodadas 2-1, 3-2 e 4-2 cada jogador escolhe 1 de 3 bênçãos (de Prata, de Ouro e Prismática): ouro, XP, itens, unidades ou bônus de combate que valem pelo resto da partida. Cada escolha tem uma rerrolagem grátis (troca as 3 opções); se a preparação acabar sem escolha, vale a primeira opção. As suas bênçãos aparecem no topo, e as dos outros jogadores na lista da direita. No jogo solo o relógio pausa enquanto você escolhe.</p>
+    <h3>Runas</h3><p>A partir do estágio 2, uma carta da loja pode virar uma <b>runa</b> (${pct(RN.chance)}% de chance por loja, no máximo uma por vez; não vem do pool de unidades). Ela custa ouro e vai para a sua Mochila de runas (até ${RN.mochila} runas, contando as armadas). Na preparação, clique numa runa da mochila para <b>armá-la</b> (as que têm alvo pedem que você clique, ou arraste a runa, até uma unidade sua no tabuleiro ou no banco): até ${RN.armMax} runas armadas por luta (nunca duas iguais), gastas na PRÓXIMA luta. Clique numa runa armada para devolvê-la à mochila antes do combate. Runas de unidade só valem se a unidade estiver no tabuleiro na hora; senão voltam para a mochila. O dano das runas de área cresce com o estágio, e o dano de runa não carrega a mana de quem apanha. ${RUNA.slice(1).map(R=>`<b>${R.n}</b> (${R.custo}): ${esc(R.d())}`).join(' ')}</p>
     <h3>Unidades e estrelas</h3><p>Compre cartas na loja e arraste as unidades do banco para as suas 4 linhas de baixo. Três cópias iguais fundem em 2 estrelas (x1,8 de vida e dano); três de 2 estrelas viram 3 estrelas (x3,2). Arraste uma unidade para a loja para vender.</p>
     <h3>Sinergias</h3><p>Cada unidade tem uma origem (hexágono) e uma classe (escudo), cada uma com o ícone de um item do Tibia: o mesmo ícone aparece na carta, no tooltip e no painel da esquerda. Reunir unidades diferentes com o mesmo traço ativa bônus (2/4/6). O aro do ícone mostra o nível: cinza = inativo, bronze, prata, ouro e prismático no nível máximo. Passe o mouse num traço para acender no tabuleiro e no banco as unidades que o têm.</p>
     <h3>Cartas da loja</h3><p>As cartas ficam em leque; passe o mouse em uma para levantá-la e ver o painel com atributos, habilidade e sinergias (contagem atual e depois da compra). Cartas de unidades que você já tem ganham uma borda dourada; se a compra forma 2 ou 3 estrelas, a carta ganha um brilho suave e o selo ★★ ou ★★★. As unidades iguais no banco e no tabuleiro também se acendem.</p>
@@ -3247,7 +3619,9 @@ function iniciarDemo(){UI.demoBioma=BIOMAS[Math.floor(Math.random()*BIOMAS.lengt
    Camada de rede com dois transportes de mesma interface: PeerJS (WebRTC, real) e BroadcastChannel (?rede=local, duas abas).
    Mensagens JSON {t:tipo,...}; o handshake leva a versão do protocolo.
    ===================================================================================== */
-const PROTO=7; // 7 (Fase 5): poderes das vocações (ativo + passivo viajam na equipe da luta); versões antigas não simulam o mesmo combate.
+const PROTO=9; // 9 (Fase 5, etapa 3): runas consumíveis (loja, mochila, armar/desarmar; as armadas viajam na equipe da luta: eq.ru/re no time e s.ru na unidade); snapshots ganham rl/mr/ra; comandos comprarRuna/armar/desarmar; versões antigas não simulam o mesmo combate.
+// Histórico: const PROTO=8; // 8 (Fase 5, etapa 3): bênçãos (escolha 1 de 3; as de combate viajam na equipe da luta, meta.bn); snapshots ganham bn/ob; comandos bencao/bencaoRr; versões antigas não simulam o mesmo combate.
+// Histórico: const PROTO=7; // 7 (Fase 5): poderes das vocações (ativo + passivo viajam na equipe da luta)
 // Histórico: const PROTO=6; // 6: vida em combate x1,35 (VIDA_LUTA) e morte súbita aos 40 s; versões antigas não simulam o mesmo combate.
 // Histórico: const PROTO=5;   // 5: oito novas cartas e counters; versões antigas não simulam o mesmo combate.
 // Histórico: const PROTO=4;   // 4 (Fase 2): itens viram códigos inteiros (id + forja + encantamento); comandos novos combinar, forjar e encantar; inventário de 15 vagas; o equipar não aceita mais pergaminho. Antes: 2: pub/rodada/res levam tb (tabuleiros públicos) e hh (histórico); mensagem 'emote'; desc do resultado ganha v e dano. 3: desc ganha dop (dano causado ao adversário) para o convidado tocar o ataque do avatar
@@ -3340,8 +3714,8 @@ function onlineSair(){clearInterval(Online.tq);Online.tq=null;
 /* ---------- snapshots (o anfitrião é a única fonte da verdade) ---------- */
 /* tabuleiro público de um jogador (posições, estrelas e itens; nada da loja nem do ouro): [id,estrelas,x,y,itens|0] */
 const tbSer=q=>{const o=[];q.tab.forEach((l,y)=>l.forEach((inst,x)=>{if(inst)o.push([inst.id,inst.e,x,y,inst.itens.length?inst.itens.slice():0]);}));return o;};
-const pubList=com=>G.jog.map(q=>{const o={id:q.id,nome:q.nome,hp:q.hp,nivel:q.nivel,seq:q.seq,vivo:q.vivo,col:q.colocacao,voc:q.voc,hum:!!q.humano,pr:!!q.pronto,hh:(q.hist||[]).join('')};if(com)o.tb=tbSer(q);return o;});
-const snapPriv=p=>({ouro:p.ouro,xp:p.xp,nivel:p.nivel,hp:p.hp,seq:p.seq,travada:p.travada,podU:p.podU,podEsc:p.podEsc,podRuna:p.podRuna,cong:p.cong,vivo:p.vivo,colocacao:p.colocacao,banco:p.banco,tab:p.tab,itens:p.itens,loja:p.loja,renda:p.renda||null,drop:p.drop||null,nvitorias:p.nvitorias,pronto:!!p.pronto});
+const pubList=com=>G.jog.map(q=>{const o={id:q.id,nome:q.nome,hp:q.hp,nivel:q.nivel,seq:q.seq,vivo:q.vivo,col:q.colocacao,voc:q.voc,hum:!!q.humano,pr:!!q.pronto,hh:(q.hist||[]).join(''),bn:q.bn||[]};if(com)o.tb=tbSer(q);return o;});
+const snapPriv=p=>({ouro:p.ouro,xp:p.xp,nivel:p.nivel,hp:p.hp,seq:p.seq,travada:p.travada,podU:p.podU,podEsc:p.podEsc,podRuna:p.podRuna,cong:p.cong,vivo:p.vivo,colocacao:p.colocacao,banco:p.banco,tab:p.tab,itens:p.itens,loja:p.loja,renda:p.renda||null,drop:p.drop||null,nvitorias:p.nvitorias,pronto:!!p.pronto,bn:p.bn||[],ob:p.ob||null,rl:p.rl||null,mr:p.mr||[],ra:p.ra||[]});
 const carSer=()=>G.car?{itens:G.car.itens.slice(),ordem:G.car.ordem.map(q=>q.id),idx:G.car.idx,esc:G.car.esc}:null;
 function snapMsg(cl,t,extra){return Object.assign({t,rodada:G.rodada,fase:G.fase,info:G.info,fim:G.fim,jog:pubList(t==='rodada'||t==='res'),eu:snapPriv(cl.p),ack:cl.ack,car:carSer(),
   tempo:Math.max(0,Math.round(Online.prepFim-agoraMs())),tmax:UI.timerMax},extra||{});}
@@ -3469,13 +3843,13 @@ Online.enviarCmd=function(c){Online.tr.paraHost({t:'cmd',n:++Online.cmdN,c});};
 function sombraG(m){const g={rodada:m.rodada,jog:[],pool:{},uid:0,fase:m.fase,fim:false,info:m.info,opt:{online:true,convidado:true},colocados:[],car:null,luta:null,lutas:{},pares:[],pares0:null,opoEq:{},opoDe:{},est:{}};
   LISTA_U.forEach(id=>{g.pool[id]=0;});
   m.jog.forEach(pj=>{g.jog[pj.id]={id:pj.id,nome:pj.nome,humano:false,local:false,hp:pj.hp,ouro:0,nivel:pj.nivel,xp:0,banco:new Array(MAX_BANCO).fill(null),tab:[0,1,2,3].map(()=>new Array(NC).fill(null)),
-    itens:[],loja:[null,null,null,null,null],travada:false,podU:false,podEsc:0,podRuna:false,cong:-1,seq:0,vivo:true,colocacao:0,voc:pj.voc,addon:0,pronto:false,nvitorias:0,hum:pj.hum,hist:[]};});
+    itens:[],loja:[null,null,null,null,null],travada:false,podU:false,podEsc:0,podRuna:false,cong:-1,bn:pj.bn||[],ob:null,rl:null,mr:[],ra:[],seq:0,vivo:true,colocacao:0,voc:pj.voc,addon:0,pronto:false,nvitorias:0,hum:pj.hum,hist:[]};});
   const me=g.jog[Online.meuId];me.humano=true;me.local=true;return g;}
 function pubAplicar(lista){lista.forEach(pj=>{const q=G.jog[pj.id];if(!q)return;q.hist=pj.hh?pj.hh.split(''):[];if(q===UI.jog)return;
-  q.nome=pj.nome;q.hp=pj.hp;q.nivel=pj.nivel;q.seq=pj.seq;q.vivo=pj.vivo;q.colocacao=pj.col;q.voc=pj.voc;q.hum=pj.hum;q.pronto=pj.pr;q.hist=pj.hh?pj.hh.split(''):[];
+  q.nome=pj.nome;q.hp=pj.hp;q.nivel=pj.nivel;q.seq=pj.seq;q.vivo=pj.vivo;q.colocacao=pj.col;q.voc=pj.voc;q.hum=pj.hum;q.pronto=pj.pr;q.hist=pj.hh?pj.hh.split(''):[];q.bn=pj.bn||[];
     if(pj.tb){q.tab=[0,1,2,3].map(()=>new Array(NC).fill(null));pj.tb.forEach(([id,e,x,y,it],k)=>{if(U[id]&&y>=0&&y<4&&x>=0&&x<NC)q.tab[y][x]={uid:q.id*1000+k,id,e,itens:it||[]};});}});}
 function privAplicar(me,pv){const dr=UI.drag,uid=dr&&dr.tipo==='un'&&dr.inst?dr.inst.uid:null;
-  Object.assign(me,{ouro:pv.ouro,xp:pv.xp,nivel:pv.nivel,hp:pv.hp,seq:pv.seq,travada:pv.travada,podU:pv.podU,podEsc:pv.podEsc,podRuna:pv.podRuna,cong:pv.cong,vivo:pv.vivo,colocacao:pv.colocacao,banco:pv.banco,tab:pv.tab,itens:pv.itens,loja:pv.loja,renda:pv.renda,drop:pv.drop,nvitorias:pv.nvitorias,pronto:pv.pronto});
+  Object.assign(me,{ouro:pv.ouro,xp:pv.xp,nivel:pv.nivel,hp:pv.hp,seq:pv.seq,travada:pv.travada,podU:pv.podU,podEsc:pv.podEsc,podRuna:pv.podRuna,cong:pv.cong,vivo:pv.vivo,colocacao:pv.colocacao,banco:pv.banco,tab:pv.tab,itens:pv.itens,loja:pv.loja,renda:pv.renda,drop:pv.drop,nvitorias:pv.nvitorias,pronto:pv.pronto,bn:pv.bn||[],ob:pv.ob||null,rl:pv.rl||null,mr:pv.mr||[],ra:pv.ra||[]});
   if(uid!==null){const L=todos(me).find(x=>x.inst.uid===uid);if(L){dr.inst=L.inst;dr.de=L.onde==='banco'?{onde:'banco',i:L.i}:{onde:'tab',x:L.x,y:L.y};}else{UI.drag=null;$('ghost').style.display='none';$('zona-venda').classList.remove('on');}}}
 function guestSnap(m){
   if(!G||!G.opt.convidado){G=sombraG(m);resetUI();UI.jog=G.jog[Online.meuId];UI.estado='jogo';UI.demo=false;UI.pausado=false;UI.vel=1;UI.espectador=false;UI.fimGravado=false;UI.acabou=false;UI.C=null;UI.prev=null;
@@ -3488,11 +3862,12 @@ function guestSnap(m){
   UI.prevSujo=true;marcarTudo();
   if(m.t==='rodada'){guestRodada(m);}
   else if(m.t==='res'){guestRes(m);}
-  else if(G.info.tipo==='car'&&UI.fase==='prep')abrirCarrosselUI();}
+  else if(G.info.tipo==='car'&&UI.fase==='prep')abrirCarrosselUI();
+  if(m.t!=='rodada')bencaoSinc();}      // 'rodada' abre pelo iniciarPrepUI
 function guestRodada(m){const me=UI.jog;G.opoDe={};G.opoDe[me.id]=m.opo;G.opoEq={};G.opoEq[me.id]=m.opoEq||[];UI.acabou=false;
   if(m.fase==='prep'){iniciarPrepUI();UI.timerMax=m.tmax;UI.timer=m.tempo/1000;}
   else{UI.fase='espera';UI.C=null;UI.prev=null;marcarTudo();}}
-function guestLuta(m){if(UI.estado!=='fim')fecharTela();G.fase='combate';UI.fase='combate';
+function guestLuta(m){if(UI.estado!=='fim')fecharTela();G.fase='combate';UI.fase='combate';if(UI.jog)consumirRunas(UI.jog);cancelarRuna(true);marcar('itens','topo');bencaoSinc();   // as runas armadas são gastas nesta luta (o anfitrião confirma no próximo snapshot)
   const C=criarCombate(eqDes(m.A,m.mA),eqDes(m.B,m.mB),{vis:true,seed:m.seed,pve:m.pve});C.esp=m.lado===1;
   UI.C=C;UI.acc=0;UI.fimEm=0;UI.prev=null;Online.lutasVistas++;UI.impIdx=0;UI.hoverU=null;sairEspiar();fecharEmotes();marcar('jog','btn','topo','strip');
   mostrarIntro();}
@@ -3608,6 +3983,8 @@ const Sons={
   vender(){tom(2093,2093,.08,'sine',.16);tom(1568,1568,.12,'sine',.16,.06);tom(1175,1175,.18,'sine',.14,.12);},
   rolar(){[0,.05,.1,.16].forEach((a,i)=>ruidoSom(.07,.26,3000+i*2500,1500,1.2,'bandpass',a));},
   poder(v){const b={knight:[196,392],paladin:[523,1047],sorcerer:[262,131],druid:[392,784]}[v]||[392,784];tom(b[0],b[1],.28,v==='sorcerer'?'sawtooth':'triangle',.14);tom(b[1],b[1]*1.5,.22,'sine',.1,.08);ruidoSom(.25,.07,1500,6000,2,'highpass',.05);},
+  bencao(t){[0,1,2].slice(0,t+2).forEach((i)=>tom(523*Math.pow(1.26,i+t),523*Math.pow(1.26,i+t),.5,'triangle',.12,i*.11));tom(1568+t*300,1568+t*300,.7,'sine',.09,.3);ruidoSom(.35,.05,3000,9000,2,'highpass',.1);},
+  bencaoEscolha(t){[392,523,659,784].forEach((f,i)=>tom(f*(1+t*.12),f*(1+t*.12),.35,'triangle',.14,i*.07));tom(1568,1568,.5,'sine',.1,.28);ruidoSom(.3,.07,2000,8000,2,'highpass',.12);},
   xp(){tom(440,880,.16,'triangle',.16);tom(660,1320,.16,'triangle',.1,.06);},
   nivel(){[392,494,587,784].forEach((f,i)=>tom(f,f,.3,'triangle',.18,i*.08));tom(1568,1568,.4,'sine',.1,.3);},
   fundir(){[523,659,784,988,1319,1568].forEach((f,i)=>tom(f,f,.5,'sine',.12,i*.06));ruidoSom(.5,.12,2000,8000,2,'highpass');},
@@ -3674,7 +4051,7 @@ function laco(ts){requestAnimationFrame(laco);const dt=Math.min(100,ts-(UI.ultT|
     if(UI.C.fim){UI.acc=0;UI.fimEm+=dt;if(UI.demo){if(UI.fimEm>2500)iniciarDemo();}else if(UI.fimEm>1500&&!Online.ativo)finalizarRodadaUI();}}
   else if(UI.estado==='jogo'&&!pausa){
     if(UI.fase==='prep'&&Online.host){}      // o relógio do anfitrião roda em tiqueHost (setInterval)
-    else if(UI.fase==='prep'){UI.timer-=dt/1000;if(UI.timer<=0&&Online.guest)UI.timer=0;else if(UI.timer<=0){if(G.info.tipo==='car'&&!carPronto(G)){let bi=0,bs=-1;G.car.itens.forEach((id,i)=>{if(tierCar(id)>bs){bs=tierCar(id);bi=i;}});carEscolher(G,bi);fecharTela();marcar('itens');}pronto(true);}}
+    else if(UI.fase==='prep'){if(!bnPausaTimer())UI.timer-=dt/1000;if(UI.timer<=0&&Online.guest)UI.timer=0;else if(UI.timer<=0){if(G.info.tipo==='car'&&!carPronto(G)){let bi=0,bs=-1;G.car.itens.forEach((id,i)=>{if(tierCar(id)>bs){bs=tierCar(id);bi=i;}});carEscolher(G,bi);fecharTela();marcar('itens');}pronto(true);}}
     else if(UI.fase==='resultado'&&!Online.host){UI.resEm-=dt;if(UI.resEm<=0){UI.fase='fila';proximaRodadaUI();}}}
   if(UI.estado==='jogo'){atualizarSujos();hudTempo();sincCombate();
     if(UI.fase==='prep'&&G&&G.info.tipo!=='car'){const n=Math.ceil(UI.timer);if(n!==UI.tk){UI.tk=n;if(n>=1&&n<=5)Sons.tique(n);}}}
@@ -3693,17 +4070,22 @@ function laco(ts){requestAnimationFrame(laco);const dt=Math.min(100,ts-(UI.ultT|
 /* =====================================================================================
    Inicialização
    ===================================================================================== */
-function iniciar(){cv=$('cv');cx=cv.getContext('2d');ajustarCanvas();observaCaixa();addEventListener('resize',ajustarCanvas);
+function iniciar(){fazIconesRuna();cv=$('cv');cx=cv.getContext('2d');ajustarCanvas();observaCaixa();addEventListener('resize',ajustarCanvas);
   cv.addEventListener('pointerdown',pointerDownCv);$('grade-itens').addEventListener('pointerdown',pointerDownItem);
   addEventListener('pointermove',pointerMove);addEventListener('pointerup',pointerUp);addEventListener('keydown',teclado);
   cv.addEventListener('pointerleave',()=>{if(!UI.drag){esconderTip();UI.hoverCel=null;UI.hover=null;UI.hoverU=null;}});
   document.body.addEventListener('pointerleave',()=>{esconderTip();cartaHover(null);UI.hoverTr=null;});
-  $('cartas').addEventListener('click',e=>{const info=e.target.closest('[data-detalhe]');if(info){mostrarDetalhesCarta(+info.dataset.detalhe);return;}const s=e.target.closest('.cslot');if(s&&!s.querySelector('.vend')){if(UI.alvoPoder==='loja')confirmarPoder({alvo:+s.dataset.i});else comprarUI(+s.dataset.i);}});
+  $('cartas').addEventListener('click',e=>{const ir=e.target.closest('[data-detalhe-runa]');if(ir){mostrarDetalhesRuna(+ir.dataset.detalheRuna);return;}const info=e.target.closest('[data-detalhe]');if(info){mostrarDetalhesCarta(+info.dataset.detalhe);return;}const s=e.target.closest('.cslot');if(s&&!s.querySelector('.vend')){if(UI.alvoPoder==='loja')confirmarPoder({alvo:+s.dataset.i});else comprarUI(+s.dataset.i);}});
   $('cartas').addEventListener('mouseover',e=>{if(!UI.drag)cartaHover(e.target.closest('.cslot'));});
   $('cartas').addEventListener('mouseleave',()=>cartaHover(null));
   $('bt-forjar').onclick=forjarUI;$('bt-rec').onclick=()=>{if(UI.estado==='jogo')mostrarReceitas(()=>fecharTela());};$('bt-rolar').onclick=rolarUI;$('bt-m-rolar').onclick=rolarUI;$('bt-m-xp').onclick=xpUI;$('bt-m-loja').onclick=alternarLoja;$('bt-recolher').onclick=alternarLoja;$('bt-xp').onclick=xpUI;$('bt-poder').onclick=poderUI;$('bt-trava').onclick=travarUI;$('bt-pronto').onclick=()=>pronto();$('bt-vel').onclick=alternarVel;$('bt-menu').onclick=pausar;$('logo').onclick=()=>{if(UI.estado==='jogo')pausar();};
   lerCfg();ligarCfg();addEventListener('pointerdown',somIniciar,{once:true});addEventListener('keydown',somIniciar,{once:true});
   $('jogadores').addEventListener('click',e=>{const r=e.target.closest('.jg');if(r){espiarJog(+r.dataset.id);if(celularEmPe())$('app').classList.remove('ver-jog');}});
+  $('runas').addEventListener('click',e=>{const sl=e.target.closest('[data-s]');if(sl)runaClique(+sl.dataset.s);});
+  $('runas').addEventListener('pointerdown',pointerDownRuna);
+  $('runarm').addEventListener('click',e=>{const sl=e.target.closest('[data-a]');if(sl&&UI.estado==='jogo'&&!UI.pausado&&!UI.espectador)desarmarUI(+sl.dataset.a);});
+  $('bencao').addEventListener('click',e=>{const c=e.target.closest('.bn-carta');if(c){bencaoEscolher(+c.dataset.i);return;}if(e.target.closest('#bn-rr'))bencaoRr();else if(e.target.closest('#bn-ver'))bencaoVer(true);});
+  $('bn-pill').onclick=()=>bencaoVer(false);
   $('bt-t-itens').onclick=()=>alternarPainel('itens');$('bt-t-jog').onclick=()=>alternarPainel('jog');$('bt-t-sin').onclick=()=>alternarPainel('sin');
   $('bt-espia-v').onclick=sairEspiar;$('bt-meter').onclick=alternarMeter;
   $('meter').addEventListener('click',e=>{const b=e.target.closest('button[data-a]');if(b){UI.meterAba=b.dataset.a;$('meter')._C=null;hudMeter();}});
