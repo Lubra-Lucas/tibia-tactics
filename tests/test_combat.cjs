@@ -498,3 +498,31 @@ test('two runes of the same type cannot be armed for the same combat; bots pick 
   assert.equal(r.a,null);assert.equal(r.b,'Já há uma runa igual armada');assert.equal(r.c,null);assert.deepEqual(r.st,[[2,5],[2]]);
   assert.equal(r.d,null);assert.equal(r.e,null);assert.deepEqual(r.bot,[2,5]);assert.deepEqual(r.botMr,[2]);
 });
+
+test('wave spells pick the direction that hits the most enemies and face it', () => {
+  const run=engine();
+  run(scene+`const C=criarCombate({un:[spec('dragon_hatchling',3,4)]},{un:[spec('orc',4,3),spec('orc',5,2),spec('orc',4,2),spec('orc',2,3)]},{seed:1,semSalto:true});const u=C.un[0],t=C.un[1];u.alvo=t;const h=u.hab;
+    const cnt=d=>tilesArea(h.area,u.x,u.y,d).filter(([x,y])=>dentro(x,y)&&C.occ[y*NC+x]&&C.map[C.occ[y*NC+x]].lado===1).length;
+    const velho=dirPara(u,t),novo=melhorDirOnda(C,u,h,t,velho);const antes=C.un.filter(q=>q.lado===1).map(q=>q.hp);acaoHab(C,u,h,t);`);
+  assert.ok(run('cnt(novo)')>=run('cnt(velho)'));
+  assert.ok(run('cnt(novo)')>run('cnt(velho)'),'diagonal scene must improve over the old rule');
+  assert.equal(run('u.dir'),run('novo'));
+  assert.ok(run('C.un.filter(q=>q.lado===1).some((q,i)=>q.hp<antes[i])'));
+  assert.equal(run('melhorDirOnda(C,u,h,null,velho)'),run('melhorDirOnda(C,u,h,null,velho)'));
+});
+
+test('Dark Monk art and corpse differ from Monk, with the same sheet size', () => {
+  const run=engine(),rd=f=>fs.readFileSync(path.join(root,f));
+  const m=JSON.parse(run(`JSON.stringify(SPR.criaturas.monk)`)),d=JSON.parse(run(`JSON.stringify(SPR.criaturas.dark_monk)`));
+  assert.notDeepEqual(rd(m.src),rd(d.src));
+  assert.equal(rd(m.src).readUInt32BE(16),rd(d.src).readUInt32BE(16));
+  assert.equal(rd(m.src).readUInt32BE(20),rd(d.src).readUInt32BE(20));
+  assert.notDeepEqual(rd(run(`SPR.cadaveres[${m.cad}].src`)),rd(run(`SPR.cadaveres[${d.cad}].src`)));
+});
+
+test('Healer nerf: Curandeiro trait heals 1%/3% every 2 s and Dark Monk keeps Ferida 40% for 5 s', () => {
+  const run=engine();
+  run(scene+`const C=criarCombate({un:[spec('druid',1,5),spec('monk',2,5)]},{un:[spec('orc',3,0)]},{seed:1,semSalto:true});`);
+  assert.equal(run('C.curaTime[0]'),.01);
+  assert.deepEqual(JSON.parse(run(`JSON.stringify(U.dark_monk.hab.seq[0].deb)`)),{ferida:.4,dur:5000});
+});

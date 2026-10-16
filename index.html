@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="versao-site" content="2026-10-15.5"><!-- a cada deploy: trocar aqui, em VERSAO_SITE e nos ?v= dos scripts locais -->
+<meta name="versao-site" content="2026-10-16.1"><!-- a cada deploy: trocar aqui, em VERSAO_SITE e nos ?v= dos scripts locais -->
 <script id="auto-update">
 /* auto-atualização: o GitHub Pages cacheia 10 min; compara a versão do index no servidor com a desta página e recarrega se mudou */
 (function(){
@@ -274,15 +274,19 @@ html.reduz #vinheta.der::after{animation:none}
 .cslot{flex:1;min-width:0;position:relative;display:flex;cursor:pointer}
 .cslot:hover{z-index:30}
 /* carta: moldura de pedra e metal por custo, rebites nos cantos */
-.carta{--tc:#8d8d8d;flex:1;min-width:0;position:relative;display:flex;flex-direction:column;padding:5px;cursor:pointer;border-radius:5px;
-  background:linear-gradient(145deg,color-mix(in srgb,var(--tc) 55%,#fff) 0%,var(--tc) 16%,color-mix(in srgb,var(--tc) 42%,#000) 48%,color-mix(in srgb,var(--tc) 80%,#fff) 74%,color-mix(in srgb,var(--tc) 38%,#000) 100%);
+.carta{--tc:#9aa1ae;--tx:#fff;flex:1;min-width:0;position:relative;display:flex;flex-direction:column;padding:6px;cursor:pointer;border-radius:6px;
+  background:linear-gradient(145deg,color-mix(in srgb,var(--tc) 55%,#fff) 0%,var(--tc) 20%,color-mix(in srgb,var(--tc) 62%,#000) 50%,color-mix(in srgb,var(--tc) 85%,#fff) 76%,color-mix(in srgb,var(--tc) 55%,#000) 100%);
   box-shadow:0 0 0 1px #000,0 3px 8px #000b,inset 0 1px 0 #fff7,inset 0 -2px 0 #0008;transform-origin:50% 100%;transform:translateY(var(--dy,0px)) rotate(var(--r,0deg));transition:transform .12s ease-out,filter .12s}
 .carta::before{content:'';position:absolute;inset:0;z-index:4;pointer-events:none;border-radius:5px;
   background:radial-gradient(circle at 5px 5px,#fff 0 .7px,#cfc8b0 1.1px,#3d392c 2.3px,transparent 2.9px) no-repeat,
   radial-gradient(circle at calc(100% - 5px) 5px,#fff 0 .7px,#cfc8b0 1.1px,#3d392c 2.3px,transparent 2.9px) no-repeat,
   radial-gradient(circle at 5px calc(100% - 5px),#fff 0 .7px,#cfc8b0 1.1px,#3d392c 2.3px,transparent 2.9px) no-repeat,
   radial-gradient(circle at calc(100% - 5px) calc(100% - 5px),#fff 0 .7px,#cfc8b0 1.1px,#3d392c 2.3px,transparent 2.9px) no-repeat}
-.carta.c1{--tc:#8d8d8d}.carta.c2{--tc:#4fae4f}.carta.c3{--tc:#4a86e8}.carta.c4{--tc:#a55be0}.carta.c5{--tc:#e0b030}
+.carta.c1{--tc:#a9afbb;--tx:#12141b}.carta.c2{--tc:#3fc260}.carta.c3{--tc:#3d8bff}.carta.c4{--tc:#b45cff}.carta.c5{--tc:#f4c430;--tx:#2a1c00}
+/* moldura por custo (estilo TFT): anel interno na cor, placa do nome e selo de custo coloridos */
+.carta:not(.runa) .cin{box-shadow:inset 0 0 0 1px #000,0 0 0 1px #000,0 0 0 3px var(--tc),0 0 0 4px #000a}
+.carta:not(.runa) .cn{background:linear-gradient(color-mix(in srgb,var(--tc) 62%,#15141d),color-mix(in srgb,var(--tc) 30%,#0b0b12));color:#fff;box-shadow:inset 0 1px 0 #fff4,inset 0 -1px 0 color-mix(in srgb,var(--tc) 70%,transparent)}
+.carta:not(.runa) .cu{background:linear-gradient(color-mix(in srgb,var(--tc) 80%,#fff),color-mix(in srgb,var(--tc) 75%,#000));color:var(--tx);border-color:#000;box-shadow:0 0 0 1px var(--tc),0 1px 3px #000a;text-shadow:none}
 /* leque (−4° a +4°, em arco); com o mouse em cima a carta sobe ~24 px, endireita, cresce ~1,12x e fica na frente */
 .cslot:hover .carta:not(.vend){transform:translateY(-24px) rotate(0deg) scale(1.12);filter:brightness(1.12);box-shadow:0 0 0 1px #000,0 10px 22px #000d,inset 0 1px 0 #fff7,inset 0 -2px 0 #0008}
 body.arrastando .cslot:hover .carta:not(.vend){transform:translateY(var(--dy,0px)) rotate(var(--r,0deg));filter:none}
@@ -331,7 +335,7 @@ html.reduz .cslot:hover .carta:not(.vend){transform:translateY(var(--dy,0px)) ro
 #dica-poder{position:absolute;left:50%;top:44px;transform:translateX(-50%);background:#0a2236e8;border:1px solid #6fb8ff;color:#d8efff;padding:5px 14px;border-radius:3px;font:700 12px Cinzel,serif;opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap;z-index:7}
 #dica-poder.on{opacity:1}
 #cartas.alvo-poder .cslot .carta{outline:2px dashed #6fb8ff;outline-offset:-2px;cursor:crosshair}
-.carta.gelada{box-shadow:0 0 0 2px #9fd8ff,0 0 14px #6fb8ffcc,inset 0 0 18px #bfe6ff66}.carta.gelada .art canvas{filter:drop-shadow(0 3px 2px #000a) hue-rotate(160deg) brightness(1.05)}
+.carta.c5.gelada{animation:none}.carta.gelada{box-shadow:0 0 0 2px #9fd8ff,0 0 14px #6fb8ffcc,inset 0 0 18px #bfe6ff66}.carta.gelada .art canvas{filter:drop-shadow(0 3px 2px #000a) hue-rotate(160deg) brightness(1.05)}
 .carta .gelo-m{position:absolute;left:4px;top:26px;z-index:3;background:#0b3a5ae6;border:1px solid #9fd8ff;color:#d8f2ff;border-radius:9px;padding:0 6px;font:700 11px Verdana}
 /* runas (Fase 5): carta de pedra na loja, mochila (3 vagas; as armadas brilham) e ícones armados no topo */
 .carta.runa{--tc:#7b7b86;--rc:#b9b3c9;background:linear-gradient(145deg,#c4c4cf 0%,#8e8e9a 18%,#5a5a66 50%,#9494a0 76%,#44444d 100%)}
@@ -418,7 +422,7 @@ html.reduz .cslot:hover .carta:not(.vend){transform:translateY(var(--dy,0px)) ro
 #tip .its.l{flex-direction:column;gap:2px}
 #tip .its.l div{display:flex;gap:6px;align-items:center}
 #tip .its.l img{width:22px;height:22px}
-#tip .est{color:#ffd24a;letter-spacing:2px}
+#tip .est{color:#d4d8e2;letter-spacing:2px;font-size:17px;line-height:1;text-shadow:0 1px 0 #000,0 0 3px #000}#tip .est.e2{color:#bfe0ff}#tip .est.e3{color:#ffd24a;text-shadow:0 1px 0 #000,0 0 8px rgba(255,210,70,.85)}
 #tip .tg{display:inline-flex;align-items:center;gap:4px;padding:1px 7px 1px 2px;border:1px solid #3a321c;border-radius:3px;margin:0 3px 2px 0;color:#e6d9ab;background:#0b0d14;font:700 11px Cinzel,serif}
 #tip .tg .ti{--s:30px}
 #tip .tg.on{border-color:var(--ouro2);color:var(--ouro)}
@@ -715,7 +719,7 @@ html.reduz .bn-carta.t2,html.reduz .bn-cartas.gira .bn-carta{animation:none}html
 .timef{display:flex;flex-wrap:wrap;gap:5px}
 .timef .un{position:relative;width:64px;height:76px;background:radial-gradient(circle at 50% 40%,#252a3c,#07080d);border:1px solid #6b5a2e;border-radius:3px}
 .timef .un canvas{width:100%;height:56px;display:block}
-.timef .un .es{position:absolute;left:0;right:0;top:1px;text-align:center;color:#ffd24a;font-size:10px;letter-spacing:1px;text-shadow:0 1px 0 #000}
+.timef .un .es{position:absolute;left:0;right:0;top:1px;text-align:center;color:#ffd24a;font-size:14px;line-height:1;letter-spacing:1px;text-shadow:0 1px 0 #000,0 0 6px rgba(255,210,70,.7)}
 .timef .un .it{position:absolute;left:0;right:0;bottom:1px;display:flex;justify-content:center;gap:1px}
 .timef .un .it .ic{margin:0 .5px}
 .estat{display:grid;grid-template-columns:1fr 1fr;gap:6px}
@@ -905,6 +909,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
  #app#app .cslot{min-width:0;min-height:0}
  #app#app .cslot .carta,#app#app .cslot:hover .carta:not(.vend){transform:none}
  #app#app .carta{padding:3px;border-radius:4px}
+ #app#app .carta:not(.runa){padding:4px}#app#app .carta:not(.runa) .cin{box-shadow:inset 0 0 0 1px #000,0 0 0 1px #000,0 0 0 3px var(--tc)}
  #app#app .carta .cin{display:grid;grid-template-columns:62px minmax(0,1fr);grid-template-rows:minmax(0,1fr)}
  #app#app .carta .art{grid-column:1;grid-row:1}
  #app#app .carta .art canvas{width:62px;height:44px;image-rendering:auto}
@@ -970,6 +975,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
  #app#app .cslot{min-width:0}
  #app#app .cslot .carta,#app#app .cslot:hover .carta:not(.vend){transform:none}
  #app#app .carta{padding:3px;border-radius:4px}
+ #app#app .carta:not(.runa){padding:4px}#app#app .carta:not(.runa) .cin{box-shadow:inset 0 0 0 1px #000,0 0 0 1px #000,0 0 0 3px var(--tc)}
  #app#app .carta .art{order:1}#app#app .carta .cn{order:2;height:24px;padding:0 2px;font-size:9px;line-height:1.1;text-align:center;white-space:normal;display:flex;align-items:center;justify-content:center;border-top:1px solid #000}
  #app#app .carta .art canvas{width:62px;height:44px;image-rendering:auto}
  #app#app .carta .identidade,#app#app .carta .pie,#app#app .carta .tecla{display:none}
@@ -1052,11 +1058,11 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
 <div id="ghost"></div>
 
 <script async src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
-<script src="tibia-assets/sprites15.js?v=2026-10-15.5"></script>
-<script src="tibia-assets/combate15.js?v=2026-10-15.5"></script>
+<script src="tibia-assets/sprites15.js?v=2026-10-16.1"></script>
+<script src="tibia-assets/combate15.js?v=2026-10-16.1"></script>
 <script>
 'use strict';
-const VERSAO_SITE='2026-10-15.5';   // bumpar junto com <meta versao-site> e os ?v= dos scripts a cada deploy
+const VERSAO_SITE='2026-10-16.1';   // bumpar junto com <meta versao-site> e os ?v= dos scripts a cada deploy
 /* =====================================================================================
    TIBIA TACTICS  -  auto-battler estilo TFT com visual do Tibia
    Parte 1: dados (unidades, sinergias, itens, monstros). Nada aqui toca o DOM.
@@ -1107,7 +1113,7 @@ const TRACOS={
   guerreiro:{n:'Guerreiro',t:'classe',niv:[2,4,6],rep:'valkyrie',d:['Guerreiros: +20% de dano físico e roubo de vida','Guerreiros: +40% de dano físico e roubo de vida','Guerreiros: +65% de dano físico e roubo de vida']},
   atirador:{n:'Atirador',t:'classe',niv:[2,4],rep:'paladin',d:['Atiradores: +25% de velocidade de ataque','Atiradores: +60% de velocidade de ataque']},
   mago:{n:'Mago',t:'classe',niv:[2,4,6],rep:'sorcerer',d:['Magos: +20% de poder de habilidade','Magos: +50% de poder de habilidade','Magos: +90% de poder de habilidade']},
-  curandeiro:{n:'Curandeiro',t:'classe',niv:[2,4],rep:'druid',d:['O time cura 2% da vida a cada 2 s','O time cura 5% da vida a cada 2 s']},
+  curandeiro:{n:'Curandeiro',t:'classe',niv:[2,4],rep:'druid',d:['O time cura 1% da vida a cada 2 s','O time cura 3% da vida a cada 2 s']},
   assassino:{n:'Assassino',t:'classe',niv:[2,4],rep:'amazon',d:['Saltam para a retaguarda inimiga; +15% de crítico','Saltam para a retaguarda inimiga; +35% de crítico']},
   invocador:{n:'Invocador',t:'classe',niv:[2,3],rep:'necromancer',d:['Invocações com +50% de vida e dano','Invocações com +100% de vida e dano']},
   humano:{n:'Humano',t:'origem',niv:[2,4,6],rep:'knight',d:['Humanos: +25 de mana inicial','Humanos: +50 de mana inicial','Humanos: +80 de mana inicial']},
@@ -1150,10 +1156,10 @@ D('minotaur','Minotaur','minotaur',1,'minotauro','guerreiro',{p:'muuuh!',t:'alvo
 D('ghoul','Ghoul','ghoul',1,'morto','guardiao',{p:'carniça',t:'alvo',m:1.2,el:'earth',ef:'hitbypoison',dot:{m:1.1,dur:4,el:'earth',ef:'hitbypoison'}},{hit:'hitarea'});
 // ---------- custo 2 ----------
 D('sorcerer','Sorcerer','sorcerer',2,'humano','mago',{p:'exevo vis hur',t:'onda',area:A_ONDA5,m:2.0,el:'energy',tiro:'energy',ef:'energyarea'},{atq:{t:'energy',hit:'energyhit'},el:'energy'});
-D('druid','Druid','druid',2,'humano','curandeiro',{p:'exura gran sio',t:'curaAmigo',m:3.2,ef:'magic_blue'},{atq:{t:'smallearth',hit:'poisonarea'},el:'earth'});
+D('druid','Druid','druid',2,'humano','curandeiro',{p:'exura gran sio',t:'curaAmigo',m:2.4,ef:'magic_blue'},{atq:{t:'smallearth',hit:'poisonarea'},el:'earth'});
 D('orc_shaman','Orc Shaman','orc_shaman',2,'orc','mago',{p:'exori flam',t:'alvo',m:2.8,el:'fire',tiro:'fire',ef:'fireattack',dot:{m:.8,dur:3,el:'fire',ef:'hitbyfire'}},{atq:{t:'fire',hit:'hitbyfire'},el:'fire'});
 D('dwarf_guard','Dwarf Guard','dwarf_guard',2,'anao','guardiao',{p:'muralha!',t:'buff',escudo:.45,dur:5000,ef:'magic_green'});
-D('elf_arcanist','Elf Arcanist','elf_arcanist',2,'elfo','curandeiro',{p:'exura vita',t:'curaArea',raio:2,m:2.2,ef:'magic_blue'},{atq:{t:'smallearth',hit:'poisonarea'},el:'earth'});
+D('elf_arcanist','Elf Arcanist','elf_arcanist',2,'elfo','curandeiro',{p:'exura vita',t:'curaArea',raio:2,m:1.65,ef:'magic_blue'},{atq:{t:'smallearth',hit:'poisonarea'},el:'earth'});
 D('minotaur_archer','Minotaur Archer','minotaur_archer',2,'minotauro','atirador',{p:'chuva de flechas',t:'pos',raio:1,m:1.5,el:'phys',tiro:'burstarrow',ef:'explosionarea'},{atq:AR});
 D('poison_spider','Poison Spider','poison_spider',2,'fera','assassino',{p:'veneno!',t:'alvo',m:1.1,el:'earth',ef:'hitbypoison',dot:{m:2.4,dur:5,el:'earth',ef:'hitbypoison'}},{el:'phys',hit:'hitbypoison'});
 D('amazon','Amazon','amazon',2,'humano','assassino',{p:'exori min',t:'alvo',m:2.6,el:'phys',ef:'slash'});
@@ -1175,11 +1181,11 @@ D('fire_elemental','Fire Elemental','fire_elemental',3,'elemental','mago',{p:'ex
 D('earth_elemental','Earth Elemental','earth_elemental',3,'elemental','guardiao',{p:'terremoto',t:'self',raio:1,m:1.9,el:'earth',ef:'groundshaker',stun:1000},{el:'earth',hit:'hitbypoison'});
 D('bonebeast','Bonebeast','bonebeast',3,'morto','guerreiro',{p:'ossos partidos',t:'alvo',m:2.5,el:'death',ef:'mortarea',deb:{armR:.4,dur:5000}},{hit:'hitarea'});
 D('tiger','Tiger','tiger',3,'fera','guerreiro',{p:'garras!',t:'alvo',m:2.2,el:'phys',ef:'claw_white',dot:{m:1.2,dur:3,el:'phys',ef:'drawblood'}});
-D('monk','Monk','monk',3,'humano','curandeiro',{p:'exura gran',t:'curaAmigo',m:3.6,ef:'magic_blue'},{atq:{t:'smallholy',hit:'holydamage'},el:'holy'});
+D('monk','Monk','monk',3,'humano','curandeiro',{p:'exura gran',t:'curaAmigo',m:2.7,ef:'magic_blue'},{atq:{t:'smallholy',hit:'holydamage'},el:'holy'});
 // Novos counters e dano contínuo, custo 3.
 D('ice_witch','Ice Witch','ice_witch',3,'humano','mago',{p:'exevo frigo hur',t:'onda',area:A_CURTA3,m:2.1,el:'ice',ef:'icearea',deb:{lento:.25,dur:3000}},{atq:{t:'smallice',hit:'icearea'},el:'ice',dica:'Carry de gelo. Sua onda reduz a velocidade de ataque e movimento por 3 s.'});
 D('demon_skeleton','Demon Skeleton','demon_skeleton',3,'morto','guardiao',{p:'barreira dos mortos',t:'buff',escudo:.30,dur:4000,ef:'magic_red'},{arm:16,rm:45,dica:'Tanque mágico. Tem 45 de resistência mágica e uma barreira; armadura física menor.'});
-D('dark_monk','Dark Monk','dark_monk',3,'humano','curandeiro',{p:'maldição e penitência',t:'seq',seq:[{t:'alvo',m:1.8,el:'death',tiro:'death',ef:'mortarea',deb:{ferida:.40,dur:5000}},{t:'curaAmigo',m:1.4,ef:'magic_blue',atraso:300}]},{atq:{t:'death',hit:'mortarea'},el:'death',dica:'Suporte ofensivo. Aplica Ferida e depois cura o aliado mais ferido.'});
+D('dark_monk','Dark Monk','dark_monk',3,'humano','curandeiro',{p:'maldição e penitência',t:'seq',seq:[{t:'alvo',m:1.8,el:'death',tiro:'death',ef:'mortarea',deb:{ferida:.40,dur:5000}},{t:'curaAmigo',m:1.1,ef:'magic_blue',atraso:300}]},{atq:{t:'death',hit:'mortarea'},el:'death',dica:'Suporte ofensivo. Aplica Ferida e depois cura o aliado mais ferido.'});
 D('wyvern','Wyvern','wyvern',3,'dragao','assassino',{p:'presas venenosas',t:'alvo',m:1.5,el:'earth',ef:'hitbypoison',dot:{m:1.8,dur:4,el:'earth',ef:'hitbypoison'}},{hit:'bite',dica:'Carry de veneno. Diversifica o dano dos Dragões e combina com Assassinos.'});
 // ---------- custo 4 ----------
 D('dragon','Dragon','dragon',4,'dragao','guardiao',{p:'exevo flam hur',t:'seq',seq:[{t:'onda',area:A_ONDA4,m:2.4,el:'fire',ef:'hitbyfire'},{t:'pos',raio:1,m:1.6,el:'fire',tiro:'fire',ef:'firearea',atraso:450}]},{al:2,atq:{t:'fire',hit:'hitbyfire'},el:'fire',hit:'hitarea'});
@@ -1188,7 +1194,7 @@ D('lich','Lich','lich',4,'morto','invocador',{p:'exevo mas mort',t:'seq',seq:[{t
 D('frost_giant','Frost Giant','frost_giant',4,'gigante','guerreiro',{p:'pancada gelada',t:'alvo',m:3.2,el:'ice',ef:'icearea',stun:1400,deb:{lento:.4,dur:4000}},{hit:'hitarea'});
 D('hellhound','Hellhound','hellhound',4,'demonio','assassino',{p:'mordida infernal',t:'alvo',m:3.3,el:'fire',ef:'hitbyfire',dot:{m:1.4,dur:4,el:'fire',ef:'hitbyfire'},queima:40},{hit:'bite'});
 D('efreet','Efreet','efreet',4,'elemental','mago',{p:'exevo gran vis lux',t:'onda',area:A_ONDA5,m:3.0,el:'energy',tiro:'energy',ef:'energyarea'},{atq:{t:'energy',hit:'energyhit'},el:'energy'});
-D('hydra','Hydra','hydra',4,'dragao','curandeiro',{p:'exura gran mas res',t:'seq',seq:[{t:'curaArea',raio:1,m:2.4,ef:'magic_blue'},{t:'onda',area:A_ONDA4,m:2.0,el:'ice',ef:'icearea',atraso:300}]},{al:2,atq:{t:'smallice',hit:'icearea'},el:'ice'});
+D('hydra','Hydra','hydra',4,'dragao','curandeiro',{p:'exura gran mas res',t:'seq',seq:[{t:'curaArea',raio:1,m:1.8,ef:'magic_blue'},{t:'onda',area:A_ONDA4,m:2.0,el:'ice',ef:'icearea',atraso:300}]},{al:2,atq:{t:'smallice',hit:'icearea'},el:'ice'});
 D('bonelord','Bonelord','bonelord',4,'morto','mago',{p:'olhar silenciador',t:'pos',raio:1,m:1.9,el:'earth',tiro:'poison',ef:'poisonarea',deb:{silencio:1,dur:2000}},{atq:{t:'smallearth',hit:'poisonarea'},el:'earth',mana:90,dica:'Controle em área. Silencia por 2 s; alvos ainda podem atacar e acumular mana.'});
 // ---------- custo 5 ----------
 D('demon','Demon','demon',5,'demonio','invocador',{p:'exevo gran mas flam',t:'seq',seq:[{t:'pos',raio:2,m:3.2,el:'fire',tiro:'fire',ef:'firearea'},{t:'invocar',id:'fire_elemental',n:1,ef:'magic_red',atraso:500}]},{al:2,atq:{t:'fire',hit:'hitbyfire'},el:'fire',hit:'hitarea'});
@@ -1474,7 +1480,7 @@ function aplicarTracos(C){
     if((n=L('guerreiro'))>=0){const v=[.20,.40,.65][n];mem('guerreiro',u=>{u.dmgB+=v;u.roubo+=v*.6;});}
     if((n=L('atirador'))>=0){const v=[.25,.60][n];mem('atirador',u=>{u.asB+=v;});}
     if((n=L('mago'))>=0){const v=[.2,.5,.9][n];mem('mago',u=>{u.ap+=v;});}
-    if((n=L('curandeiro'))>=0)C.curaTime=C.curaTime||[0,0],C.curaTime[lado]=[.02,.05][n];
+    if((n=L('curandeiro'))>=0)C.curaTime=C.curaTime||[0,0],C.curaTime[lado]=[.01,.03][n];   // etapa 4: era 2%/5% (curandeiros dominavam)
     if((n=L('assassino'))>=0){const v=[.15,.35][n];mem('assassino',u=>{u.crit+=v;u.salta=true;});}
     if((n=L('invocador'))>=0)C.invMul=C.invMul||[1,1],C.invMul[lado]=[1.5,2][n];
     if((n=L('humano'))>=0){const v=[25,50,80][n];mem('humano',u=>{u.mana=Math.min(u.manaM||999,u.mana+v);});}
@@ -1651,11 +1657,16 @@ function aplicarDeb(C,v,deb){if(!v.vivo)return;const dur=deb.dur||4000;Object.ke
   if(k==='ferida'&&!antes)txt(C,v.x,v.y,'Ferida','#ed7971');if(k==='silencio'&&!antes)txt(C,v.x,v.y,'Silêncio','#cba5ff');});fx(C,'sound_purple',v.x,v.y);}
 function provocar(C,u,ms,raio){C.un.forEach(v=>{if(!v.vivo||v.lado===u.lado||cheb(u,v)>raio)return;v.b.provocado={ate:C.t+ms,v:u.uid};v.alvo=u;txt(C,v.x,v.y,'Provocado','#f4c978');});fx(C,'yellow_rings',u.x,u.y);}
 function aplicarDot(C,u,v,dot){v.dots.push({src:u,el:dot.el,d:habDano(u,dot.m)/dot.dur,n:dot.dur,prox:C.t+1000,ef:dot.ef});}
+/* onda: avalia as 4 direções e escolhe a que atinge mais inimigos vivos (alvo atual vale ×1,5); empate: direção do alvo (dirPara), depois ordem fixa 0-3; sem RNG */
+function melhorDirOnda(C,u,h,t,pref){let melhor=pref,mp=-1;
+  [pref,0,1,2,3].forEach(d=>{let p=0;tilesArea(h.area,u.x,u.y,d).forEach(([x,y])=>{if(!dentro(x,y))return;const vid=C.occ[y*NC+x];if(!vid)return;const v=C.map[vid];if(v&&v.vivo&&v.lado!==u.lado)p+=v===t?1.5:1;});
+    if(p>mp+1e-9){mp=p;melhor=d;}});
+  return melhor;}
 function acaoHab(C,u,h,t){const el=h.el||'phys',dir=t?dirPara(u,t):(u.lado===0?0:2);
   switch(h.t){
     case 'alvo':{if(!t||!t.vivo)return;const d=h.tiro?tiro(C,h.tiro,u,t):80,dano=habDano(u,h.m);
       agendar(C,d,()=>{if(!t.vivo)return;const fatal=h.finaliza&&t.hp/t.hpM<=h.finaliza.limiar,raw=dano*(fatal?h.finaliza.mult:1);fx(C,h.ef,t.x,t.y);if(fatal)fx(C,'fatal',t.x,t.y);const r=causar(C,u,t,raw,el,{magia:true,hab:true});if(u.ie.veneno&&t.vivo)venenar(C,u,t,raw);if(h.stun)atordoar(C,t,h.stun);if(h.deb)aplicarDeb(C,t,h.deb);if(h.dot&&t.vivo)aplicarDot(C,u,t,h.dot);if(h.drena&&r)curar(C,u,r*h.drena);});break;}
-    case 'onda':{if(t&&h.tiro)tiro(C,h.tiro,u,t);danoArea(C,u,h,tilesArea(h.area,u.x,u.y,dir),el,h.m,h.ef,true);break;}
+    case 'onda':{const d2=melhorDirOnda(C,u,h,t,dir);u.dir=d2;if(t&&h.tiro)tiro(C,h.tiro,u,t);danoArea(C,u,h,tilesArea(h.area,u.x,u.y,d2),el,h.m,h.ef,true);break;}
     case 'self':{const tl=areaTiles(h,u.x,u.y,dir).filter(([x,y])=>!(x===u.x&&y===u.y));danoArea(C,u,h,tl,el,h.m,h.ef,false);if(h.provoca)provocar(C,u,h.provoca,h.raio||1);break;}
     case 'pos':{if(!t)return;const d=h.tiro?tiro(C,h.tiro,u,t):60,cx=t.x,cy=t.y;
       agendar(C,d,()=>{danoArea(C,u,h,areaTiles(h,cx,cy,0),el,h.m,h.ef,false);});break;}
@@ -2244,7 +2255,8 @@ const UI={estado:'menu',vel:1,acc:0,fimEm:0,C:null,demo:false,prev:null,prevSujo
 
 /* ---- folhas de sprite (cache de imagens) ---- */
 const FOLHAS={};
-function folhaImg(src){let e=FOLHAS[src];if(!e){const im=new Image();e=FOLHAS[src]={im,ok:false};im.onload=()=>{e.ok=true;UI.sujoRet=true;};im.src=src;}return e.ok?e.im:null;}
+const urlImg=s=>/^(data|blob):|\?/.test(s)?s:s+'?v='+VERSAO_SITE;   // cache-bust único das imagens locais (troca a cada deploy)
+function folhaImg(src){let e=FOLHAS[src];if(!e){const im=new Image();e=FOLHAS[src]={im,ok:false};im.onload=()=>{e.ok=true;UI.sujoRet=true;};im.src=urlImg(src);}return e.ok?e.im:null;}
 function folhaDe(d){if(d._f!==undefined)return d._f;const f=d.voc?(SPR.roupas[d.voc]&&SPR.roupas[d.voc][3]):SPR.criaturas[d.spr];d._f=f||null;return d._f;}
 const cadDe=d=>{const c=d.cad||(SPR.criaturas[d.spr]&&SPR.criaturas[d.spr].cad)||(d.voc&&SPR.criaturas.amazon&&SPR.criaturas.amazon.cad);return c&&SPR.cadaveres[c]?SPR.cadaveres[c]:null;};
 function precarregar(cb){const L=new Set();
@@ -2258,7 +2270,7 @@ function precarregar(cb){const L=new Set();
   const obrig=arr.filter(s=>/criaturas|roupas|itens|icones|ui\/|chao|combate_/.test(s));
   return new Promise(res=>{if(!obrig.length)return res();let feito=false;const fim=()=>{if(!feito){feito=true;res();}};
     obrig.forEach(s=>{const im=new Image();const e=FOLHAS[s]||(FOLHAS[s]={im,ok:false});const f=()=>{n++;e.ok=e.ok||(im.naturalWidth>0);if(cb)cb(n/obrig.length);if(n>=obrig.length)fim();};
-      im.onload=()=>{e.im=im;e.ok=true;UI.sujoRet=true;f();};im.onerror=f;im.src=s;e.im=im;});
+      im.onload=()=>{e.im=im;e.ok=true;UI.sujoRet=true;f();};im.onerror=f;im.src=urlImg(s);e.im=im;});
     setTimeout(fim,12000);
     arr.filter(s=>!obrig.includes(s)).forEach(s=>folhaImg(s));});}
 
@@ -2415,12 +2427,16 @@ function desenharBarras(u,px,py,rt,alfa){const f=folhaDe(u.d),altura=f?Math.min(
   cx.fillStyle='rgba(0,0,0,.62)';for(let v=300*st;v<tot;v+=300*st){const tx=x0+Math.round(w*v/tot);cx.fillRect(tx,y0,1,h);}
   if(mh){cx.fillStyle='#0a1028';cx.fillRect(x0,y0+h+1,w,mh);cx.fillStyle='#3f7bff';cx.fillRect(x0,y0+h+1,Math.round(w*clamp(u.mana/u.manaM,0,1)),mh);cx.fillStyle='rgba(255,255,255,.25)';cx.fillRect(x0,y0+h+1,Math.round(w*clamp(u.mana/u.manaM,0,1)),1);}
   // estrelas (só de unidades do jogador)
-  if(!u.inv&&!u.pve&&u.e>0){const r=Math.max(3,1.9*Z),yc=y0-r-3;for(let i=0;i<u.e;i++){estrela(sx+(i-(u.e-1)/2)*r*2.3,yc,r);}}
+  if(!u.inv&&!u.pve&&u.e>0){const r=Math.max(4.5,5*Z)*(u.e>1?1:.8),yc=y0-r-4;for(let i=0;i<u.e;i++){estrela(sx+(i-(u.e-1)/2)*r*1.9,yc,r,u.e);}}
   const estados=estadosUnidade(u);if(estados.length){cx.font='bold '+Math.max(9,Math.round(5*Z))+'px Verdana';cx.textAlign='center';estados.forEach(([k,n,cor,letra],i)=>{const xx=x0+i*12;cx.fillStyle='#080a11';cx.fillRect(xx,y0+H+4,11,12);cx.fillStyle=cor;cx.fillText(letra,xx+5,y0+H+14);});}
   cx.restore();}
 
-function estrela(x,y,r){cx.beginPath();for(let i=0;i<10;i++){const a=-Math.PI/2+i*Math.PI/5,rr=i%2?r*.45:r;cx.lineTo(x+Math.cos(a)*rr,y+Math.sin(a)*rr);}cx.closePath();
-  cx.fillStyle='#ffd24a';cx.fill();cx.lineWidth=1;cx.strokeStyle='#5a3d00';cx.stroke();}
+/* estrela com contorno escuro; e = nível da unidade: 1 cinza, 2 prata-azulada, 3 dourada com brilho (sem e: dourada, como nas animações) */
+const EST_COR={1:['#c9ccd4','#2b2f3a'],2:['#bfe0ff','#143866'],3:['#ffd24a','#5a3500']};
+function estrela(x,y,r,e){const c=EST_COR[e]||EST_COR[3];cx.save();cx.beginPath();for(let i=0;i<10;i++){const a=-Math.PI/2+i*Math.PI/5,rr=i%2?r*.45:r;cx.lineTo(x+Math.cos(a)*rr,y+Math.sin(a)*rr);}cx.closePath();
+  cx.lineJoin='round';cx.lineWidth=Math.max(1.6,r*.34);cx.strokeStyle=c[1];cx.stroke();
+  if(e===3||!e){cx.shadowColor='rgba(255,210,70,.85)';cx.shadowBlur=r*.9;}
+  cx.fillStyle=c[0];cx.fill();cx.shadowBlur=0;cx.fillStyle='rgba(255,255,255,.35)';cx.beginPath();cx.arc(x-r*.22,y-r*.25,r*.28,0,7);cx.fill();cx.restore();}
 function desenharTextos(C,rt){
   cx.save();cx.setTransform(DPR,0,0,DPR,0,0);cx.textAlign='center';cx.lineJoin='round';
   for(const t of C.txts){const age=rt-t.b;if(age<0||age>1050)continue;const sx=(BX+MX(t.x)*TS+16+(((t.b/100)|0)%5-2)*3)*Z,sy=(BY+MY(t.y)*TS-4-age*.016)*Z,a=age>750?1-(age-750)/300:1;
@@ -2431,10 +2447,12 @@ function desenharTextos(C,rt){
   cx.restore();}
 
 const FJ_COR=['','#dfe6f5','#ffd24a','#ff6ad8'];
-function iconesItens(u,X,Y,alfa){const it=u.itens||[];it.forEach((c,i)=>{const inf=itemInfo(c);if(!inf)return;const im=folhaImg(icoItem(inf.ico));if(!im)return;const x=X+1+i*8,y=Y+23;
-  cx.globalAlpha=alfa;cx.drawImage(im,x,y,9,9);
-  if(inf.fj){cx.strokeStyle=FJ_COR[inf.fj];cx.lineWidth=1;cx.strokeRect(x-.5,y-.5,10,10);}                       // forja: contorno na cor do nível
-  if(inf.enc){cx.fillStyle=inf.enc.cor;cx.fillRect(x+6,y+6,3,3);cx.fillStyle='#000';cx.fillRect(x+5,y+9,5,1);cx.fillRect(x+9,y+5,1,5);}   // encantamento: gema
+function iconesItens(u,X,Y,alfa){const it=u.itens||[],SZ=10,P=10.6,x0=X+(32-(it.length*P-(P-SZ)))/2,y=Y+21;   // ícones de 10 px com fundo escuro, centrados no pé da casa
+  it.forEach((c,i)=>{const inf=itemInfo(c);if(!inf)return;const im=folhaImg(icoItem(inf.ico));if(!im)return;const x=Math.round(x0+i*P);
+  cx.globalAlpha=alfa*.85;cx.fillStyle='#06080f';cx.beginPath();if(cx.roundRect)cx.roundRect(x-1.5,y-1.5,SZ+3,SZ+3,2.5);else cx.rect(x-1.5,y-1.5,SZ+3,SZ+3);cx.fill();
+  cx.globalAlpha=alfa;cx.drawImage(im,x,y,SZ,SZ);
+  cx.strokeStyle=inf.fj?FJ_COR[inf.fj]:'rgba(255,255,255,.28)';cx.lineWidth=inf.fj?1.2:.8;cx.strokeRect(x-.6,y-.6,SZ+1.2,SZ+1.2);                      // forja: contorno na cor do nível
+  if(inf.enc){cx.fillStyle=inf.enc.cor;cx.fillRect(x+6.5,y+6.5,3.5,3.5);cx.fillStyle='#000';cx.fillRect(x+5.5,y+10,5,1);cx.fillRect(x+10,y+5.5,1,5);}   // encantamento: gema
   cx.globalAlpha=1;});}
 
 /* ---- desenha uma unidade (combate ou pré-visualização) ---- */
@@ -2472,7 +2490,7 @@ function renderPrev(rt){const P=UI.prev;if(!P)return;const dr=UI.drag,now=perfor
 function renderBanco(rt){const p=UI.jog;if(!p)return;const now=performance.now();
   p.banco.forEach((inst,i)=>{if(!inst)return;if(UI.drag&&UI.drag.tipo==='un'&&UI.drag.inst===inst)return;if(UI.voando[inst.uid]>now)return;const X=BEN_X+i*TS,Y=BEN_Y;
     pintarSprite(U[inst.id],2,X,Y,rt,null);iconesItens(inst,X,Y,1);
-    for(let k=0;k<inst.e;k++)estrela(X+16+(k-(inst.e-1)/2)*6.2,Y+3.5,2.8);});}
+    for(let k=0;k<inst.e;k++)estrela(X+16+(k-(inst.e-1)/2)*8.6,Y+5,4.2,inst.e);});}
 
 /* ---- avatar do jogador nas laterais do tabuleiro (e do adversário, nas lutas PvP) ---- */
 function desenharFxPx(id,X,Y,t){const f=CB.efeitos[id];if(!f)return false;if(f._tot===undefined)f._tot=f.ms.reduce((a,b)=>a+b,0);if(t<0)return true;if(t>=f._tot)return false;
@@ -2781,7 +2799,7 @@ function cartaHover(slot,forcar){const p=UI.jog;let i=-1;
   el.classList.toggle('lado',lado);
   el.style.left=Math.round(l)+'px';el.style.top=Math.round(t)+'px';el.style.setProperty('--ax',Math.round(clamp(sr.left+sr.width/2-l,14,w-14))+'px');}
 function estadosUnidade(u){if(!u||!u.C)return [];return [['ferida','Ferida','#ed7971','F'],['silencio','Silêncio','#cba5ff','S'],['provocado','Provocado','#f4c978','P']].filter(([k])=>k==='provocado'?!!alvoProvocado(u.C,u):bv(u,k)>0);}
-function tipUnidade(d,e,itens,u){const cl=CLASSES[d.k];const star=d.pve?'':'<span class="est">'+'★'.repeat(e||1)+'</span>';
+function tipUnidade(d,e,itens,u){const cl=CLASSES[d.k];const star=d.pve?'':'<span class="est e'+(e||1)+'">'+'★'.repeat(e||1)+'</span>';
   const sk=d.pve?'':`<span style="color:${TIER_COR[d.c]}">${d.c} <img src="${ICO.ouro}" style="width:11px;height:11px;vertical-align:-2px"></span>`;
   const tr=d.pve?'Criatura selvagem':chipTraco(d.o)+chipTraco(d.k);
   const L=(a,b)=>`<div class="lin"><span>${a}</span><b>${b}</b></div>`;
@@ -3576,7 +3594,7 @@ function mostrarMenu(){UI.estado='menu';$('app').classList.remove('ver-itens','v
   telaHTML(`${htmlBrasas()}<div class="painel modal menu-ini"><div class="mi-esq"><h1 class="logo-t">Tibia Tactics</h1><div class="sub sub-ini">Auto-battler de Tibia</div>
     <div class="palco" id="heroi-palco">${htmlPalcoHeroi()}</div>
     <div class="herois">${VOCS.map(v=>`<div class="heroi ${UI.voc===v?'sel':''}" data-v="${v}"><canvas width="56" height="56" data-av="${v}"></canvas>${{knight:'Knight',paladin:'Paladin',sorcerer:'Sorcerer',druid:'Druid'}[v]}</div>`).join('')}</div></div>
-    <div class="mi-dir">${htmlStatsMenu()}<div class="menu menu-p"><button class="bt primario" id="b-jogar">Jogar</button><button class="bt" id="b-online">Jogar online</button><button class="bt" id="b-como">Como jogar</button><button class="bt" id="b-rec">Recordes</button><button class="bt" id="b-cartas">Novas cartas</button>${telaCheiaOk()?'<button class="bt" id="b-tela">Tela cheia</button>':''}</div>${toque()&&celularEmPe()&&!UI.dicaGiroFechada?'<p class="dica-giro" id="dica-giro"><span>Dica: gire o celular para jogar deitado</span><button type="button" id="dica-giro-x" aria-label="Fechar dica">×</button></p>':''}<p class="versao-jogo">Fase 5 · Etapa 3 — Bênçãos e runas</p></div></div>`);
+    <div class="mi-dir">${htmlStatsMenu()}<div class="menu menu-p"><button class="bt primario" id="b-jogar">Jogar</button><button class="bt" id="b-online">Jogar online</button><button class="bt" id="b-como">Como jogar</button><button class="bt" id="b-rec">Recordes</button><button class="bt" id="b-cartas">Novas cartas</button>${telaCheiaOk()?'<button class="bt" id="b-tela">Tela cheia</button>':''}</div>${toque()&&celularEmPe()&&!UI.dicaGiroFechada?'<p class="dica-giro" id="dica-giro"><span>Dica: gire o celular para jogar deitado</span><button type="button" id="dica-giro-x" aria-label="Fechar dica">×</button></p>':''}<p class="versao-jogo">Fase 5 · Etapa 4 — cartas por custo, magias mais inteligentes e ajustes</p></div></div>`);
   retratosPend();pintarHeroiAnim(performance.now());$('tela').classList.add('menu');$('b-jogar').onclick=novaPartida;$('b-online').onclick=()=>mostrarOnline();$('b-como').onclick=()=>mostrarComoJogar(mostrarMenu);$('b-rec').onclick=mostrarRecordes;$('b-cartas').onclick=mostrarNovasCartas;
   {const bt=$('b-tela');if(bt)bt.onclick=alternarTelaCheia;const dx=$('dica-giro-x');if(dx)dx.onclick=()=>{UI.dicaGiroFechada=true;$('dica-giro').remove();};}
   ligarHerois();}
@@ -3619,7 +3637,8 @@ function iniciarDemo(){UI.demoBioma=BIOMAS[Math.floor(Math.random()*BIOMAS.lengt
    Camada de rede com dois transportes de mesma interface: PeerJS (WebRTC, real) e BroadcastChannel (?rede=local, duas abas).
    Mensagens JSON {t:tipo,...}; o handshake leva a versão do protocolo.
    ===================================================================================== */
-const PROTO=9; // 9 (Fase 5, etapa 3): runas consumíveis (loja, mochila, armar/desarmar; as armadas viajam na equipe da luta: eq.ru/re no time e s.ru na unidade); snapshots ganham rl/mr/ra; comandos comprarRuna/armar/desarmar; versões antigas não simulam o mesmo combate.
+const PROTO=10; // 10 (Fase 5, etapa 4): ondas escolhem a direção que acerta mais inimigos (u.dir acompanha); curandeiros nerfados (magias de cura -25%, traço 1%/3% por 2 s); versões antigas não simulam o mesmo combate.
+// Histórico: const PROTO=9; // 9 (Fase 5, etapa 3): runas consumíveis (loja, mochila, armar/desarmar; as armadas viajam na equipe da luta: eq.ru/re no time e s.ru na unidade); snapshots ganham rl/mr/ra; comandos comprarRuna/armar/desarmar; versões antigas não simulam o mesmo combate.
 // Histórico: const PROTO=8; // 8 (Fase 5, etapa 3): bênçãos (escolha 1 de 3; as de combate viajam na equipe da luta, meta.bn); snapshots ganham bn/ob; comandos bencao/bencaoRr; versões antigas não simulam o mesmo combate.
 // Histórico: const PROTO=7; // 7 (Fase 5): poderes das vocações (ativo + passivo viajam na equipe da luta)
 // Histórico: const PROTO=6; // 6: vida em combate x1,35 (VIDA_LUTA) e morte súbita aos 40 s; versões antigas não simulam o mesmo combate.
