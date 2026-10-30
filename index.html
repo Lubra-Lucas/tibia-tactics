@@ -1000,30 +1000,8 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
  .modal{padding:14px}.modal h1{font-size:40px}
 }
 /* ===== UI-TFT LAYOUT: inicio ===== */
-/* desktop estilo TFT: a arena ocupa a tela inteira entre o topo e a loja; sinergias e jogadores flutuam sobre as bordas dela;
-   a "próxima onda" vira um cartão ao lado do tabuleiro (ou volta a ser faixa, .faixa-cheia, quando a tela é estreita demais).
-   O mundo do canvas alarga até a largura do #cvbox (ajustarCanvas); --mx = margem do núcleo dentro do canvas, --lado = borda até o núcleo. */
+/* a cena do desktop (arena, painéis flutuantes, topo, itens) fica no bloco TFT2 HUD; aqui só a divisão da loja em cartas + botões */
 @media (min-width:901px) and (min-height:541px){
-#app{--hh:52px;--bh:184px;--lw:212px;--rw:212px;position:relative}
-#topo{padding-top:2px;padding-bottom:2px}
-#centro{grid-column:1/-1;grid-row:2;gap:0}
-#cv{border:0;box-shadow:none;border-radius:0}
-#esq,#dir{position:absolute;z-index:12;top:calc(var(--hh) + 16px);bottom:calc(var(--bh) + 16px);width:var(--lw);max-height:none;grid-column:auto;grid-row:auto;
- background:linear-gradient(180deg,#191c29d0,#0f111ac4);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);transition:bottom .22s ease}
-#esq{left:10px}
-#dir{right:10px;width:var(--rw)}
-#faixa-rodada{position:absolute;z-index:11;top:8px;left:calc(var(--lw) + 18px);height:auto;min-height:0;width:max-content;max-width:max(80px,calc(var(--lado,400px) - var(--lw) - 30px));
- flex-wrap:wrap;row-gap:6px;white-space:normal;padding:6px 10px;background:linear-gradient(180deg,#191c29d9,#0f111acc)}
-#faixa-rodada:empty{display:none}
-#app:not(.faixa-cheia) #faixa-rodada .sep{display:none}
-#app:not(.faixa-cheia) #faixa-rodada :is(.mons,.drops,.trs){flex-wrap:wrap;row-gap:3px}
-#app.faixa-cheia #faixa-rodada{position:static;flex:none;width:auto;max-width:none;height:42px;flex-wrap:nowrap;white-space:nowrap;padding:4px 12px;margin:0 calc(var(--rw) + 14px) 6px calc(var(--lw) + 14px)}
-#app.faixa-cheia #faixa-rodada:empty{display:flex}
-/* botões do canto do tabuleiro acompanham o núcleo (não ficam embaixo dos painéis flutuantes) */
-#bt-meter,#meter{right:calc(var(--mx,0px) + 6px)}
-#meter.fora{left:calc(100% - var(--mx,0px) + 10px);right:auto}
-#espia{left:calc(var(--mx,0px) + 6px)}
-#emotes{left:calc(var(--mx,0px) + 4px)}
 /* loja embaixo: só cartas + botões (os itens saem do fluxo); botões em duas colunas para a loja ficar mais baixa */
 #base{grid-template-columns:minmax(0,1fr) 312px;grid-template-rows:minmax(0,1fr);grid-auto-rows:0;row-gap:0}
 #loja{grid-column:1;grid-row:1;min-height:0}
@@ -1084,34 +1062,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
 /* separador SINERGIAS */
 /* separador SINERGIAS b */
 /* ===== UI-TFT ITENS: inicio ===== */
-/* inventário em menu suspenso (só desktop): no canto inferior esquerdo do tabuleiro fica a barra #itens-barra (botão "Itens" com contador + Forjar/Receitas);
-   o painel #itens vira um popover sobre o tabuleiro. menuItensSinc() move #itens e os botões para lá no desktop e os devolve ao #base no celular */
-#itens-barra{display:none}
-@media (min-width:901px) and (min-height:541px){
- #itens-barra{position:absolute;left:8px;bottom:8px;z-index:31;display:flex;align-items:center;gap:4px;line-height:normal}
- #app.menu #itens-barra,#app.menu #cvbox>#itens{display:none}
- #itens-barra .bts{display:flex;gap:4px}#itens-barra .bts .bt{padding:5px 9px;font-size:10px;letter-spacing:.04em}
- #bt-itens-menu{display:inline-flex;align-items:center;gap:6px;padding:4px 10px 4px 6px;font-size:12px;position:relative;background:linear-gradient(#262a3b,#12141e);border-color:#6b5a2e;box-shadow:0 2px 8px #000c}
- #bt-itens-menu img{width:22px;height:22px;image-rendering:pixelated}
- #bt-itens-menu .seta{font-size:8px;opacity:.75;transition:transform .15s}
- #bt-itens-menu[aria-expanded="true"]{border-color:#e6d27a;color:#fff1c4;background:linear-gradient(#5a4a1c,#2d230c)}
- #bt-itens-menu[aria-expanded="true"] .seta{transform:rotate(180deg)}
- #bt-itens-menu .badge{min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:#8f241c;border:1px solid #e8584a;color:#fff;font:700 10px/16px Verdana,sans-serif;text-align:center;box-sizing:border-box}
- #bt-itens-menu .badge[hidden]{display:none}
- #bt-itens-menu.novo .badge{animation:itens-novo .55s ease-in-out 4 alternate}
- #bt-itens-menu.novo{animation:itens-brilho .55s ease-in-out 4 alternate}
- @keyframes itens-novo{from{transform:scale(1);background:#8f241c}to{transform:scale(1.35);background:#e8a11c;border-color:#ffe08a}}
- @keyframes itens-brilho{from{box-shadow:0 2px 8px #000c}to{box-shadow:0 0 14px #ffd24acc}}
- #app #cvbox>#itens{display:none;position:absolute;left:8px;bottom:52px;z-index:32;width:232px;max-height:calc(100% - 64px);overflow:auto;padding:8px;line-height:normal;
-  grid-column:auto;grid-row:auto;min-height:0;height:auto;background:linear-gradient(180deg,#191c29f7,#0d0f17f7);border:1px solid var(--ouro2);box-shadow:inset 0 0 0 1px #05060a,0 8px 24px #000e;border-radius:4px;transition:opacity .12s}
- #app #cvbox>#itens.aberto{display:block}
- #app #cvbox>#itens h3{margin-bottom:6px}
- #app #cvbox>#itens #grade-itens{grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}#app #cvbox>#itens .slot{max-width:none}
- /* arrastando um item/runa: fora do popover ele fica quase transparente e deixa passar o ponteiro (soltar sobre as unidades por baixo) */
- #app #cvbox>#itens.arrasto{opacity:.92}
- #app #cvbox>#itens.arrasto.fora{opacity:.12;pointer-events:none}
-}
-@media (prefers-reduced-motion:reduce){#bt-itens-menu.novo,#bt-itens-menu.novo .badge{animation:none}}
+/* itens sempre visíveis dentro da cena: ver bloco TFT2 HUD */
 /* ===== UI-TFT ITENS: fim ===== */
 /* separador ITENS */
 /* separador ITENS b */
@@ -1298,7 +1249,161 @@ body.arrastando #cartas .cslot:hover .detalhes-carta,html.reduz #cartas .cslot:h
 /* separador2 LOJA */
 /* separador2 LOJA b */
 /* ===== TFT2 HUD: inicio ===== */
-/* (reservado) */
+/* cena única estilo TFT (só desktop): o tabuleiro é a tela inteira entre um topo fino e a loja; sinergias e itens flutuam colados à esquerda do tabuleiro,
+   próxima onda + jogadores à direita, caldeirões de juros na borda do tabuleiro, nível/ouro/unidades no canto inferior esquerdo, ao lado da loja.
+   Sem caixas pesadas: fundos transparentes e um degradê nas bordas da arena para o texto continuar legível. Posições: hudCena() (--esq-x, --itx, --dir-x...) */
+.cald,.jg .hpg{display:none}
+@media (min-width:901px) and (min-height:541px){
+#app{--hh:44px;--bh:clamp(150px,17vh,190px);--sw:176px;--lw:206px;--rw:214px;position:relative;padding:0;gap:0;background:radial-gradient(ellipse at 50% 45%,#10131c 0%,#07080c 75%)}
+#app.em-combate{--bh:46px}
+/* ---- topo fino: logo à esquerda, estágio + rodadas + tempo no centro, opções à direita ---- */
+#topo{grid-column:1/-1;grid-row:1;z-index:20;display:grid;grid-template-columns:minmax(0,1fr) auto auto auto minmax(0,1fr);align-items:center;column-gap:0;padding:0 10px;
+ background:linear-gradient(180deg,#040508 0%,#06070bf2 60%,#07080c00 100%);border:0;box-shadow:none;border-radius:0}
+#logo{grid-column:1;justify-self:start;font-size:19px;letter-spacing:.02em}
+#logo small{font-size:7.5px;margin-top:-2px}
+#estagio,#trilha,#tempo{background:linear-gradient(180deg,#141722e6,#0a0c12e6);border:1px solid #6b5a2e99;border-left:0;border-right:0;height:34px;box-shadow:0 2px 8px #0008}
+#estagio{grid-column:2;display:flex;flex-direction:column;justify-content:center;min-width:84px;padding:0 10px 0 14px;border-left:1px solid #6b5a2e99;border-radius:17px 0 0 17px}
+#estagio b{font-size:17px}
+#estagio span{font-size:8.5px;letter-spacing:.06em;white-space:nowrap;max-width:110px;overflow:hidden;text-overflow:ellipsis}
+#trilha{grid-column:3;display:flex;gap:3px;padding:0 6px}
+#trilha .rd{width:24px;height:24px}#trilha .rd img{width:18px;height:18px}
+#tempo{grid-column:4;width:220px;flex:none;max-width:none;min-width:0;display:flex;flex-direction:column;justify-content:center;padding:0 16px 0 8px;border-right:1px solid #6b5a2e99;border-radius:0 17px 17px 0}
+#tempo .txt{font-size:9px;margin-bottom:2px;align-items:baseline}
+#tempo .txt b{font-size:14px}
+#tempo .barra{height:6px;border-radius:3px}
+#cabdir{grid-column:5;justify-self:end;margin-left:0;gap:6px}
+#cabdir .bt{min-height:28px;padding:3px 8px;font-size:10px}
+#cabdir .bt.ic{min-width:28px;padding:3px 5px}
+/* nível, ouro (+juros/sequência) e unidades: bloco no canto inferior esquerdo, ao lado da loja (em combate viram uma linha na faixa de baixo) */
+#cabdir::before{content:'';position:fixed;left:6px;bottom:6px;width:var(--sw);height:calc(var(--bh) - 12px);z-index:-1;pointer-events:none;border-radius:8px;
+ background:linear-gradient(180deg,#151824e8,#0b0d14f0);border:1px solid #6b5a2e88;box-shadow:inset 0 1px 0 #ffffff0d,0 4px 14px #000b;transition:height .22s ease}
+#nivelbox,#cabdir>.stat[data-tip="ouro:x"],#cabdir>.stat:has(#unid){position:fixed;z-index:21;left:16px;width:calc(var(--sw) - 20px);transition:bottom .22s ease}
+#nivelbox{bottom:calc(var(--bh) - 54px);min-width:0}
+#nivelbox .nv{font-size:15px;align-items:baseline}
+#nivelbox .nv>span:first-child{font:700 9px Verdana;letter-spacing:.12em;text-transform:uppercase}
+#nivelbox .barra{height:7px;margin-top:3px;border-radius:3px}
+#cabdir>.stat[data-tip="ouro:x"]{bottom:calc(var(--bh) - 104px);gap:7px}
+#cabdir>.stat[data-tip="ouro:x"] img{width:30px;height:30px}
+#cabdir>.stat[data-tip="ouro:x"] b{font-size:24px;line-height:1}
+#cabdir>.stat[data-tip="ouro:x"] small{font-size:8px}
+#cabdir>.stat[data-tip="ouro:x"] .ex{font-size:9.5px;margin-left:auto;text-align:right}
+#cabdir>.stat:has(#unid){bottom:16px;justify-content:space-between}
+#cabdir>.stat:has(#unid)>div{display:flex;align-items:baseline;justify-content:space-between;width:100%}
+#cabdir>.stat:has(#unid) b{font-size:15px}
+#cabdir>.stat:has(#unid) small{display:inline;font-size:9px;letter-spacing:.12em}
+#app.em-combate #cabdir::before{width:calc(var(--sw) * 2 + 10px);height:34px}
+#app.em-combate #nivelbox{bottom:12px;width:150px}
+#app.em-combate #nivelbox .barra{margin-top:1px;height:5px}
+#app.em-combate #nivelbox .nv{font-size:13px}
+#app.em-combate #cabdir>.stat[data-tip="ouro:x"]{bottom:9px;left:180px;width:auto}
+#app.em-combate #cabdir>.stat[data-tip="ouro:x"] img{width:20px;height:20px}
+#app.em-combate #cabdir>.stat[data-tip="ouro:x"] b{font-size:17px}
+#app.em-combate #cabdir>.stat[data-tip="ouro:x"] small,#app.em-combate #cabdir>.stat:has(#unid){display:none}
+#app.em-combate #cabdir>.stat[data-tip="ouro:x"] .ex{flex-direction:row;gap:6px;margin-left:4px}
+#mini{grid-column:1/-1;padding-left:calc(var(--sw) * 2 + 24px);background:none;border:0;box-shadow:none}
+#mini .ou{display:none}
+/* ---- arena: ocupa a linha do meio de ponta a ponta; degradê nas bordas funde o gramado com o topo, a loja e as laterais ---- */
+#centro{grid-column:1/-1;grid-row:2;gap:0}
+#cvbox{z-index:auto}
+#cvbox::after{content:'';position:absolute;inset:0;z-index:4;pointer-events:none;
+ background:linear-gradient(180deg,#07080cee 0,#07080c00 46px,#07080c00 calc(100% - 40px),#07080cdd 100%),linear-gradient(90deg,#07080cb0 0,#07080c00 22%,#07080c00 78%,#07080cb0 100%)}
+#app.menu #cvbox::after{display:none}
+#cv{border:0;box-shadow:none;border-radius:0}
+/* loja embaixo, à direita do bloco de nível/ouro */
+#base{grid-column:1/-1;grid-row:3;margin:0 8px 6px calc(var(--sw) + 12px);min-width:0}
+/* ---- sinergias: coluna colada à esquerda do tabuleiro, acima dos itens ---- */
+#esq,#dir{position:absolute;z-index:12;grid-column:auto;grid-row:auto;max-height:none;background:none;border:0;box-shadow:none;padding:0;border-radius:0;
+ -webkit-backdrop-filter:none;backdrop-filter:none;scrollbar-width:thin;scrollbar-color:#6b5a2e66 transparent}
+#esq{left:var(--esq-x,10px);top:calc(var(--hh) + 10px);bottom:calc(var(--bh) + var(--ith,220px) + 22px);width:var(--lw);transition:bottom .22s ease}
+#esq>h2,#dir>h2{font:700 9px Cinzel,serif;letter-spacing:.2em;color:#d8c58a;opacity:.85;margin:0 0 5px 2px;padding:0;border:0;text-shadow:0 1px 2px #000,0 0 6px #000}
+/* ---- itens: bancada vertical de vagas ao lado do tabuleiro (embaixo, perto do banco), sempre visível; runas numa coluna ao lado ---- */
+#app>#itens{position:absolute;z-index:12;left:var(--itx,10px);bottom:calc(var(--bh) + 10px);width:auto;height:auto;min-height:0;padding:0;margin:0;overflow:visible;line-height:normal;
+ background:none;border:0;box-shadow:none;border-radius:0;display:grid;grid-template-columns:auto auto;grid-template-areas:"h h" "r g";column-gap:5px;row-gap:5px;align-items:end;transition:bottom .22s ease}
+#app.menu>#itens{visibility:hidden}
+#app>#itens h3{grid-area:h;display:flex;align-items:center;justify-content:space-between;gap:6px;margin:0;padding:0 0 0 2px;border:0;font:700 9px Cinzel,serif;letter-spacing:.2em;color:#d8c58a;text-shadow:0 1px 2px #000,0 0 6px #000}
+#app>#itens h3 .bts{display:flex;gap:4px}
+#app>#itens h3 .bt{min-height:22px;padding:2px 7px;font-size:9.5px;letter-spacing:.05em;background:linear-gradient(#2c2716e6,#15120ae6)}
+#app>#itens #grade-itens{grid-area:g;display:grid;grid-auto-flow:column;grid-template-columns:none;grid-template-rows:repeat(5,36px);grid-auto-columns:36px;gap:4px;direction:rtl}
+#app>#itens .slot{width:36px;height:36px;max-width:none;direction:ltr;border-radius:5px;background:radial-gradient(circle at 50% 45%,rgba(20,22,32,.62),rgba(4,5,8,.72));
+ border:1px solid rgba(201,166,74,.26);box-shadow:inset 0 0 0 1px rgba(0,0,0,.55),inset 0 0 8px #000a}
+#app>#itens .slot.cheio{background:radial-gradient(circle at 50% 40%,rgba(74,58,22,.9),rgba(12,10,6,.9));border-color:rgba(228,196,104,.7);box-shadow:inset 0 0 0 1px #000,0 0 6px rgba(217,180,90,.25)}
+#app>#itens .slot.alvo{border-color:#6fe27f;box-shadow:0 0 8px #6fe27faa}#app>#itens .slot.alvo.ruim{border-color:#e0574a;box-shadow:0 0 8px #e0574aaa}
+#app>#itens #runas{grid-area:r;align-self:end;flex-direction:column;gap:4px;margin:0;padding:4px 3px;background:rgba(6,7,11,.55);border:1px solid rgba(201,166,74,.22);border-radius:6px}
+#app>#itens #runas .rn-t{display:none}
+#app>#itens #runas .rn-s{width:30px;height:30px}#app>#itens #runas .rn-s img{width:24px;height:24px}
+/* ---- direita: próxima onda (cartão) e jogadores, colados à direita do tabuleiro ---- */
+#dir{left:var(--dir-x,auto);right:auto;top:calc(var(--hh) + 10px);bottom:calc(var(--bh) + 10px);width:var(--rw);display:flex;flex-direction:column;overflow:auto;overflow-x:hidden;transition:bottom .22s ease}
+#dir>#faixa-rodada{position:static;flex:none;height:auto;min-height:0;width:auto;max-width:none;margin:0 0 10px;padding:6px 8px;display:flex;flex-wrap:wrap;align-items:center;gap:5px 6px;white-space:normal;
+ background:linear-gradient(180deg,rgba(16,18,28,.86),rgba(8,10,16,.74));border:1px solid rgba(201,166,74,.28);border-radius:7px;box-shadow:0 3px 12px #0009}
+#dir>#faixa-rodada:empty{display:none}
+#dir>#faixa-rodada .rt{flex:0 0 100%;font-size:9px}
+#dir>#faixa-rodada .sep{display:none}
+#dir>#faixa-rodada :is(.mons,.drops,.trs){flex-wrap:wrap;row-gap:3px}
+#dir>#faixa-rodada .mon{width:30px;height:30px}
+#dir>#faixa-rodada .drops{flex:0 0 100%;gap:2px}
+#dir>#faixa-rodada .drops img{width:22px;height:22px}
+#dir>#faixa-rodada .drops .ic,#dir>#faixa-rodada .drops .ic img{width:22px;height:22px}
+#dir>#faixa-rodada .bau{width:24px;height:24px}
+#dir>#faixa-rodada .info{font-size:10px;line-height:1.3}
+#dir>#faixa-rodada .trs{flex:0 0 100%}
+#dir>#faixa-rodada .ti{--s:24px}
+#dir>#espia-analise{flex:none;padding:8px;border-radius:6px;background:rgba(8,10,16,.82);border-top:1px solid #4d5364}
+#app.menu #dir>#faixa-rodada{visibility:hidden}
+/* linhas de jogador estilo TFT: retrato redondo com o nível, nome, ouro/juros, vida grande à direita */
+#jogadores{gap:3px}
+#jogadores .jg{grid-template-columns:32px minmax(0,1fr) 34px;gap:6px;min-height:38px;padding:2px 4px 2px 3px;margin:0;border:1px solid transparent;border-radius:20px 6px 6px 20px;
+ background:linear-gradient(90deg,rgba(8,10,16,.84),rgba(8,10,16,.62) 70%,rgba(8,10,16,.4));box-shadow:0 1px 4px #0008}
+#jogadores .jg:hover{background:linear-gradient(90deg,rgba(40,34,18,.92),rgba(14,16,24,.72));border-color:rgba(201,166,74,.45)}
+#jogadores .jg .av{width:32px;height:32px;border-radius:50%;border:2px solid #5a5240;box-shadow:0 0 0 1px #000}
+#jogadores .jg .av .lv{right:auto;left:50%;bottom:-1px;transform:translateX(-50%);border-radius:5px 5px 0 0;font-size:8.5px;padding:0 4px;line-height:10px}
+#jogadores .jg .pos{left:-2px;top:-3px;border-radius:50%;width:13px;height:13px;padding:0;text-align:center;line-height:13px;font-size:8px;border:1px solid #6b5a2e}
+#jogadores .jg .inf{position:static;min-width:0}
+#jogadores .jg .nm{font-size:11px;line-height:13px}
+#jogadores .jg .hpb{height:3px;margin-top:3px;border:0;background:#000a;border-radius:2px}
+#jogadores .jg .hpn{display:none}
+#jogadores .jg .rod{margin-top:2px;height:12px;justify-content:flex-end}
+#jogadores .jg .rod .hs{display:none!important}
+#jogadores .jg .rod .seq{margin-left:0}
+#jogadores .jg .jgo{position:absolute;left:43px;top:21px;margin:0;z-index:1}
+#jogadores .jg .nm em:not(:empty)+.jgo{margin-left:0}
+#jogadores .jg .hpg{display:block;grid-column:3;grid-row:1;justify-self:end;align-self:center;font:700 17px/1 Cinzel,serif;color:#fff1c4;text-shadow:0 1px 0 #000,0 0 6px #000;min-width:28px;text-align:right}
+#jogadores .jg .hpg.baixa{color:#ff7b6b}
+#jogadores .jg .olho{right:auto;left:22px;bottom:1px}
+#jogadores .jg.eu{border-color:rgba(91,143,214,.6);background:linear-gradient(90deg,rgba(20,35,61,.92),rgba(8,10,16,.66) 75%);box-shadow:inset 3px 0 0 #5b8fd6,0 1px 4px #0008}
+#jogadores .jg.eu .av{border-color:#5b8fd6}
+#jogadores .jg.opo{border-color:rgba(224,87,74,.7);background:linear-gradient(90deg,rgba(70,22,18,.92),rgba(8,10,16,.66) 75%);box-shadow:0 0 10px rgba(224,87,74,.3)}
+#jogadores .jg.opo .av{border-color:#e0574a}
+#jogadores .jg.espiando{border-color:#79b8ff;box-shadow:0 0 0 1px #79b8ff55,0 0 10px #79b8ff44}
+#jogadores .jg.morto{opacity:.42}
+/* ---- botões e painéis presos ao núcleo do tabuleiro ---- */
+#bt-meter{right:calc(var(--mx,0px) + 6px)}
+#meter{right:calc(var(--mx,0px) + 6px);z-index:9}
+#app.meter-livre #meter.fora{left:auto;right:10px;top:4px;width:222px!important;max-height:calc(100% - 12px)}
+#app:not(.meter-livre) #meter.fora{left:auto;right:calc(var(--mx,0px) + 6px);top:34px;width:min(290px,70%)!important;max-height:calc(100% - 44px)}
+#espia{left:calc(var(--mx,0px) + 6px)}
+#emotes{left:calc(var(--mx,0px) + 4px)}
+/* ---- caldeirões de juros (hudCaldeiroes): os seus embaixo à direita do tabuleiro, os do adversário em cima à esquerda ---- */
+.cald{position:absolute;z-index:7;display:flex;flex-direction:column-reverse;align-items:center;gap:0;transform:translateY(-100%);line-height:normal;cursor:help;filter:drop-shadow(0 2px 2px #000c)}
+.cald.op{flex-direction:column;transform:translateX(-100%)}
+.cald[hidden]{display:none}
+#app.menu .cald{display:none}
+.cald .cg{display:flex;align-items:center;gap:2px;margin:2px 0;padding:1px 5px 1px 3px;border-radius:9px;background:rgba(7,8,12,.82);border:1px solid rgba(201,166,74,.5);font:700 11px/1.1 Cinzel,serif;color:#ffe9a0;text-shadow:0 1px 0 #000;white-space:nowrap}
+.cald .cg img{width:13px;height:13px}
+.cald .cg i{font:700 9px Verdana,sans-serif;font-style:normal;color:#8fe6a0;margin-left:1px}
+.cald .cal{display:block;width:var(--cz,26px);height:calc(var(--cz,26px) * .88);margin:-1px 0}
+.cald .cal svg{display:block;width:100%;height:100%;overflow:visible}
+.cald .cal .co{fill:#34343e;stroke:#0a0a0e;stroke-width:1.1}
+.cald .cal .bo{fill:none;stroke:#8a8a98;stroke-width:1.3}
+.cald .cal .as{fill:none;stroke:#5c5c68;stroke-width:1.5}
+.cald .cal .pe{fill:none;stroke:#18181d;stroke-width:1.7;stroke-linecap:round}
+.cald .cal .br{fill:none;stroke:#ffffff26;stroke-width:1.1;stroke-linecap:round}
+.cald .cal .ou{fill:#f2c94c;stroke:#9a6a10;stroke-width:.55}
+.cald .cal .ou .bri{fill:#fff8d0;stroke:none}
+.cald .cal:not(.on){opacity:.38}
+.cald .cal:not(.on) .ou{display:none}
+.cald .cal.on{filter:drop-shadow(0 0 3px rgba(240,198,74,.55))}
+.cald .cal.on .co{fill:#33302a}
+}
 /* ===== TFT2 HUD: fim ===== */
 /* separador2 HUD */
 /* separador2 HUD b */
@@ -3370,7 +3475,7 @@ function retratosPend(r){r=r||document;
 const OLHO='<svg class="olho" viewBox="0 0 14 10"><path d="M1 5C3 1.5 11 1.5 13 5 11 8.5 3 8.5 1 5z" fill="none" stroke="#79b8ff" stroke-width="1.2"/><circle cx="7" cy="5" r="1.8" fill="#79b8ff"/></svg>';
 function hudJogadores(){if(!G)return;const cont=$('jogadores'),opo=oponenteLocal();
   if(cont._g!==G||cont.children.length!==G.jog.length){cont._g=G;
-    cont.innerHTML=G.jog.map(q=>`<div class="jg" data-id="${q.id}" data-tip="jog:${q.id}"><span class="pos"></span><div class="av"><canvas width="40" height="40"></canvas><span class="lv"></span></div><div class="inf"><div class="nm"><img src="${ICO.pvp}" alt="" style="display:none"><span class="n"></span><em></em><span class="jgo" hidden><img src="${ICO.ouro}" alt=""><b></b><i class="jr"></i><span class="jp"></span></span></div><div class="hpb"><i class="ch" style="width:100%"></i><i class="h" style="width:100%"></i><span class="hpn"></span></div><div class="rod"><span class="hs"></span><span class="bnl"></span><span class="seq"></span></div></div>${OLHO}</div>`).join('');}
+    cont.innerHTML=G.jog.map(q=>`<div class="jg" data-id="${q.id}" data-tip="jog:${q.id}"><span class="pos"></span><div class="av"><canvas width="40" height="40"></canvas><span class="lv"></span></div><div class="inf"><div class="nm"><img src="${ICO.pvp}" alt="" style="display:none"><span class="n"></span><em></em><span class="jgo" hidden><img src="${ICO.ouro}" alt=""><b></b><i class="jr"></i><span class="jp"></span></span></div><div class="hpb"><i class="ch" style="width:100%"></i><i class="h" style="width:100%"></i><span class="hpn"></span></div><div class="rod"><span class="hs"></span><span class="bnl"></span><span class="seq"></span></div></div><b class="hpg"></b>${OLHO}</div>`).join('');}
   const ord=G.jog.slice().sort((a,b)=>(b.vivo-a.vivo)||(a.vivo?b.hp-a.hp:a.colocacao-b.colocacao));
   ord.forEach((q,i)=>{const el=cont.children[q.id];if(!el)return;const hum=(q.humano||q.hum)&&!q.local;
     el.style.order=i;el.className='jg'+(q.local?' eu':'')+(hum?' hum':'')+(opo===q?' opo':'')+(q.vivo?'':' morto')+(UI.espiar===q.id?' espiando':'');
@@ -3379,7 +3484,7 @@ function hudJogadores(){if(!G)return;const cont=$('jogadores'),opo=oponenteLocal
     el.querySelector('.lv').textContent=q.nivel;
     el.querySelector('.n').textContent=q.nome+(q.local&&q.nome!=='Você'?' (você)':'');el.querySelector('.nm img').style.display=opo===q?'':'none';
     el.querySelector('.nm em').textContent=hum&&q.pronto&&UI.fase==='prep'&&q.vivo?'pronto':'';
-    const hpv=(UI.hpAtr&&UI.hpAtr.id===q.id)?UI.hpAtr.hp:q.hp,pc=Math.max(0,Math.min(100,hpv)),b=el.querySelector('.h');b.style.width=pc+'%';b.style.backgroundColor=corVida(pc/100);el.querySelector('.ch').style.width=pc+'%';el.querySelector('.hpn').textContent=Math.max(0,hpv);
+    const hpv=(UI.hpAtr&&UI.hpAtr.id===q.id)?UI.hpAtr.hp:q.hp,pc=Math.max(0,Math.min(100,hpv)),b=el.querySelector('.h');b.style.width=pc+'%';b.style.backgroundColor=corVida(pc/100);el.querySelector('.ch').style.width=pc+'%';el.querySelector('.hpn').textContent=Math.max(0,hpv);{const hg=el.querySelector('.hpg'),hv=Math.max(0,hpv);if(hg.textContent!==''+hv)hg.textContent=hv;hg.classList.toggle('baixa',pc<30);}
     const hs=(q.hist||[]).slice(-5),pad=5-hs.length,hh=Array.from({length:5},(_,k)=>k<pad?'<b></b>':`<b class="${hs[k-pad]}"></b>`).join('');
     const hsEl=el.querySelector('.hs');if(hsEl._h!==hh){hsEl._h=hh;hsEl.innerHTML=hh;hsEl.style.display='flex';hsEl.style.gap='3px';}
     {const og=el.querySelector('.jgo'),vis=q.vivo&&ouroConhecido(q);og.hidden=!vis;   // ouro e juros (estilo TFT): mesma regra da renda (jurosDe)
@@ -3488,46 +3593,70 @@ function forjarUI(){const p=UI.jog;if(!p||UI.estado!=='jogo')return;const par=ac
   usarPlano({tipo:'forjar',a:par.c,b:par.c,r:codForjar(par.c,par.c),cmd:{t:'forjar',a:par.a,ca:par.c,b:par.b,cb:par.c}},{slot:par.a,slot2:par.b});}
 function hudItens(){const p=UI.jog;if(!p)return;let h='';
   for(let i=0;i<MAX_ITENS;i++){const c=p.itens[i];h+=`<div class="slot ${c!==undefined?'cheio':''}" data-s="${i}">${c!==undefined?htmlItem(c,{slot:i}):''}</div>`;}
-  $('grade-itens').innerHTML=h;const f=$('bt-forjar');if(f)f.style.display=acharParForja(p)?'':'none';if($('receita-lista'))atualizarReceitas();hudRunas();menuItensBadge();}
-/* ---------- inventário em menu suspenso (desktop) ----------
-   No desktop o painel #itens sai do rodapé e vira um popover no canto inferior esquerdo do tabuleiro, aberto pelo botão "Itens" (#bt-itens-menu, com contador
-   de itens soltos + runas guardadas, que pisca quando chega algo novo). Forjar/Receitas ficam ao lado do botão, sempre à mão. Fecha com Esc, clique fora ou
-   o próprio botão; ao arrastar um item para fora do popover ele fica transparente e deixa o ponteiro passar até as unidades. No celular tudo volta ao #base. */
-const MQ_ITENS='(min-width:901px) and (min-height:541px)';
-const MI={mq:null,barra:null,bt:null,n:-1,t:0};
-const menuItensDesk=()=>!!(MI.mq&&MI.mq.matches);
-const menuItensAberto=()=>$('itens').classList.contains('aberto');
-function menuItensCriar(){if(MI.barra||typeof document==='undefined')return;
-  const b=document.createElement('div');b.id='itens-barra';
-  b.innerHTML=`<button class="bt peq" id="bt-itens-menu" type="button" aria-expanded="false" aria-controls="itens" aria-haspopup="true" title="Inventário de itens"><img src="${ICO.car}" alt=""><span>Itens</span><span class="badge" hidden></span><span class="seta" aria-hidden="true">▲</span></button>`;
-  MI.barra=b;MI.bt=b.firstChild;$('itens').setAttribute('role','group');$('itens').setAttribute('aria-label','Inventário de itens');
-  MI.bt.addEventListener('click',()=>menuItens(!menuItensAberto()));
-  MI.mq=matchMedia(MQ_ITENS);const f=()=>menuItensSinc();if(MI.mq.addEventListener)MI.mq.addEventListener('change',f);else MI.mq.addListener(f);
-  document.addEventListener('keydown',menuItensTecla,true);document.addEventListener('pointerdown',menuItensFora,true);
-  addEventListener('pointermove',menuItensArrasto);addEventListener('pointerup',menuItensSoltou);addEventListener('pointercancel',menuItensSoltou);
-  menuItensSinc();}
-/* desktop: barra + popover dentro de #cvbox; celular: #itens volta ao rodapé (antes da loja) e os botões voltam ao título */
-function menuItensSinc(){if(!MI.barra)return;const it=$('itens'),bts=document.querySelector('#bt-rec').parentNode,box=$('cvbox');
-  if(menuItensDesk()){if(MI.barra.parentNode!==box)box.appendChild(MI.barra);if(it.parentNode!==box)box.appendChild(it);if(bts.parentNode!==MI.barra)MI.barra.appendChild(bts);}
-  else{menuItens(false,true);const base=$('base');if(it.parentNode!==base)base.insertBefore(it,$('loja'));const h3=it.querySelector('h3');if(bts.parentNode!==h3)h3.appendChild(bts);}
-  menuItensBadge();}
-function menuItens(on,mudo){if(!MI.bt)return;const it=$('itens');on=!!on&&menuItensDesk()&&UI.estado==='jogo';
-  it.classList.toggle('aberto',on);it.classList.remove('arrasto','fora');MI.bt.setAttribute('aria-expanded',on?'true':'false');
-  if(on){MI.bt.classList.remove('novo');esconderTip();}
-  else if(mudo!==true&&mudo!=='sem-foco'&&it.contains(document.activeElement))MI.bt.focus();}
-function menuItensBadge(){if(!MI.bt)return;const p=UI.jog,n=p&&UI.estado==='jogo'?p.itens.length+(p.mr||[]).length:0,bg=MI.bt.querySelector('.badge');
-  bg.textContent=n;bg.hidden=!n;MI.bt.setAttribute('aria-label','Itens'+(n?` (${n} no inventário)`:''));
-  if(n>MI.n&&MI.n>=0&&!menuItensAberto()){MI.bt.classList.remove('novo');void MI.bt.offsetWidth;MI.bt.classList.add('novo');clearTimeout(MI.t);MI.t=setTimeout(()=>MI.bt.classList.remove('novo'),2400);}
-  MI.n=n;if(UI.estado!=='jogo'&&menuItensAberto())menuItens(false,true);}
-function menuItensTecla(ev){if(ev.key!=='Escape'||!menuItensAberto()||consultaAtual||UI.alvoRuna!==null||UI.alvoPoder||UI.drag)return;
-  if(ev.target.closest&&ev.target.closest('input,textarea,select'))return;
-  ev.preventDefault();ev.stopImmediatePropagation();menuItens(false,true);MI.bt.focus();}
-function menuItensFora(ev){if(!menuItensAberto()||ev.button>0)return;const t=ev.target;
-  if(!t.closest||t.closest('#itens,#itens-barra,#tela,#tip'))return;menuItens(false,'sem-foco');}
-/* durante o arrasto de um item ou runa do popover: sobre o popover ele fica visível (combinar com outro item); fora dele, quase invisível e sem capturar o ponteiro */
-function menuItensArrasto(ev){const d=UI.drag;if(!d||(d.tipo!=='item'&&d.tipo!=='runa')||!menuItensAberto())return;const it=$('itens'),r=it.getBoundingClientRect();
-  it.classList.add('arrasto');it.classList.toggle('fora',!(ev.clientX>=r.left&&ev.clientX<=r.right&&ev.clientY>=r.top&&ev.clientY<=r.bottom));}
-function menuItensSoltou(){const it=$('itens');if(it)it.classList.remove('arrasto','fora');}
+  $('grade-itens').innerHTML=h;const f=$('bt-forjar');if(f)f.style.display=acharParForja(p)?'':'none';if($('receita-lista'))atualizarReceitas();hudRunas();}
+/* ---------- cena única (desktop, estilo TFT) ----------
+   No desktop a arena é a tela inteira entre o topo fino e a loja: sinergias e itens flutuam colados à esquerda do tabuleiro, a próxima onda e os
+   jogadores à direita, e os caldeirões de juros ficam na borda do tabuleiro. cenaSinc() leva #itens para dentro da cena (filho de #app) e a faixa da
+   próxima onda para o topo da coluna de jogadores; no celular tudo volta ao lugar original (#itens no #base, faixa no #centro).
+   hudCena() mede o núcleo do tabuleiro e grava as posições como variáveis CSS em #app (--esq-x, --dir-x, --itx...). */
+const MQ_CENA='(min-width:901px) and (min-height:541px)';
+const CENA={mq:null,ro:null,raf:0,calK:'',cal:null};
+const cenaLarga=()=>!!(CENA.mq&&CENA.mq.matches);
+function cenaCriar(){if(CENA.mq||typeof document==='undefined')return;
+  $('itens').setAttribute('role','group');$('itens').setAttribute('aria-label','Inventário de itens');
+  CENA.mq=matchMedia(MQ_CENA);const f=()=>cenaSinc();if(CENA.mq.addEventListener)CENA.mq.addEventListener('change',f);else CENA.mq.addListener(f);
+  const agenda=()=>{cancelAnimationFrame(CENA.raf);CENA.raf=requestAnimationFrame(hudCena);};
+  if(typeof ResizeObserver!=='undefined'){CENA.ro=new ResizeObserver(agenda);['cv','cvbox','itens','app'].forEach(id=>$(id)&&CENA.ro.observe($(id)));}
+  addEventListener('resize',agenda);
+  cenaSinc();}
+function cenaSinc(){if(!CENA.mq)return;const app=$('app'),it=$('itens'),fx=$('faixa-rodada'),dir=$('dir');
+  if(cenaLarga()){if(it.parentNode!==app)app.insertBefore(it,$('base'));if(fx.parentNode!==dir)dir.insertBefore(fx,dir.firstChild);}
+  else{const base=$('base');if(it.parentNode!==base)base.insertBefore(it,$('loja'));const ctr=$('centro');if(fx.parentNode!==ctr)ctr.insertBefore(fx,ctr.firstChild);
+    ['--esq-x','--dir-x','--itx','--st','--sb','--ith'].forEach(v=>app.style.removeProperty(v));}
+  hudCena();CENA.calK='';hudCaldeiroes();}
+/* retângulo do tabuleiro em px CSS relativos ao #cvw: usa o ajudante do motor hexagonal quando existe; senão as constantes da grade quadrada */
+function rectTab(){
+  if(typeof rectTabuleiro==='function'){try{const r=rectTabuleiro();if(r&&r.w>0)return r;}catch(e){}}
+  const k=cv&&CW?cv.getBoundingClientRect().width/CW||ZD:ZD;return {x:BX*k,y:BY*k,w:NC*TS*k,h:NR*TS*k};}
+/* núcleo (tabuleiro + margens dos avatares) em px relativos ao #app: --mx (de ajustarCanvas) é a margem do núcleo dentro do canvas */
+function nucleoCena(){const app=$('app'),w=$('cvw'),ra=app.getBoundingClientRect(),rw=w.getBoundingClientRect();
+  const mx=parseFloat(getComputedStyle($('centro')).getPropertyValue('--mx'))||0,rt=rectTab();
+  let l=rw.left-ra.left+mx,r=rw.right-ra.left-mx;
+  l=Math.min(l,rw.left-ra.left+rt.x);r=Math.max(r,rw.left-ra.left+rt.x+rt.w);     // o tabuleiro nunca fica fora do núcleo
+  return {l,r,ra};}
+function hudCena(){const app=$('app');if(!app||!cenaLarga()||!$('cvw'))return;
+  const n=nucleoCena(),W=n.ra.width,box=$('cvbox').getBoundingClientRect(),st=box.top-n.ra.top,sb=box.bottom-n.ra.top;
+  const esq=$('esq'),dir=$('dir'),it=$('itens'),lw=esq.offsetWidth||200,rw=dir.offsetWidth||210,iw=it.offsetWidth||140,G2=12;
+  const px=v=>Math.round(v)+'px';
+  app.style.setProperty('--st',px(st));app.style.setProperty('--sb',px(n.ra.height-sb));
+  app.style.setProperty('--esq-x',px(Math.max(8,n.l-G2-lw)));
+  app.style.setProperty('--itx',px(Math.max(8,n.l-G2-iw)));
+  app.style.setProperty('--ith',px(it.offsetHeight||0));
+  const dx=Math.min(W-8-rw,n.r+G2);app.style.setProperty('--dir-x',px(dx));
+  app.classList.toggle('meter-livre',W-(dx+rw)-18>=222);}   // placar ao lado dos jogadores quando sobra espaço; senão sobre o canto do tabuleiro
+
+/* ---------- caldeirões de juros (estilo TFT: pilhas de ouro ao lado do tabuleiro) ----------
+   Para o tabuleiro em vista: o seu (ou o do jogador espiado) embaixo, à direita do tabuleiro; o do adversário em cima, à esquerda (lados opostos aos avatares).
+   Um caldeirão cheio a cada 10 de ouro (= juros, jurosDe/jurosMax: 5, ou 7 com Juros Compostos); os vazios até o teto ficam apagados. Sem ouro conhecido: escondido. */
+const CALD_SVG='<svg viewBox="0 0 24 24" aria-hidden="true"><path class="as" d="M3.2 10.4c-2.2.3-2.3 3.4.2 3.6M20.8 10.4c2.2.3 2.3 3.4-.2 3.6"/>'+
+  '<path class="pe" d="M6.5 18.5l-1.4 3.2M17.5 18.5l1.4 3.2M12 20v2.6"/><path class="co" d="M3.4 9.6h17.2c0 6.6-3.6 10.6-8.6 10.6S3.4 16.2 3.4 9.6z"/>'+
+  '<path class="br" d="M5.6 12.4c.5 3 2.3 5.2 4.6 6"/><g class="ou"><ellipse cx="12" cy="9.4" rx="7.6" ry="2"/><circle cx="8.6" cy="8" r="2.3"/><circle cx="12.6" cy="7" r="2.6"/><circle cx="15.8" cy="8.3" r="2"/>'+
+  '<circle class="bri" cx="12" cy="6.2" r=".8"/></g><ellipse class="bo" cx="12" cy="9.6" rx="8.9" ry="2.2"/></svg>';
+function hudCaldeiroes(){const w=$('cvw');if(!w)return;
+  if(!CENA.cal){CENA.cal=['eu','op'].map(k=>{const d=document.createElement('div');d.className='cald '+k;d.hidden=true;w.appendChild(d);return d;});}
+  const vis=cenaLarga()&&UI.estado==='jogo'&&!!G&&!!UI.jog&&!UI.demo;
+  let baixo=null,cima=null;
+  if(vis){const esp=UI.espiar!=null;baixo=esp?G.jog[UI.espiar]:UI.jog;cima=esp||(UI.fase==='resultado'&&!UI.C)?null:oponenteLocal();}   // mesmos lados dos avatares do canvas
+  const rt=vis?rectTab():{x:0,y:0,w:0,h:0},kq=q=>q&&q.vivo&&ouroConhecido(q)?q.id+':'+q.ouro+':'+jurosMax(q):'-';
+  const k=[vis,kq(baixo),kq(cima),Math.round(rt.x),Math.round(rt.y),Math.round(rt.w),Math.round(rt.h)].join('|');if(k===CENA.calK)return;CENA.calK=k;
+  [[CENA.cal[0],baixo],[CENA.cal[1],cima]].forEach(([el,q],i)=>{
+    if(!vis||!q||!q.vivo||!ouroConhecido(q)){el.hidden=true;el.innerHTML='';return;}
+    const j=jurosDe(q),jm=jurosMax(q);el.hidden=false;el.dataset.id=q.id;el.dataset.ouro=q.ouro;el.dataset.juros=j;
+    el.dataset.tip=q===UI.jog?'ouro:x':'jog:'+q.id;el.setAttribute('aria-label',`${q.nome}: ${q.ouro} de ouro, +${j} de juros`);
+    el.innerHTML=`<span class="cg"><img src="${ICO.ouro}" alt=""><b>${q.ouro}</b><i>+${j}</i></span>`+Array.from({length:jm},(_,n)=>`<span class="cal${n<j?' on':''}">${CALD_SVG}</span>`).join('');
+    el.style.setProperty('--cz',Math.round(Math.max(22,Math.min(34,rt.h/16)))+'px');
+    if(i===0){el.style.left=Math.round(rt.x+rt.w+6)+'px';el.style.top=Math.round(rt.y+rt.h)+'px';}
+    else{el.style.left=Math.round(rt.x-6)+'px';el.style.top=Math.round(rt.y)+'px';}});}
 /* ---------- runas: ícones em pixel art (pedra cinza + glifo colorido, 32x32, desenhados em canvas no início; nenhum arquivo) ---------- */
 const GLIFOS={1:['...###...','...###...','...###...','#########','#########','#########','...###...','...###...','...###...'],
   2:['.#######.','#########','##.###.##','##.###.##','#########','.#######.','..#.#.#..','..#####..','.........'],
@@ -3641,7 +3770,8 @@ function atualizarSujos(){const s=UI.sujo;if(!G)return;
   if(s.topo){hudTopo();s.topo=false;}if(s.sin){hudSinergias();s.sin=false;}if(s.jog){hudJogadores();s.jog=false;}
   if(s.loja){hudLoja();s.loja=false;}if(s.itens){hudItens();s.itens=false;}if(s.btn){hudBotoes();s.btn=false;}if(s.strip){hudStrip();s.strip=false;}
   if(UI.prevSujo)reconstruirPrev();
-  if(UI.sujoRet){UI.sujoRet=false;retratosPend();}}
+  if(UI.sujoRet){UI.sujoRet=false;retratosPend();}
+  hudCaldeiroes();}
 function reconstruirPrev(){UI.prevSujo=false;if(!G||UI.C||!UI.jog){UI.prev=null;return;}
   if(UI.espiar!==null&&G.jog[UI.espiar]){UI.prev=criarCombate(espDeJog(G.jog[UI.espiar],0),{un:[]},{semSalto:true,seed:1});UI.prev.un.forEach(u=>{u.vivo=true;});hudAnaliseEspia();return;}   // modo espiar: tabuleiro de outro jogador, só leitura
   const p=UI.jog,ser=G.opoEq&&G.opoEq[p.id];
@@ -4611,7 +4741,7 @@ function iniciar(){fazIconesRuna();cv=$('cv');cx=cv.getContext('2d');ajustarCanv
   lerCfg();ligarCfg();addEventListener('pointerdown',somIniciar,{once:true});addEventListener('keydown',somIniciar,{once:true});
   $('jogadores').addEventListener('click',e=>{const r=e.target.closest('.jg');if(r){espiarJog(+r.dataset.id);if(celularEmPe())$('app').classList.remove('ver-jog');}});
   $('runas').addEventListener('click',e=>{const sl=e.target.closest('[data-s]');if(sl)runaClique(+sl.dataset.s);});
-  $('runas').addEventListener('pointerdown',pointerDownRuna);menuItensCriar();
+  $('runas').addEventListener('pointerdown',pointerDownRuna);cenaCriar();
   $('runarm').addEventListener('click',e=>{const sl=e.target.closest('[data-a]');if(sl&&UI.estado==='jogo'&&!UI.pausado&&!UI.espectador)desarmarUI(+sl.dataset.a);});
   $('bencao').addEventListener('click',e=>{const c=e.target.closest('.bn-carta');if(c){bencaoEscolher(+c.dataset.i);return;}if(e.target.closest('#bn-rr'))bencaoRr();else if(e.target.closest('#bn-ver'))bencaoVer(true);});
   $('bn-pill').onclick=()=>bencaoVer(false);

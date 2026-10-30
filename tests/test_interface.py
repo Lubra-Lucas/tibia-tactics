@@ -110,6 +110,7 @@ class InterfaceTests(unittest.TestCase):
         box = self.page.locator('#cv').bounding_box()
         self.assertGreaterEqual(box['x'], 0, 'Tabuleiro cortado à esquerda')
         self.assertLessEqual(box['x']+box['width'], 391, 'Tabuleiro cortado à direita')
+        self.page.locator('#bt-t-itens').click()   # no celular em pé, Receitas fica no painel de itens (botão Itens do topo)
         self.page.locator('#bt-rec').click()
         self.assertEqual(self.page.get_by_role('searchbox', name='Buscar receita').count(), 1)
         self.assertLessEqual(self.page.evaluate('document.documentElement.scrollWidth'), 390)
