@@ -110,6 +110,7 @@ class InterfaceTests(unittest.TestCase):
         box = self.page.locator('#cv').bounding_box()
         self.assertGreaterEqual(box['x'], 0, 'Tabuleiro cortado à esquerda')
         self.assertLessEqual(box['x']+box['width'], 391, 'Tabuleiro cortado à direita')
+        self.page.locator('#bt-t-itens').click()   # no celular em pé, Receitas fica no painel de itens (botão Itens do topo)
         self.page.locator('#bt-rec').click()
         self.assertEqual(self.page.get_by_role('searchbox', name='Buscar receita').count(), 1)
         self.assertLessEqual(self.page.evaluate('document.documentElement.scrollWidth'), 390)
@@ -211,7 +212,7 @@ class InterfaceTests(unittest.TestCase):
         self.page.locator('#cartas .cslot[data-i="0"] .art').click()
         before = self.page.evaluate('JSON.stringify([UI.jog.ouro, UI.jog.banco])')
         box = self.page.locator('#cv').bounding_box()
-        point = self.page.evaluate('({x:(BEN_X+16)*Z,y:(BEN_Y+16)*Z})')
+        point = self.page.evaluate("ptCv({onde:'banco',i:0})")
         self.page.mouse.click(box['x']+point['x'], box['y']+point['y'])
         self.assertEqual(self.page.get_by_role('dialog').count(), 1)
         self.assertIn('Minotaur Guard', self.page.get_by_role('dialog').inner_text())
@@ -221,7 +222,7 @@ class InterfaceTests(unittest.TestCase):
         self.page.evaluate("UI.jog.loja=['minotaur_guard',null,null,null,null]; hudLoja()")
         self.page.locator('#cartas .cslot[data-i="0"] .art').click()
         box = self.page.locator('#cv').bounding_box()
-        points = self.page.evaluate('({bank:{x:(BEN_X+16)*Z,y:(BEN_Y+16)*Z},board:{x:(BX+16)*Z,y:(BY+4*TS+16)*Z}})')
+        points = self.page.evaluate("({bank:ptCv({onde:'banco',i:0}),board:ptCv({onde:'tab',x:0,y:0})})")
         self.page.mouse.move(box['x']+points['bank']['x'],box['y']+points['bank']['y'])
         self.page.mouse.down()
         self.page.mouse.move(box['x']+points['board']['x'],box['y']+points['board']['y'],steps=8)
@@ -248,12 +249,12 @@ class InterfaceTests(unittest.TestCase):
         guest_id = guest.evaluate('UI.jog.id')
         host.evaluate("""() => {
             G.jog.filter(p=>p.humano).forEach(p=>{
-                p.nivel=9;p.tab=Array.from({length:4},()=>Array(8).fill(null));
-                NOVAS_CARTAS.forEach((id,x)=>p.tab[0][x]=novoInst(G,id));p.pronto=false;
+                p.nivel=9;p.tab=Array.from({length:4},()=>Array(NC).fill(null));
+                NOVAS_CARTAS.forEach((id,i)=>p.tab[i<NC?0:1][i%NC]=novoInst(G,id));p.pronto=false;   // 7 colunas: a 8ª carta vai para a 2ª linha
             });
             paraHumanos(cl=>enviarSnapCl(cl,'snap',{force:true}));posAcao();
         }""")
-        guest.wait_for_function("contarTab(UI.jog)===8 && UI.jog.tab[0][7]?.id==='grim_reaper'")
+        guest.wait_for_function("contarTab(UI.jog)===8 && UI.jog.tab[1][0]?.id==='grim_reaper'")
         guest.locator('#bt-pronto').click()
         host.locator('#bt-pronto').click()
         guest.wait_for_function("UI.fase==='combate' && UI.C")
@@ -267,8 +268,9 @@ class InterfaceTests(unittest.TestCase):
         self.page.wait_for_function("document.querySelector('#sim').textContent.startsWith('partidas ')", timeout=60000)
         text = self.page.locator('#sim').inner_text()
         self.assertIn('partidas 3 | erros 0 | travas 0', text)
-        # Canonical seed with the 53-card roster (Etapa 1 had 400 fights).
-        self.assertIn('lutas PvP/PvE 388', text)
+        # Canonical seed with the 53-card roster on the 7x8 hex board (square 8x8 board: 388/403; Etapa 1 had 400 fights;
+        # hex board before the TFT walking pace / backline assassin leap / bot formation: 416).
+        self.assertIn('lutas PvP/PvE 396', text)
 
 if __name__ == '__main__':
     unittest.main()
