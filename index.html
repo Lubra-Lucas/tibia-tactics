@@ -1150,7 +1150,150 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
 /* separador2 HEX */
 /* separador2 HEX b */
 /* ===== TFT2 LOJA: inicio ===== */
-/* (reservado) */
+/* loja estilo TFT: 5 encaixes iguais lado a lado (sem leque, sem sobreposição). Cada encaixe é um quadrado escuro emoldurado;
+   a carta preenche o encaixe: arte grande, moldura na cor do custo, papel/elementos no topo, traços empilhados sobre a arte
+   e a placa "nome · custo" embaixo. :is(#cartas,.voo) também vale para a cópia que voa até o banco. */
+#loja{display:flex;flex-direction:column;padding:6px 8px}
+#cartas{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:clamp(5px,.5vw,10px);flex:1;min-height:0;padding:0}
+#cartas .cslot{min-width:0;min-height:0;position:relative;display:flex;flex:none;border-radius:6px;cursor:pointer;
+ background:radial-gradient(ellipse at 50% 40%,#151722,#07080c 80%);box-shadow:inset 0 0 0 1px #000,inset 0 0 0 2px #2e2818,inset 0 6px 14px #000d,0 1px 0 #ffffff0d}
+#cartas .cslot.vazio{cursor:default}
+/* encaixe vazio (carta comprada / esgotada): moldura escura com um losango apagado no centro */
+#cartas .cslot.vazio::after{content:'';position:absolute;left:50%;top:50%;width:18px;height:18px;margin:-9px 0 0 -9px;transform:rotate(45deg);border:1px solid #3a3322;background:#0b0c12;box-shadow:0 0 0 4px #0b0c12,0 0 0 5px #221e14;opacity:.8}
+#cartas .cslot.vazio .carta.vend{opacity:0}
+#cartas .cslot.saiu{animation:lj-saiu .5s ease-out}
+@keyframes lj-saiu{from{box-shadow:inset 0 0 0 2px #ffe08a,inset 0 0 26px #ffd24a99,0 0 14px #ffd24a88}to{box-shadow:inset 0 0 0 1px #000,inset 0 0 0 2px #2e2818,inset 0 6px 14px #000d,0 1px 0 #ffffff0d}}
+:is(#cartas,.voo) .carta{--r:0deg;padding:3px;border-radius:6px;transform:none;transform-origin:50% 100%;
+ background:linear-gradient(165deg,color-mix(in srgb,var(--tc) 55%,#fff) 0%,var(--tc) 18%,color-mix(in srgb,var(--tc) 55%,#000) 62%,color-mix(in srgb,var(--tc) 85%,#fff) 100%);
+ box-shadow:0 0 0 1px #000,0 3px 7px #000b,inset 0 1px 0 #fff8,inset 0 -1px 0 #0009;transition:transform .16s cubic-bezier(.2,.8,.3,1.2),filter .16s,box-shadow .16s}
+:is(#cartas,.voo) .carta::before{display:none}
+:is(#cartas,.voo) .carta:not(.runa) .cin,:is(#cartas,.voo) .carta .cin{border-radius:4px;box-shadow:inset 0 0 0 1px #000,0 0 0 1px #0008}
+/* arte */
+:is(#cartas,.voo) .carta .art{flex:1;min-height:0;align-items:flex-end;justify-content:center;border-radius:4px 4px 0 0}
+:is(#cartas,.voo) .carta .art::after{background:radial-gradient(ellipse at 50% 72%,transparent 38%,#000a 100%),linear-gradient(#000a,transparent 30%,transparent 62%,#000c)}
+:is(#cartas,.voo) .carta .art canvas{height:min(100%,138px);width:auto;max-width:100%;image-rendering:pixelated;transform:translateY(5%)}
+/* topo: tecla, papel e elementos (o "i" fica no canto direito) */
+:is(#cartas,.voo) .carta .tecla{left:4px;top:4px;width:14px;height:14px;line-height:13px;font-size:8.5px;background:#000a;border-color:#ffffff26;color:#d8d0b4}
+:is(#cartas,.voo) .carta .identidade{position:absolute;left:21px;right:27px;top:3px;z-index:2;min-height:0;padding:0;background:none;border:0;gap:4px}
+:is(#cartas,.voo) .carta .papel-badge{font:700 10px Verdana,sans-serif;gap:3px;color:#f4ead0;text-shadow:0 1px 1px #000,0 0 3px #000;min-width:0;overflow:hidden}
+:is(#cartas,.voo) .carta .papel-badge svg{width:12px;height:12px}
+:is(#cartas,.voo) .carta .elementos-mini{gap:3px;font-size:13px;text-shadow:0 1px 1px #000,0 0 3px #000}
+/* traços (origem e classe) empilhados no canto inferior esquerdo da arte, com o nome ao lado */
+:is(#cartas,.voo) .carta .pie{position:absolute;left:3px;bottom:3px;z-index:2;height:auto;flex-direction:column;align-items:flex-start;gap:2px;padding:0;background:none;border:0}
+:is(#cartas,.voo) .carta .trl{display:flex;align-items:center;gap:4px;padding:0 6px 0 0;border-radius:12px;background:linear-gradient(90deg,#000b,#0006 70%,transparent);max-width:100%}
+:is(#cartas,.voo) .carta .trl em{font:700 9.5px Verdana,sans-serif;font-style:normal;color:#e9e1c6;text-shadow:0 1px 1px #000;white-space:nowrap}
+:is(#cartas,.voo) .carta .pie .tb{--s:20px}
+:is(#cartas,.voo) .carta .pie .tb img{width:15px;height:15px;margin:-7.5px 0 0 -7.5px;image-rendering:auto}
+:is(#cartas,.voo) .carta .pie .tb .ar i{inset:2px}
+:is(#cartas,.voo) .carta .copias{position:absolute;right:4px;bottom:3px;z-index:2;margin:0;padding:1px 5px;border-radius:8px;background:#0a1a2ccc;border:1px solid #3d6fa0;font:700 9px Verdana;color:#a9d6ff}
+:is(#cartas,.voo) .carta .gelo-m{left:4px;top:21px}
+/* placa de baixo: nome à esquerda, custo (moeda + número) à direita, tingida pela cor do custo */
+:is(#cartas,.voo) .carta .cn,:is(#cartas,.voo) .carta:not(.runa) .cn{order:9;height:clamp(20px,2.4vh,26px);justify-content:space-between;gap:4px;padding:0 6px 0 7px;border:0;border-top:1px solid color-mix(in srgb,var(--tc) 80%,#000);
+ background:linear-gradient(180deg,color-mix(in srgb,var(--tc) 38%,#14131b),color-mix(in srgb,var(--tc) 16%,#09090e));box-shadow:inset 0 1px 0 #ffffff1c;border-radius:0 0 4px 4px}
+:is(#cartas,.voo) .carta .cn .nm{min-width:0;overflow:hidden;text-overflow:ellipsis;font:700 clamp(11px,.78vw,14px) Cinzel,'Palatino Linotype',serif;color:#fff6dc;letter-spacing:.02em;text-shadow:0 1px 0 #000}
+:is(#cartas,.voo) .carta .cu,:is(#cartas,.voo) .carta:not(.runa) .cu{position:static;flex:none;padding:0;gap:2px;background:none;border:0;box-shadow:none;border-radius:0;font:700 clamp(12px,.82vw,15px) Cinzel,serif;color:#ffe9a6;text-shadow:0 1px 0 #000}
+:is(#cartas,.voo) .carta .cu img{width:14px;height:14px}
+:is(#cartas,.voo) .carta.pobre .cu{color:#ff8a7a}
+:is(#cartas,.voo) .carta.pobre .cn .nm{color:#c9bfa6}
+/* pertinho de promover: selo ★★ sobre a arte; "tem" mantém a borda dourada fina */
+:is(#cartas,.voo) .carta .selo{left:auto;right:7px;bottom:auto;top:24px}
+:is(#cartas,.voo) .carta.tem::after,:is(#cartas,.voo) .carta.pert::after{border-radius:6px}
+/* runa: pedra, ícone central e efeito em duas linhas acima da placa */
+:is(#cartas,.voo) .carta.runa .art{align-items:center}
+:is(#cartas,.voo) .carta.runa .art .rn-ic{width:min(64px,70%);height:auto;aspect-ratio:1}
+:is(#cartas,.voo) .carta.runa .rn-pie{height:auto;padding:2px 6px 3px}
+:is(#cartas,.voo) .carta.runa .cn{background:linear-gradient(#34343f,#1c1c25);border-top-color:#000}
+/* botão de detalhes "i": pequeno, no canto superior direito da carta */
+#cartas .detalhes-carta{top:6px;right:6px;width:20px;height:20px;font-size:12px;line-height:18px;padding:0;background:#0b0f18e0;border-color:#b39c63;box-shadow:0 1px 2px #000a;opacity:.9;transition:transform .16s cubic-bezier(.2,.8,.3,1.2)}
+#cartas .detalhes-carta:hover{opacity:1;background:#3c321c}
+/* mouse em cima: a carta sobe um pouco, acende e ganha o brilho da cor do custo (sem girar) */
+#cartas .cslot:hover .carta:not(.vend){transform:translateY(-6px);filter:brightness(1.12) saturate(1.05);
+ box-shadow:0 0 0 1px #000,0 0 14px 1px color-mix(in srgb,var(--tc) 75%,transparent),0 10px 16px #000c,inset 0 1px 0 #fff8}
+#cartas .cslot:hover .detalhes-carta{transform:translateY(-6px)}
+#cartas .cslot:active .carta:not(.vend){transform:translateY(-3px) scale(.985);transition-duration:.06s}
+body.arrastando #cartas .cslot:hover .carta:not(.vend),html.reduz #cartas .cslot:hover .carta:not(.vend){transform:none}
+body.arrastando #cartas .cslot:hover .detalhes-carta,html.reduz #cartas .cslot:hover .detalhes-carta{transform:none}
+/* rolar / rodada nova: as cartas que mudaram "viram" (giro em Y com um clarão) em sequência, da esquerda para a direita */
+#cartas .cslot.entra{perspective:700px}
+#cartas .cslot.entra .carta{animation:lj-vira .36s cubic-bezier(.2,.75,.3,1.15) backwards;animation-delay:calc(var(--k,0)*55ms)}
+#cartas .cslot.entra .carta.c5:not(.pert):not(.vend){animation:lj-vira .36s cubic-bezier(.2,.75,.3,1.15) backwards,brilho5 2.8s ease-in-out infinite;animation-delay:calc(var(--k,0)*55ms),0s}
+#cartas .cslot.entra .detalhes-carta{animation:lj-surge .3s ease-out backwards;animation-delay:calc(var(--k,0)*55ms + .2s)}
+@keyframes lj-vira{0%{transform:translateY(10px) rotateY(-85deg);filter:brightness(2.2);opacity:.15}60%{transform:translateY(-2px) rotateY(8deg);filter:brightness(1.35);opacity:1}100%{transform:none;filter:none}}
+@keyframes lj-surge{from{opacity:0}to{opacity:1}}
+/* loja travada: moldura dourada e cadeado no topo da loja */
+#loja.travada{border-color:#e6c25a;box-shadow:inset 0 0 0 1px #05060a,inset 0 0 0 2px #5a4a1c,inset 0 0 18px #e6c25a33,0 0 10px #e6c25a55,0 2px 10px #000a}
+#loja.travada::before{content:'Loja travada';position:absolute;z-index:35;left:50%;top:-10px;transform:translateX(-50%);height:16px;padding:0 9px 0 22px;border-radius:9px;
+ font:700 9px/15px Cinzel,serif;letter-spacing:.14em;text-transform:uppercase;color:#2a1c00;white-space:nowrap;border:1px solid #000;
+ background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M3.5 5V3.6a2.5 2.5 0 0 1 5 0V5' fill='none' stroke='%232a1c00' stroke-width='1.5'/%3E%3Crect x='2' y='5' width='8' height='6' rx='1' fill='%232a1c00'/%3E%3C/svg%3E") 7px 50%/11px 11px no-repeat,linear-gradient(#ffe48a,#c9952a);box-shadow:0 2px 6px #000a}
+#loja.travada #cartas .cslot{box-shadow:inset 0 0 0 1px #000,inset 0 0 0 2px #7a6430,inset 0 6px 14px #000d}
+/* área de venda: cobre a loja inteira por cima das cartas */
+#zona-venda{z-index:40;border-radius:5px}
+/* botões: ícones de Rolar (setas) e XP (seta para cima); Travar aceso em dourado */
+#bt-rolar::before,#bt-xp::before{content:'';width:14px;height:14px;flex:none;margin-right:-2px;background:currentColor;
+ -webkit-mask:var(--ico) center/contain no-repeat;mask:var(--ico) center/contain no-repeat}
+#bt-rolar{--ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M13.5 8A5.5 5.5 0 1 1 11.9 4.1' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M9.2 1.2h4.6v4.6z' fill='%23000'/%3E%3C/svg%3E")}
+#bt-xp{--ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M8 1.5 14 8h-3.6v6.5H5.6V8H2z' fill='%23000'/%3E%3C/svg%3E")}
+#bt-rolar:active:not(:disabled)::before{animation:lj-gira .35s ease-out}
+@keyframes lj-gira{to{transform:rotate(360deg)}}
+#botoes #bt-rolar,#botoes #bt-xp{justify-content:flex-start;background:linear-gradient(#2a3550,#141a2a);border-color:#5d7bb3;color:#e3ecff}
+#botoes #bt-rolar span,#botoes #bt-xp span{margin-left:auto;color:#ffe08a}
+#botoes #bt-trava.on{border-color:#ffe48a;color:#2a1c00;background:linear-gradient(#ffe48a,#c9952a)}
+#botoes #bt-trava.on span{color:#5a3d00}
+@media (min-width:541px) and (min-height:541px){
+ /* Rolar e XP: ícone à esquerda, rótulo em cima e custo · atalho embaixo (cabe "Comprar XP" na coluna estreita) */
+ #botoes #bt-rolar,#botoes #bt-xp{display:grid;grid-template-columns:auto minmax(0,1fr);grid-template-rows:auto auto;column-gap:8px;row-gap:1px;align-content:center;justify-items:start;
+  min-height:38px;padding:3px 10px;font-size:12px;white-space:nowrap;letter-spacing:.04em;text-align:left;line-height:1.1}
+ #botoes #bt-rolar::before,#botoes #bt-xp::before{grid-row:1/3;align-self:center;width:17px;height:17px;margin:0}
+ #botoes #bt-rolar span,#botoes #bt-xp span{grid-column:2;margin:0;font-size:9.5px}
+}
+@media (min-width:901px) and (min-height:541px){
+ #botoes{grid-auto-flow:row dense;align-content:center;gap:5px;padding:6px 8px}
+ #botoes .bt{min-height:30px;padding:4px 9px}
+ #odds{margin:0 0 1px}#odds .oh{margin-bottom:2px}#odds .on_{margin-top:1px}
+ #botoes #bt-pronto{min-height:32px}
+ /* a altura da faixa de baixo (--bh) é de quem cuida do layout; loja e botões se ajustam a ela por container query */
+ #loja{container:loja/size}
+ #botoes{container:botoes/size}
+}
+/* faixa alta (conteúdo ≥ 160px, ex.: 1920x1080): traços, textos e botões maiores */
+@container loja (min-height:160px){
+ #cartas .carta .pie .tb{--s:24px}#cartas .carta .pie .tb img{width:18px;height:18px;margin:-9px 0 0 -9px}
+ #cartas .carta .trl em{font-size:10.5px}#cartas .carta .papel-badge{font-size:11px}#cartas .carta .elementos-mini{font-size:15px}
+ #cartas .detalhes-carta{width:23px;height:23px;line-height:21px;font-size:13px}
+ #cartas .carta .cn{height:26px}
+}
+@container botoes (min-height:166px){
+ #botoes .bt{min-height:34px}#botoes #bt-rolar,#botoes #bt-xp{min-height:44px;font-size:13px}#botoes #bt-pronto{min-height:38px;font-size:13px}
+}
+/* tablet / janela estreita: sem elevação no toque, "i" maior */
+@media (max-width:900px){
+ #cartas .cslot:hover .carta:not(.vend),#cartas .cslot:hover .detalhes-carta{transform:none}
+ #cartas .detalhes-carta{width:26px;height:26px;line-height:24px;font-size:13px}
+ :is(#cartas,.voo) .carta .identidade{right:32px}
+}
+/* celular deitado: as cartas viram linhas compactas numa coluna (arte à esquerda, nome e custo à direita) */
+@media (orientation:landscape) and (max-height:540px){
+ #app#app #cartas{grid-template-columns:minmax(0,1fr);grid-template-rows:repeat(5,minmax(0,1fr));gap:3px}
+ #app#app .cslot{border-radius:4px}
+ #app#app .carta .cin{grid-template-columns:62px minmax(0,1fr)}
+ #app#app .carta .art canvas{height:auto;width:62px;transform:none}
+ #app#app .carta .cn{flex-direction:column;align-items:flex-start;justify-content:center;gap:2px;display:flex;height:auto;padding:2px 30px 2px 6px;border-top:0;border-left:1px solid color-mix(in srgb,var(--tc) 80%,#000);border-radius:0 4px 4px 0}
+ #app#app .carta .cn .nm{font-size:10px;line-height:1.15;white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+ #app#app .carta .cu{font-size:12px}
+ #app#app .carta .copias{display:none}
+ #app#app .carta.runa .cn{grid-column:2;grid-row:1}
+}
+/* celular em pé: cinco cartas estreitas numa fileira (arte em cima, nome embaixo, custo no canto da arte) */
+@media (orientation:portrait) and (max-width:540px){
+ #app#app #cartas{grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}
+ #app#app .cslot{border-radius:4px}
+ #app#app .carta .art canvas{height:auto;width:100%;max-width:72px;transform:none}
+ #app#app .carta .cn{justify-content:center;padding:0 2px;border-top:1px solid color-mix(in srgb,var(--tc) 80%,#000);border-radius:0 0 3px 3px}
+ #app#app .carta .cn .nm{font-size:clamp(7.5px,2.2vw,9px);letter-spacing:0;line-height:1.1;white-space:normal;text-align:center;text-overflow:clip;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+ #app#app .carta .cu{position:absolute;left:2px;top:2px;z-index:3;padding:0 4px 0 3px;border-radius:8px;background:#000c;border:1px solid var(--tc);font-size:11px}
+ #app#app .carta .cu img{width:12px;height:12px}
+ #app#app .carta .copias{display:none}
+}
 /* ===== TFT2 LOJA: fim ===== */
 /* separador2 LOJA */
 /* separador2 LOJA b */
@@ -2965,7 +3108,7 @@ function cartaHover(slot,forcar){const p=UI.jog;let i=-1;
   UI.hoverCartaI=i;UI.hoverCartaId=i>=0?p.loja[i]:null;
   if(i<0){el.classList.remove('on');return;}
   el.innerHTML=htmlPainelCarta(i);el.classList.add('on');
-  const sr=slot.getBoundingClientRect(),w=el.offsetWidth,h=el.offsetHeight,topC=UI.reduz?sr.top:sr.bottom-24-sr.height*1.12;let l=clamp(sr.left+sr.width/2-w/2,6,innerWidth-w-6);
+  const sr=slot.getBoundingClientRect(),w=el.offsetWidth,h=el.offsetHeight,topC=sr.top-6;let l=clamp(sr.left+sr.width/2-w/2,6,innerWidth-w-6);
   let t=Math.max(6,topC-12-h),lado=false;
   const cr=cv.getBoundingClientRect();   // não cobrir o tabuleiro: abaixo dele, senão ao lado (sobre os painéis laterais)
   if(l<cr.right&&l+w>cr.left&&t<cr.bottom&&t+h>cr.top){
@@ -3116,16 +3259,25 @@ function falaNaLista(id,txt){const el=$('jogadores').children[id];if(!el)return;
 
 /* ---------- loja ---------- */
 function hudLoja(){const p=UI.jog;if(!p)return;
-  $('cartas').innerHTML=p.loja.map((id,i)=>{const leque=`--r:${(i-2)*2}deg;--dy:${((i-2)*(i-2)*1.5).toFixed(1)}px`;       // leque: −4° a +4° em arco suave
+  // encaixes fixos (estilo TFT, sem leque): ao rolar ou abrir uma rodada as cartas que mudaram "viram" em sequência (--k = atraso)
+  const ant=UI.lojaAnt||[],chave=p.loja.map((id,i)=>(p.rl&&p.rl.i===i)?'rn:'+p.rl.k:id||'').join('|'),mud=p.loja.map((id,i)=>{const k=(p.rl&&p.rl.i===i)?'rn:'+p.rl.k:id||'';return !!k&&k!==(ant[i]||'');});
+  const ant0=UI.lojaChave!==undefined?ant:[],vira=UI.lojaChave!==undefined&&UI.lojaChave!==chave&&mud.filter(Boolean).length>=2;UI.lojaChave=chave;UI.lojaAnt=chave.split('|');
+  const anim=i=>vira&&mud[i]?` entra" style="--k:${mud.slice(0,i).filter(Boolean).length}`:'';
+  $('cartas').innerHTML=p.loja.map((id,i)=>{
     if(p.rl&&p.rl.i===i&&RUNA[p.rl.k]){const R=RUNA[p.rl.k];
-      return `<div class="cslot" data-i="${i}" style="${leque}"><div class="carta runa ${p.ouro<R.custo?'pobre':''}" style="--rc:${R.cor}" data-tip="rn:${p.rl.k}"><div class="cin"><div class="cn">${esc(R.n)}</div>
-        <div class="art"><span class="tecla">${i+1}</span><span class="rn-badge">RUNA</span><span class="cu">${R.custo}<img src="${ICO.ouro}" alt=""></span><img class="rn-ic" src="${R.ic}" alt=""></div>
-        <div class="rn-pie"><span class="rn-tag">Runa${R.alvo?' · unidade':''}</span><span class="rn-ef">${esc(R.c())}</span></div></div><button class="detalhes-carta" type="button" data-detalhe-runa="${i}" aria-label="Detalhes de ${esc(R.n)}" title="Ver o efeito da runa">i</button></div></div>`;}
-    if(!id)return `<div class="cslot" data-i="${i}" style="${leque}"><div class="carta vend"></div></div>`;
-    const d=U[id],cop=copias(p,id,1),pv=previaCompra(p,id),dest=pv.up?'pert'+(pv.up===3?' pert3':''):pv.tem?'tem':'';
-    return `<div class="cslot" data-i="${i}" style="${leque}"><div class="carta c${d.c} ${p.ouro<precoLoja(p,i)?'pobre':''} ${dest} ${i===p.cong?'gelada':''}" style="--chao:url(tactics-assets/chao_${BIOMA_O[d.o]}.png)"><div class="cin"><div class="cn">${esc(d.nome)}</div>
-      <div class="art"><span class="tecla">${i+1}</span>${i===p.cong?'<span class="gelo-m">❄'+(d.c>precoLoja(p,i)?' -'+(d.c-precoLoja(p,i)):'')+'</span>':''}<span class="cu">${precoLoja(p,i)}<img src="${ICO.ouro}" alt=""></span><canvas width="128" height="92" data-and="${id}" data-k="${i}"></canvas></div>
-      <div class="identidade">${seloPapel(d)}<span class="elementos-mini" aria-label="Elementos: ${elementosUnidade(d).map(e=>NOME_EL[e]).join(', ')}">${elementosUnidade(d).map(e=>`<i style="color:${EL[e].cor}" title="${NOME_EL[e]}">${EL_SIMBOLO[e]}</i>`).join('')}</span></div><div class="pie">${iconeTraco(d.o,pv.nO,pv.acO?'acende':'',true)}${iconeTraco(d.k,pv.nK,pv.acK?'acende':'',true)}${cop?`<span class="copias">${cop} no time</span>`:''}</div></div>${pv.up?`<span class="selo">${'★'.repeat(pv.up)}</span>`:''}</div><button class="detalhes-carta" type="button" data-detalhe="${i}" aria-label="Detalhes de ${esc(d.nome)}" title="Ver função, elementos e habilidade">i</button></div>`;}).join('');
+      return `<div class="cslot${anim(i)}" data-i="${i}"><div class="carta runa ${p.ouro<R.custo?'pobre':''}" style="--rc:${R.cor}" data-tip="rn:${p.rl.k}"><div class="cin">
+        <div class="art"><span class="tecla">${i+1}</span><span class="rn-badge">RUNA</span><img class="rn-ic" src="${R.ic}" alt=""></div>
+        <div class="rn-pie"><span class="rn-tag">Runa${R.alvo?' · unidade':''}</span><span class="rn-ef">${esc(R.c())}</span></div>
+        <div class="cn"><span class="nm">${esc(R.n)}</span><span class="cu">${R.custo}<img src="${ICO.ouro}" alt=""></span></div></div><button class="detalhes-carta" type="button" data-detalhe-runa="${i}" aria-label="Detalhes de ${esc(R.n)}" title="Ver o efeito da runa">i</button></div></div>`;}
+    if(!id)return `<div class="cslot vazio${ant0[i]?' saiu':''}" data-i="${i}"><div class="carta vend"></div></div>`;
+    const d=U[id],cop=copias(p,id,1),pv=previaCompra(p,id),dest=pv.up?'pert'+(pv.up===3?' pert3':''):pv.tem?'tem':'',pr=precoLoja(p,i),els=elementosUnidade(d);
+    const tr=(t,n,ac)=>`<span class="trl">${iconeTraco(t,n,ac?'acende':'',true)}<em>${esc(TRACOS[t].n)}</em></span>`;
+    return `<div class="cslot${anim(i)}" data-i="${i}"><div class="carta c${d.c} ${p.ouro<pr?'pobre':''} ${dest} ${i===p.cong?'gelada':''}" style="--chao:url(tactics-assets/chao_${BIOMA_O[d.o]}.png)"><div class="cin">
+      <div class="art"><span class="tecla">${i+1}</span>${i===p.cong?'<span class="gelo-m">❄'+(d.c>pr?' -'+(d.c-pr):'')+'</span>':''}<canvas width="128" height="92" data-and="${id}" data-k="${i}"></canvas>
+        <div class="identidade">${seloPapel(d)}<span class="elementos-mini" aria-label="Elementos: ${els.map(e=>NOME_EL[e]).join(', ')}">${els.map(e=>`<i style="color:${EL[e].cor}" title="${NOME_EL[e]}">${EL_SIMBOLO[e]}</i>`).join('')}</span></div>
+        <div class="pie">${tr(d.o,pv.nO,pv.acO)}${tr(d.k,pv.nK,pv.acK)}</div>${cop?`<span class="copias">${cop} no time</span>`:''}</div>
+      <div class="cn"><span class="nm">${esc(d.nome)}</span><span class="cu">${pr}<img src="${ICO.ouro}" alt=""></span></div></div>${pv.up?`<span class="selo">${'★'.repeat(pv.up)}</span>`:''}</div><button class="detalhes-carta" type="button" data-detalhe="${i}" aria-label="Detalhes de ${esc(d.nome)}" title="Ver função, elementos e habilidade">i</button></div>`;}).join('');
+  $('loja').classList.toggle('travada',!!p.travada);
   retratosPend($('cartas'));hudOdds();
   const k=UI.hoverCartaI;if(k>=0){const sl=$('cartas').children[k];if(sl&&p.loja[k]&&p.loja[k]===UI.hoverCartaId)cartaHover(sl,true);else cartaHover(null);}}   // o painel acompanha a carta sob o mouse
 function hudOdds(){const p=UI.jog;if(!p)return;const el=$('odds');if(el._nv===p.nivel)return;el._nv=p.nivel;const o=ODDS[p.nivel];
@@ -3348,7 +3500,7 @@ function hudBotoes(){const p=UI.jog;if(!p)return;const fase=UI.fase,car=G.info.t
       const usavel=fase==='prep'&&p.vivo&&!p.podU&&p.ouro>=P.custo&&!(p.voc==='druid'&&p.nivel>=9)&&!UI.espectador;
       bp.disabled=!usavel;bp.classList.toggle('on',!!UI.alvoPoder);bp.classList.toggle('usado',!!p.podU);if(!usavel&&UI.alvoPoder)cancelarPoder();}
     else bp.style.display='none';}
-  $('bt-trava').classList.toggle('on',!!p.travada);$('bt-pronto').disabled=fase!=='prep'||car||!!(Online.ativo&&(p.pronto||!p.vivo));
+  $('bt-trava').classList.toggle('on',!!p.travada);$('loja').classList.toggle('travada',!!p.travada);$('bt-pronto').disabled=fase!=='prep'||car||!!(Online.ativo&&(p.pronto||!p.vivo));
   const bp=$('bt-pronto'),tx=(Online.ativo&&p.pronto&&fase==='prep')?'Aguardando ':'Pronto ';if(bp.firstChild.textContent!==tx)bp.firstChild.textContent=tx;}
 function atualizarSujos(){const s=UI.sujo;if(!G)return;
   if(s.topo){hudTopo();s.topo=false;}if(s.sin){hudSinergias();s.sin=false;}if(s.jog){hudJogadores();s.jog=false;}
