@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="versao-site" content="2026-10-30.1"><!-- a cada deploy: trocar aqui, em VERSAO_SITE e nos ?v= dos scripts locais -->
+<meta name="versao-site" content="2026-10-30.2"><!-- a cada deploy: trocar aqui, em VERSAO_SITE e nos ?v= dos scripts locais -->
 <script id="auto-update">
 /* auto-atualização: o GitHub Pages cacheia 10 min; compara a versão do index no servidor com a desta página e recarrega se mudou */
 (function(){
@@ -1471,11 +1471,11 @@ body.arrastando #cartas .cslot:hover .detalhes-carta,html.reduz #cartas .cslot:h
 <div id="ghost"></div>
 
 <script async src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
-<script src="tibia-assets/sprites15.js?v=2026-10-30.1"></script>
-<script src="tibia-assets/combate15.js?v=2026-10-30.1"></script>
+<script src="tibia-assets/sprites15.js?v=2026-10-30.2"></script>
+<script src="tibia-assets/combate15.js?v=2026-10-30.2"></script>
 <script>
 'use strict';
-const VERSAO_SITE='2026-10-30.1';   // bumpar junto com <meta versao-site> e os ?v= dos scripts a cada deploy
+const VERSAO_SITE='2026-10-30.2';   // bumpar junto com <meta versao-site> e os ?v= dos scripts a cada deploy
 /* =====================================================================================
    TIBIA TACTICS  -  auto-battler estilo TFT com visual do Tibia
    Parte 1: dados (unidades, sinergias, itens, monstros). Nada aqui toca o DOM.
@@ -3336,7 +3336,7 @@ function htmlPainelCarta(i){const p=UI.jog,id=p&&p.loja[i];if(!id)return '';
   const lin=t=>{const T=TRACOS[t],a=cnt[t]||0,b=a+(novo?1:0),na=nivelTraco(t,a),nb=nivelTraco(t,b);
     return `<div class="lin">${iconeTraco(t,nb,'',true)}<span class="nm">${T.n}</span>${pipsTraco(t,b)}<span class="ct">${a}<i>→</i>${b}${nb>na?`<u>${na<0?'ativa':'sobe'}</u>`:''}</span></div>`;};
   let h=`<div class="cab"><h4>${esc(d.nome)}</h4><span class="cus">${d.c}<img src="${ICO.ouro}" alt=""></span></div><div class="sub">${TRACOS[d.o].n} · ${TRACOS[d.k].n}</div>
-    ${perfilUnidade(d)}<div class="st">${cel('vida',st.hp,'Vida')}${cel('atk',st.atk,'Ataque')}${cel('arm',st.arm,'Armadura')}${cel('mana',st.rm,'Res. mágica')}${cel('al',st.al+(st.al>1?' tiles':' tile'),'Alcance')}${cel('vel',st.as.toFixed(2)+'/s','Vel. ataque')}${cel('mana',st.mM?st.m0+'/'+st.mM:'-','Mana')}</div>
+    ${perfilUnidade(d)}<div class="st">${cel('vida',st.hp,'Vida')}${cel('atk',st.atk,'Ataque')}${cel('arm',st.arm,'Armadura')}${cel('mana',st.rm,'Res. mágica')}${cel('al',st.al+' hex','Alcance')}${cel('vel',st.as.toFixed(2)+'/s','Vel. ataque')}${cel('mana',st.mM?st.m0+'/'+st.mM:'-','Mana')}</div>
     <div class="hab">${hb?`<span class="pm">"${esc(hb.p)}"</span><span class="tp">${esc(hb.tipo)}</span><p>${hb.txt}.</p>`:'<p>Sem habilidade ativa.</p>'}</div>
     <div class="sn"><div class="sub" style="margin:0 0 3px">Sinergias: agora → se posicionar esta unidade</div>${lin(d.o)}${lin(d.k)}</div>`;
   if(pv.up)h+=`<div class="dica-up">${pv.up===3?'Comprar forma 3 estrelas (já tem duas cópias de 2 estrelas)':'Comprar forma 2 estrelas (já tem duas cópias)'}</div>`;
@@ -4231,7 +4231,7 @@ function mostrarMenu(){UI.estado='menu';$('app').classList.remove('ver-itens','v
   telaHTML(`${htmlBrasas()}<div class="painel modal menu-ini"><div class="mi-esq"><h1 class="logo-t">Tibia Tactics</h1><div class="sub sub-ini">Auto-battler de Tibia</div>
     <div class="palco" id="heroi-palco">${htmlPalcoHeroi()}</div>
     <div class="herois">${VOCS.map(v=>`<div class="heroi ${UI.voc===v?'sel':''}" data-v="${v}"><canvas width="56" height="56" data-av="${v}"></canvas>${{knight:'Knight',paladin:'Paladin',sorcerer:'Sorcerer',druid:'Druid'}[v]}</div>`).join('')}</div></div>
-    <div class="mi-dir">${htmlStatsMenu()}<div class="menu menu-p"><button class="bt primario" id="b-jogar">Jogar</button><button class="bt" id="b-online">Jogar online</button><button class="bt" id="b-como">Como jogar</button><button class="bt" id="b-rec">Recordes</button><button class="bt" id="b-cartas">Novas cartas</button>${telaCheiaOk()?'<button class="bt" id="b-tela">Tela cheia</button>':''}</div>${toque()&&celularEmPe()&&!UI.dicaGiroFechada?'<p class="dica-giro" id="dica-giro"><span>Dica: gire o celular para jogar deitado</span><button type="button" id="dica-giro-x" aria-label="Fechar dica">×</button></p>':''}<p class="versao-jogo">Fase 5 · Etapa 5 — interface estilo TFT: tabuleiro maior, sinergias ao lado, itens em menu e juros dos rivais</p></div></div>`);
+    <div class="mi-dir">${htmlStatsMenu()}<div class="menu menu-p"><button class="bt primario" id="b-jogar">Jogar</button><button class="bt" id="b-online">Jogar online</button><button class="bt" id="b-como">Como jogar</button><button class="bt" id="b-rec">Recordes</button><button class="bt" id="b-cartas">Novas cartas</button>${telaCheiaOk()?'<button class="bt" id="b-tela">Tela cheia</button>':''}</div>${toque()&&celularEmPe()&&!UI.dicaGiroFechada?'<p class="dica-giro" id="dica-giro"><span>Dica: gire o celular para jogar deitado</span><button type="button" id="dica-giro-x" aria-label="Fechar dica">×</button></p>':''}<p class="versao-jogo">Fase 5 · Etapa 6 — tabuleiro hexagonal, tela única estilo TFT, caldeirões de juros e nova loja</p></div></div>`);
   retratosPend();pintarHeroiAnim(performance.now());$('tela').classList.add('menu');$('b-jogar').onclick=novaPartida;$('b-online').onclick=()=>mostrarOnline();$('b-como').onclick=()=>mostrarComoJogar(mostrarMenu);$('b-rec').onclick=mostrarRecordes;$('b-cartas').onclick=mostrarNovasCartas;
   {const bt=$('b-tela');if(bt)bt.onclick=alternarTelaCheia;const dx=$('dica-giro-x');if(dx)dx.onclick=()=>{UI.dicaGiroFechada=true;$('dica-giro').remove();};}
   ligarHerois();}
@@ -4274,7 +4274,8 @@ function iniciarDemo(){UI.demoBioma=BIOMAS[Math.floor(Math.random()*BIOMAS.lengt
    Camada de rede com dois transportes de mesma interface: PeerJS (WebRTC, real) e BroadcastChannel (?rede=local, duas abas).
    Mensagens JSON {t:tipo,...}; o handshake leva a versão do protocolo.
    ===================================================================================== */
-const PROTO=11; // 11 (Fase 5, etapa 5): interface estilo TFT; a lista de jogadores enviada aos convidados inclui o ouro de cada um (campo ou)
+const PROTO=12; // 12 (Fase 5, etapa 6): tabuleiro hexagonal 7x8, caminhada de 0,4 s por hexágono, entrada do combate, IA de alvo/formação
+// Histórico: const PROTO=11; // 11 (Fase 5, etapa 5): interface estilo TFT; a lista de jogadores enviada aos convidados inclui o ouro de cada um (campo ou)
 // Histórico: const PROTO=10; // 10 (Fase 5, etapa 4): ondas escolhem a direção que acerta mais inimigos (u.dir acompanha); curandeiros nerfados (magias de cura -25%, traço 1%/3% por 2 s); versões antigas não simulam o mesmo combate.
 // Histórico: const PROTO=9; // 9 (Fase 5, etapa 3): runas consumíveis (loja, mochila, armar/desarmar; as armadas viajam na equipe da luta: eq.ru/re no time e s.ru na unidade); snapshots ganham rl/mr/ra; comandos comprarRuna/armar/desarmar; versões antigas não simulam o mesmo combate.
 // Histórico: const PROTO=8; // 8 (Fase 5, etapa 3): bênçãos (escolha 1 de 3; as de combate viajam na equipe da luta, meta.bn); snapshots ganham bn/ob; comandos bencao/bencaoRr; versões antigas não simulam o mesmo combate.
