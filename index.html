@@ -1000,7 +1000,38 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
  .modal{padding:14px}.modal h1{font-size:40px}
 }
 /* ===== UI-TFT LAYOUT: inicio ===== */
-/* (reservado) */
+/* desktop estilo TFT: a arena ocupa a tela inteira entre o topo e a loja; sinergias e jogadores flutuam sobre as bordas dela;
+   a "próxima onda" vira um cartão ao lado do tabuleiro (ou volta a ser faixa, .faixa-cheia, quando a tela é estreita demais).
+   O mundo do canvas alarga até a largura do #cvbox (ajustarCanvas); --mx = margem do núcleo dentro do canvas, --lado = borda até o núcleo. */
+@media (min-width:901px) and (min-height:541px){
+#app{--hh:52px;--bh:184px;--lw:212px;--rw:212px;position:relative}
+#topo{padding-top:2px;padding-bottom:2px}
+#centro{grid-column:1/-1;grid-row:2;gap:0}
+#cv{border:0;box-shadow:none;border-radius:0}
+#esq,#dir{position:absolute;z-index:12;top:calc(var(--hh) + 16px);bottom:calc(var(--bh) + 16px);width:var(--lw);max-height:none;grid-column:auto;grid-row:auto;
+ background:linear-gradient(180deg,#191c29d0,#0f111ac4);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);transition:bottom .22s ease}
+#esq{left:10px}
+#dir{right:10px;width:var(--rw)}
+#faixa-rodada{position:absolute;z-index:11;top:8px;left:calc(var(--lw) + 18px);height:auto;min-height:0;width:max-content;max-width:max(80px,calc(var(--lado,400px) - var(--lw) - 30px));
+ flex-wrap:wrap;row-gap:6px;white-space:normal;padding:6px 10px;background:linear-gradient(180deg,#191c29d9,#0f111acc)}
+#faixa-rodada:empty{display:none}
+#app:not(.faixa-cheia) #faixa-rodada .sep{display:none}
+#app:not(.faixa-cheia) #faixa-rodada :is(.mons,.drops,.trs){flex-wrap:wrap;row-gap:3px}
+#app.faixa-cheia #faixa-rodada{position:static;flex:none;width:auto;max-width:none;height:42px;flex-wrap:nowrap;white-space:nowrap;padding:4px 12px;margin:0 calc(var(--rw) + 14px) 6px calc(var(--lw) + 14px)}
+#app.faixa-cheia #faixa-rodada:empty{display:flex}
+/* botões do canto do tabuleiro acompanham o núcleo (não ficam embaixo dos painéis flutuantes) */
+#bt-meter,#meter{right:calc(var(--mx,0px) + 6px)}
+#meter.fora{left:calc(100% - var(--mx,0px) + 10px);right:auto}
+#espia{left:calc(var(--mx,0px) + 6px)}
+#emotes{left:calc(var(--mx,0px) + 4px)}
+/* loja embaixo: só cartas + botões (os itens saem do fluxo); botões em duas colunas para a loja ficar mais baixa */
+#base{grid-template-columns:minmax(0,1fr) 312px;grid-template-rows:minmax(0,1fr);grid-auto-rows:0;row-gap:0}
+#loja{grid-column:1;grid-row:1;min-height:0}
+#botoes{grid-column:2;grid-row:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-content:center;gap:5px;padding:6px 8px}
+#botoes #odds,#botoes #bt-pronto,#botoes #bt-recolher{grid-column:1/-1}
+#botoes .bt{padding:5px 8px;min-width:0;font-size:11px;letter-spacing:.03em}
+#botoes .bt span{white-space:nowrap}
+}
 /* ===== UI-TFT LAYOUT: fim ===== */
 /* separador LAYOUT */
 /* separador LAYOUT b */
@@ -2266,7 +2297,8 @@ function relatorioLote(R){const med=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:
    ===================================================================================== */
 const IMG=p=>'tibia-assets/sprites15/'+p;
 const ICO={ouro:IMG('ui/gold.png'),pvp:IMG('ui/arena.png'),pve:IMG('itens/3114.png'),car:IMG('ui/inventario.png'),loot:IMG('ui/loot.png')};
-const CW=352,BX=48,BY=34,BEN_X=(CW-9*TS)/2,BEN_Y=BY+NR*TS+17,CH=BEN_Y+TS+13;      // dimensões lógicas do canvas (px de jogo); as margens laterais abrigam os avatares
+const CW0=352,BY=34,BEN_Y=BY+NR*TS+17,CH=BEN_Y+TS+13;      // dimensões lógicas do canvas (px de jogo); o núcleo CW0 tem margens laterais de 48 px que abrigam os avatares
+let CW=CW0,BX=(CW0-NC*TS)/2,BEN_X=(CW0-9*TS)/2;   // no desktop o mundo alarga até a largura da tela (ajustarCanvas): o núcleo fica centrado e o chão escurecido preenche as laterais
 let cv=null,cx=null,Z=2,ZD=2,DPR=1;   // Z = escala de desenho (inteira), ZD = px CSS por px lógico (exibição)
 const UI={estado:'menu',vel:1,acc:0,fimEm:0,C:null,demo:false,prev:null,prevSujo:true,drag:null,mx:0,my:0,hover:null,fxPrep:[],sujo:{},sujoRet:false,
   voc:'knight',timer:30,timerMax:30,fimShow:0,ultPassoReal:0,jogoParado:false,
@@ -2523,7 +2555,7 @@ function falaAvatar(txt,x,y,age){const a=age>2600?1-(age-2600)/500:1;cx.save();c
   const yy=y-age*.004;cx.strokeText(txt,x,yy);cx.fillStyle='#ffe14a';cx.fillText(txt,x,yy);cx.restore();}
 function desenharAvatares(now){if(UI.demo||!G||!UI.jog)return;
   const esp=UI.espiar!=null,eu=esp?G.jog[UI.espiar]:UI.jog,op=esp||UI.fase==='resultado'&&!UI.C?null:oponenteLocal();
-  const cena=(q,esq,Y0,desl)=>{if(!q)return;const X0=esq?(BX-TS)/2:CW-BX+(BX-TS)/2;
+  const cena=(q,esq,Y0,desl)=>{if(!q)return;const X0=esq?BX-TS-8:BX+NC*TS+8;
     const t=(now+desl)%7000;let dx=0,dir=2,andar=false;const s=esq?1:-1;
     if(!UI.reduz){if(t<1500){dx=s*9*t/1500;dir=esq?1:3;andar=true;}else if(t<3500){dx=s*9;}else if(t<5000){dx=s*9*(1-(t-3500)/1500);dir=esq?3:1;andar=true;}}
     const hb=UI.avHit[q.id],hit=hb&&now-hb<650?hb:0;if(hit)dx+=(Math.floor(now/45)%2?2.5:-2.5)*(1-(now-hit)/650);
@@ -2634,7 +2666,7 @@ function fusaoFim(a){const now=performance.now(),tx=(a.fim.X-BX)/TS,ty=(a.fim.Y-
 
 /* ---- clímax da luta (só visual, lê C.t / C.tempoMax; não mexe no motor nem sorteia nada): barra de força das equipes e morte súbita ---- */
 function desenharClimax(C,rt,now){
-  const meu=ESP?1:0,w=244,x0=10,y0=5,h=13,rd=UI.reduz;   // barra à esquerda do botão Placar (que fica no canto superior direito)
+  const meu=ESP?1:0,w=244,x0=BX-38,y0=5,h=13,rd=UI.reduz;   // barra à esquerda do botão Placar (que fica no canto superior direito)
   // barra "cabo de guerra": vida total viva (invocações incluídas) do seu time (azul) contra o inimigo (vermelho)
   let a=0,b=0;C.un.forEach(u=>{if(u.vivo)(u.lado===meu?(a+=u.hp):(b+=u.hp));});
   let F=UI.forca;if(!F||F.C!==C){F=UI.forca={C,a,b,ult:now,lid:0,vir:0,virLado:0,t0:now};}
@@ -2699,15 +2731,26 @@ function observaCaixa(){if(observaCaixa.ok!==undefined)return observaCaixa.ok;co
   let w=box.clientWidth,h=box.clientHeight,raf=0;
   new ResizeObserver(()=>{if(box.clientWidth===w&&box.clientHeight===h)return;w=box.clientWidth;h=box.clientHeight;cancelAnimationFrame(raf);raf=requestAnimationFrame(ajustarCanvas);}).observe(box);   // só age se o tamanho da caixa mudou (o canvas fica dentro e não a redimensiona)
   return observaCaixa.ok=true;}
-function ajustarCanvas(){const box=$('cvbox');if(!box||!cv)return;const w=box.clientWidth-8,h=box.clientHeight-6;
-  const zr=Math.min(w/CW,h/CH),zi=Math.round(zr);DPR=Math.min(2,window.devicePixelRatio||1);
+/* desktop (>=901 de largura, fora do celular deitado): a arena ocupa o #centro inteiro e os painéis laterais flutuam sobre ela */
+const layoutLargo=()=>matchMedia('(min-width:901px) and (min-height:541px)').matches;
+function ajustarCanvas(){const box=$('cvbox');if(!box||!cv)return;
+  const larga=layoutLargo(),app=$('app'),ctr=$('centro');let lat=0;
+  if(larga){const e=$('esq'),d=$('dir');lat=Math.max(e?e.offsetWidth:0,d?d.offsetWidth:0)+10;   // reserva dos painéis flutuantes: o núcleo (tabuleiro + avatares) nunca fica embaixo deles
+    // próxima onda: ao lado do tabuleiro quando cabe; senão volta a ser uma faixa acima dele (decide pelo #centro, que não muda com isso: sem oscilar)
+    const cw=ctr.clientWidth,zf=Math.max(.25,Math.min((cw-8-2*lat)/CW0,(ctr.clientHeight-6)/CH));
+    app.classList.toggle('faixa-cheia',(cw-CW0*zf)/2-lat<110);}
+  else app.classList.remove('faixa-cheia');
+  const w=Math.max(CW0*.25,box.clientWidth-8-2*lat),h=box.clientHeight-6;
+  const zr=Math.min(w/CW0,h/CH),zi=Math.round(zr);DPR=Math.min(2,window.devicePixelRatio||1);
   // render (Z) inteiro: cada pixel de sprite uniforme; exibição (ZD) preenche o espaço; fora de proporção inteira o navegador reduz suave
   if(zr<1){Z=ZD=Math.max(.25,Math.floor(zr*16)/16);cv.style.imageRendering='';}
   else if(Math.abs(zr-zi)<.02){Z=ZD=zi;cv.style.imageRendering='';}
   else{Z=Math.min(4,Math.ceil(zr));ZD=zr;cv.style.imageRendering='auto';}
+  CW=larga?Math.max(CW0,2*Math.floor((box.clientWidth-2)/ZD/2)):CW0;BX=(CW-NC*TS)/2;BEN_X=(CW-9*TS)/2;   // largura par: BX/BEN_X inteiros
   cv.style.width=Math.floor(CW*ZD)+'px';cv.style.height=Math.floor(CH*ZD)+'px';cv.width=Math.round(CW*Z*DPR);cv.height=Math.round(CH*Z*DPR);
   if(cx)cx.imageSmoothingEnabled=false;   // redimensionar o canvas zera o estado do contexto
-  const livre=(box.clientWidth-CW*ZD)/2,m=$('meter'),fora=livre>=176;
+  const lado=(box.clientWidth-CW0*ZD)/2,livre=lado-lat,m=$('meter'),fora=livre>=176;
+  ctr.style.setProperty('--mx',((CW-CW0)/2*ZD).toFixed(1)+'px');ctr.style.setProperty('--lado',Math.floor(lado)+'px');   // --mx: margem do núcleo dentro do canvas; --lado: espaço da borda até o núcleo
   m.classList.toggle('fora',fora);m.style.width=fora?Math.min(222,Math.floor(livre-16))+'px':'';}   // placar ao lado do tabuleiro sempre que couber; senão só abre pelo botão/P e sobrepõe
 
 /* =====================================================================================
@@ -3277,7 +3320,7 @@ function enviarEmote(k){if(!(k>=0&&k<EMOTES.length)||!UI.jog)return;fecharEmotes
   if(Online.guest&&Online.tr)Online.tr.paraHost({t:'emote',k});else if(Online.host)Online.emoteHost(UI.jog.id,k);}
 
 /* ---------- avatar ferido (efeito drawblood) ---------- */
-function posAvatarTab(esq){return {X:esq?(BX-TS)/2:CW-BX+(BX-TS)/2,Y:esq?BY+5*TS-4:BY+TS*.5};}
+function posAvatarTab(esq){return {X:esq?BX-TS-8:BX+NC*TS+8,Y:esq?BY+5*TS-4:BY+TS*.5};}
 function feriuAvatar(id,esq){const now=performance.now();UI.avHit[id]=now;const P=posAvatarTab(esq);UI.fxAv.push({id:E('drawblood'),X:P.X,Y:P.Y,b:now});UI.fxAv.push({id:E('drawblood'),X:P.X+3,Y:P.Y-2,b:now+160});}
 
 /* ---------- placar da luta (damage meter): calculado a partir dos contadores do motor ---------- */
