@@ -1005,7 +1005,50 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
 /* separador LAYOUT */
 /* separador LAYOUT b */
 /* ===== UI-TFT SINERGIAS: inicio ===== */
-/* (reservado) */
+/* rastreador de sinergias estilo TFT, numa coluna estreita sobre o tabuleiro (só no desktop; celular segue com as regras próprias):
+   ativas no topo (brasão com a cor do nível, contagem e degraus "2 ▸ 4 ▸ 6"), inativas apagadas e numa linha só, abaixo */
+@media (min-width:901px) and (min-height:541px){
+ #esq>h2{font:700 9px Cinzel,serif;letter-spacing:.18em;color:#c9b77a;opacity:.75;margin:0 0 4px 2px;padding:0;border:0;text-shadow:0 1px 2px #000}
+ #sinergias{display:flex;flex-direction:column;gap:3px}
+ #sinergias .vazio{font-size:10px;line-height:1.4;padding:6px 7px;color:#d6cfb6;background:rgba(8,10,16,.72);border:1px solid #ffffff14;border-radius:4px;text-shadow:0 1px 1px #000}
+ #sinergias .sin{display:grid;grid-template-columns:auto auto minmax(0,1fr);grid-template-rows:auto auto;column-gap:6px;align-items:center;margin:0;padding:3px 6px 3px 3px;
+  background:linear-gradient(90deg,rgba(14,16,24,.86),rgba(10,12,18,.62));border:1px solid #ffffff12;border-radius:4px 3px 3px 4px;box-shadow:0 1px 3px #0008;-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+ #sinergias .sin:hover{background:linear-gradient(90deg,rgba(40,36,24,.92),rgba(18,20,30,.74));border-color:#c9a64a66}
+ #sinergias .sin .ti{grid-column:1;grid-row:1/3}
+ #sinergias .sin .tb{--s:30px}
+ #sinergias .sin .tb img{transform:scale(.8125)}
+ /* contagem numa caixa escura com o aro na cor do nível */
+ #sinergias .sin .ct{grid-column:2;grid-row:1/3;display:flex;align-items:center;justify-content:center;min-width:20px;height:22px;padding:0 4px;border-radius:3px;background:#07080c;border:1px solid #3a382e;text-align:center;line-height:1}
+ #sinergias .sin .ct b{font:700 14px Cinzel,serif;color:#fff1c4}
+ #sinergias .sin .ct em{display:none}
+ #sinergias .sin .nm{grid-column:3;grid-row:1;align-self:end;font:700 11.5px/1.15 Cinzel,serif;color:#f4ecd2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 1px 1px #000}
+ #sinergias .sin .pips{grid-column:3;grid-row:2;align-self:start;display:flex;align-items:center;gap:0;margin-top:1px;white-space:nowrap}
+ #sinergias .sin .pips .tp{display:none}
+ #sinergias .sin .pp{min-width:0;height:auto;padding:0;border:0;background:none;outline:0;font:700 10px/1.2 Cinzel,serif;color:#8a8574;text-shadow:0 1px 0 #000}
+ #sinergias .sin .pp+.pp::before{content:'\25B8';font:8px/1 Verdana,sans-serif;color:#5d594c;margin:0 3px;vertical-align:1px}
+ #sinergias .sin .pp.at{color:#cfc7ad}
+ #sinergias .sin .pp.cur{font-size:11px}
+ #sinergias .sin .pp.cur.c0{color:#f6bd86}#sinergias .sin .pp.cur.c1{color:#eef2fa}#sinergias .sin .pp.cur.c2{color:#ffe27a}#sinergias .sin .pp.cur.c3{color:#e3c6ff}
+ /* ativas: faixa da cor do nível à esquerda e brilho suave */
+ #sinergias .sin.ativa{--tc:#d08a4e;background:linear-gradient(90deg,color-mix(in srgb,var(--tc) 28%,rgba(10,12,18,.9)),rgba(12,14,22,.82) 62%,rgba(10,12,18,.66));border-color:color-mix(in srgb,var(--tc) 40%,transparent);box-shadow:inset 3px 0 0 var(--tc),0 1px 4px #000a}
+ #sinergias .sin.ativa.n1{--tc:#dfe5f0}#sinergias .sin.ativa.n2{--tc:#f3cf4f}#sinergias .sin.ativa.n3{--tc:#c9a6ff}
+ #sinergias .sin.ativa .ct{border-color:var(--tc);box-shadow:0 0 6px color-mix(in srgb,var(--tc) 45%,transparent)}
+ #sinergias .sin.ativa.n3 .ct{background:linear-gradient(135deg,#2a1f3f,#0c0a14)}
+ #sinergias .sin.ativa .nm{color:#fff3cc}
+ /* inativas: uma linha só, apagadas; "1 / 2" na contagem */
+ #sinergias .sin:not(.ativa){grid-template-rows:auto;padding:2px 6px 2px 3px;opacity:.72;background:rgba(8,10,16,.6)}
+ #sinergias .sin:not(.ativa):hover{opacity:1}
+ #sinergias .sin:not(.ativa) .tb{--s:22px}
+ #sinergias .sin:not(.ativa) .tb img{transform:scale(.6)}
+ #sinergias .sin:not(.ativa) .tb .ar i{inset:2px}
+ #sinergias .sin:not(.ativa) .ti,#sinergias .sin:not(.ativa) .ct{grid-row:1}
+ #sinergias .sin:not(.ativa) .ct{height:auto;min-width:0;padding:0 2px;background:none;border:0}
+ #sinergias .sin:not(.ativa) .ct b{font-size:11px;color:#bdb69c}
+ #sinergias .sin:not(.ativa) .ct em{display:inline;font:700 10px Cinzel,serif;font-style:normal;color:#7f7a68;margin-left:1px}
+ #sinergias .sin:not(.ativa) .nm{grid-row:1;align-self:center;font-size:10.5px;color:#b9b29a}
+ #sinergias .sin:not(.ativa) .pips{display:none}
+ #sinergias .sin.ativa+.sin:not(.ativa){margin-top:5px}
+}
 /* ===== UI-TFT SINERGIAS: fim ===== */
 /* separador SINERGIAS */
 /* separador SINERGIAS b */
@@ -2922,7 +2965,7 @@ function hudTempo(){const t=$('tempo-n'),b=$('tempo-b'),f=$('fase-t');let n='',p
 /* ---------- sinergias ---------- */
 function hudSinergias(){const p=UI.jog;if(!p)return;const c=contarTracos(idsEm(p,'tab'));
   const ls=Object.keys(c).map(t=>({t,n:c[t],niv:nivelTraco(t,c[t])})).sort((a,b)=>(b.niv>=0)-(a.niv>=0)||b.niv-a.niv||b.n-a.n);
-  if(!ls.length){$('sinergias').innerHTML='<div class="vazio">Coloque unidades no tabuleiro para ativar sinergias. Cada unidade tem uma origem e uma classe; unidades diferentes com o mesmo traço contam juntas.</div>';return;}
+  if(!ls.length){$('sinergias').innerHTML='<div class="vazio">Ponha unidades no tabuleiro para ativar sinergias.</div>';return;}
   $('sinergias').innerHTML=ls.map(o=>{const T=TRACOS[o.t],prox=T.niv.find(n=>n>o.n);
     return `<div class="sin ${o.niv>=0?'ativa n'+nivCor(o.t,o.niv):''}" data-tip="sin:${o.t}" data-tr="${o.t}">${iconeTraco(o.t,o.niv,'',true)}<div class="nm">${T.n}</div><div class="ct"><b>${o.n}</b><em class="${prox?'':'max'}">${prox?'/ '+prox:'máx'}</em></div><div class="pips"><span class="tp">${T.t==='origem'?'Origem':'Classe'}</span>${pipsTraco(o.t,o.n)}</div></div>`;}).join('');}
 function retratosPend(r){r=r||document;
