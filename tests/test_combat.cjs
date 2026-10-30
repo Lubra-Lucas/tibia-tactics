@@ -85,7 +85,7 @@ test('Demon Skeleton specializes in magic defense rather than copying physical t
 });
 
 test('Grim Reaper prioritizes wounded targets and boosts damage without instant kill', () => {
-  const run=engine();run(scene+`const C=criarCombate({un:[spec('grim_reaper',3,4)]},{un:[spec('hunter',2,3),spec('knight',4,3)]},{seed:1,semSalto:true,vis:true});const grim=C.un[0],healthy=C.un[1],weak=C.un[2];grim.alvo=healthy;weak.hpM=20000;weak.hp=5000;weak.rm=0;grim.mana=grim.manaM;agir(C,grim);`);
+  const run=engine();run(scene+`const C=criarCombate({un:[spec('grim_reaper',3,4)]},{un:[spec('hunter',2,3),spec('knight',3,3)]},{seed:1,semSalto:true,vis:true});const grim=C.un[0],healthy=C.un[1],weak=C.un[2];grim.alvo=healthy;weak.hpM=20000;weak.hp=5000;weak.rm=0;grim.mana=grim.manaM;agir(C,grim);`);
   assert.equal(run('grim.alvo.uid'),run('weak.uid'));
   run('C.t=200;while(C.ev.length&&C.ev[0].t<=C.t)C.ev.shift().f();');
   assert.equal(run('5000-weak.hp'),run('Math.round(grim.sk*grim.hab.m*grim.hab.finaliza.mult)'));
@@ -278,7 +278,7 @@ test('Ascensao, Furia de Batalha and Sangue de Dragao act over time; Ultimo Susp
     const d0=u.dmgB;
     const run1=t=>{while(C.ev.length&&C.ev[0].t<=t){C.t=C.ev[0].t;C.ev.shift().f();}};
     run1(2000);const d2=u.dmgB;run1(4000);const d4=u.dmgB;run1(BN.ascT-1);const d14=u.dmgB;run1(BN.ascT);const d15=u.dmgB;run1(60000);const dFim=u.dmgB;
-    const D=criarCombate({un:[spec('knight',3,5),spec('hunter',4,5),spec('hunter',2,5)],bn:[11]},{un:[spec('minotaur_guard',3,4),spec('minotaur_guard',5,0)]},{seed:3,semSalto:true});
+    const D=criarCombate({un:[spec('knight',3,5),spec('hunter',4,5),spec('hunter',2,5)],bn:[11]},{un:[spec('minotaur_guard',4,4),spec('minotaur_guard',5,0)]},{seed:3,semSalto:true});   // (4,4) é vizinho hexagonal de (4,5)
     const [k,h1,h2]=D.un,inim=D.un.filter(x=>x.lado===1);inim.forEach(x=>{x.hp=x.hpM=100000;});const adj=inim[0],longe=inim[1];
     h1.hp=0;h1.hpM=2000;morrer(D,h1,null);const a1=[100000-adj.hp,100000-longe.hp];const dano1=h1.hpM*BN.sus;
     h2.hp=0;morrer(D,h2,null);const a2=[100000-adj.hp];
@@ -501,12 +501,12 @@ test('two runes of the same type cannot be armed for the same combat; bots pick 
 
 test('wave spells pick the direction that hits the most enemies and face it', () => {
   const run=engine();
-  run(scene+`const C=criarCombate({un:[spec('dragon_hatchling',3,4)]},{un:[spec('orc',4,3),spec('orc',5,2),spec('orc',4,2),spec('orc',2,3)]},{seed:1,semSalto:true});const u=C.un[0],t=C.un[1];u.alvo=t;const h=u.hab;
+  run(scene+`const C=criarCombate({un:[spec('dragon_hatchling',3,4)]},{un:[spec('orc',4,3),spec('orc',2,3),spec('orc',2,2),spec('orc',1,3)]},{seed:1,semSalto:true});const u=C.un[0],t=C.un[1];u.alvo=t;const h=u.hab;
     const cnt=d=>tilesArea(h.area,u.x,u.y,d).filter(([x,y])=>dentro(x,y)&&C.occ[y*NC+x]&&C.map[C.occ[y*NC+x]].lado===1).length;
-    const velho=dirPara(u,t),novo=melhorDirOnda(C,u,h,t,velho);const antes=C.un.filter(q=>q.lado===1).map(q=>q.hp);acaoHab(C,u,h,t);`);
+    const velho=dirHexPara(u,t),novo=melhorDirOnda(C,u,h,t,velho);const antes=C.un.filter(q=>q.lado===1).map(q=>q.hp);acaoHab(C,u,h,t);`);
   assert.ok(run('cnt(novo)')>=run('cnt(velho)'));
-  assert.ok(run('cnt(novo)')>run('cnt(velho)'),'diagonal scene must improve over the old rule');
-  assert.equal(run('u.dir'),run('novo'));
+  assert.ok(run('cnt(novo)')>run('cnt(velho)'),'scene with the pack off the target line must improve over the old rule');
+  assert.equal(run('u.dir'),run('dirSpr(novo)'));
   assert.ok(run('C.un.filter(q=>q.lado===1).some((q,i)=>q.hp<antes[i])'));
   assert.equal(run('melhorDirOnda(C,u,h,null,velho)'),run('melhorDirOnda(C,u,h,null,velho)'));
 });
@@ -525,4 +525,36 @@ test('Healer nerf: Curandeiro trait heals 1%/3% every 2 s and Dark Monk keeps Fe
   run(scene+`const C=criarCombate({un:[spec('druid',1,5),spec('monk',2,5)]},{un:[spec('orc',3,0)]},{seed:1,semSalto:true});`);
   assert.equal(run('C.curaTime[0]'),.01);
   assert.deepEqual(JSON.parse(run(`JSON.stringify(U.dark_monk.hab.seq[0].deb)`)),{ferida:.4,dur:5000});
+});
+
+/* ---------- tabuleiro hexagonal (7x8, odd-r) ---------- */
+test('hex board: 7x8, six neighbours at distance 1, distance is symmetric and invariant under the 180° side rotation', () => {
+  const run=engine();
+  const r=JSON.parse(run(`JSON.stringify((()=>{const rot=c=>({x:NC-1-c.x,y:NR-1-c.y});let bad=0;const cels=[];for(let y=0;y<NR;y++)for(let x=0;x<NC;x++)cels.push({x,y});
+    cels.forEach(a=>{for(let d=0;d<6;d++){const [x,y]=vizH(a.x,a.y,d);if(distH(a,{x,y})!==1)bad++;const [bx,by]=vizH(x,y,(d+3)%6);if(bx!==a.x||by!==a.y)bad++;}
+      cels.forEach(b=>{if(distH(a,b)!==distH(b,a)||distH(a,b)!==distH(rot(a),rot(b)))bad++;});});
+    return {NC,NR,bad,interior:[0,1,2,3,4,5].map(d=>vizH(3,4,d).join()).sort(),far:distH({x:0,y:0},{x:NC-1,y:NR-1}),d2:dist2({x:3,y:4},{x:4,y:4})};})())`));
+  assert.equal(r.NC,7);assert.equal(r.NR,8);assert.equal(r.bad,0);
+  assert.deepEqual(r.interior,['2,3','2,4','2,5','3,3','3,5','4,4']);   // linha par (4): os vizinhos de cima/baixo ficam em x-1 e x
+  assert.equal(r.far,10);assert.equal(r.d2,4);                             // dist2 = 4 x distância euclidiana²
+});
+
+test('hex areas keep the tile counts of the square spells and rotate with the side', () => {
+  const run=engine();
+  const r=JSON.parse(run(`JSON.stringify((()=>{const n=m=>tilesArea(m,3,4,1).length;const rot=([x,y])=>[NC-1-x,NR-1-y].join();let bad=0;
+    [A_ONDA4,A_ONDA5,A_ONDA7,A_CURTA3,A_QUAD1].forEach(m=>{for(let d=0;d<6;d++){const a=tilesArea(m,3,4,d).map(rot).sort().join('|'),b=tilesArea(m,NC-1-3,NR-1-4,(d+3)%6).map(c=>c.join()).sort().join('|');if(a!==b)bad++;
+      if(new Set(tilesArea(m,3,4,d).map(c=>c.join())).size!==tilesArea(m,3,4,d).length)bad++;}});
+    return {o4:n(A_ONDA4),o5:n(A_ONDA5),o7:n(A_ONDA7),c3:n(A_CURTA3),q1:n(A_QUAD1),r1:areaTiles({raio:1},3,4,0).length,r2:areaTiles({raio:2},3,4,0).length,bad,
+      frente:tilesArea(A_ONDA4,3,4,1).every(([x,y])=>y<=4)};})())`));
+  // contando a casa de quem lança: onda 4 = 11+1, onda 5 = 10+1, onda 7 = 16+1, curta 3 = 6+1 (as mesmas casas das matrizes do Tibia); o quadrado 3x3 vira o disco de raio 1 (7)
+  assert.deepEqual([r.o4,r.o5,r.o7,r.c3,r.q1],[12,11,17,7,7]);
+  assert.equal(r.r1,7);assert.equal(r.r2,19);assert.equal(r.bad,0);assert.ok(r.frente,'a wave cast to the north-east stays in front of the caster');
+});
+
+test('hex pathing: melee units walk hex by hex until adjacent and then attack', () => {
+  const run=engine();run(scene);
+  const r=JSON.parse(run(`JSON.stringify((()=>{const C=criarCombate({un:[spec('knight',3,7)]},{un:[spec('orc',3,0)]},{seed:4,semSalto:true});const a=C.un[0],b=C.un[1];b.prox=1e9;b.livreEm=1e9;
+    let ok=true,last={x:a.x,y:a.y},passos=0;for(let i=0;i<200&&!a.nAt;i++){passo(C);if(a.x!==last.x||a.y!==last.y){if(distH(last,a)!==1)ok=false;passos++;last={x:a.x,y:a.y};}}
+    return {ok,passos,dist:distH(a,b),atacou:a.nAt>0,inicio:distH({x:3,y:7},{x:3,y:0})};})())`));
+  assert.ok(r.ok,'every step goes to a neighbouring hex');assert.ok(r.atacou);assert.equal(r.dist,1);assert.equal(r.passos,r.inicio-1);
 });
