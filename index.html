@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="versao-site" content="2026-10-16.1"><!-- a cada deploy: trocar aqui, em VERSAO_SITE e nos ?v= dos scripts locais -->
+<meta name="versao-site" content="2026-10-30.1"><!-- a cada deploy: trocar aqui, em VERSAO_SITE e nos ?v= dos scripts locais -->
 <script id="auto-update">
 /* auto-atualização: o GitHub Pages cacheia 10 min; compara a versão do index no servidor com a desta página e recarrega se mudou */
 (function(){
@@ -1203,11 +1203,11 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
 <div id="ghost"></div>
 
 <script async src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
-<script src="tibia-assets/sprites15.js?v=2026-10-16.1"></script>
-<script src="tibia-assets/combate15.js?v=2026-10-16.1"></script>
+<script src="tibia-assets/sprites15.js?v=2026-10-30.1"></script>
+<script src="tibia-assets/combate15.js?v=2026-10-30.1"></script>
 <script>
 'use strict';
-const VERSAO_SITE='2026-10-16.1';   // bumpar junto com <meta versao-site> e os ?v= dos scripts a cada deploy
+const VERSAO_SITE='2026-10-30.1';   // bumpar junto com <meta versao-site> e os ?v= dos scripts a cada deploy
 /* =====================================================================================
    TIBIA TACTICS  -  auto-battler estilo TFT com visual do Tibia
    Parte 1: dados (unidades, sinergias, itens, monstros). Nada aqui toca o DOM.
@@ -3795,7 +3795,7 @@ function mostrarMenu(){UI.estado='menu';$('app').classList.remove('ver-itens','v
   telaHTML(`${htmlBrasas()}<div class="painel modal menu-ini"><div class="mi-esq"><h1 class="logo-t">Tibia Tactics</h1><div class="sub sub-ini">Auto-battler de Tibia</div>
     <div class="palco" id="heroi-palco">${htmlPalcoHeroi()}</div>
     <div class="herois">${VOCS.map(v=>`<div class="heroi ${UI.voc===v?'sel':''}" data-v="${v}"><canvas width="56" height="56" data-av="${v}"></canvas>${{knight:'Knight',paladin:'Paladin',sorcerer:'Sorcerer',druid:'Druid'}[v]}</div>`).join('')}</div></div>
-    <div class="mi-dir">${htmlStatsMenu()}<div class="menu menu-p"><button class="bt primario" id="b-jogar">Jogar</button><button class="bt" id="b-online">Jogar online</button><button class="bt" id="b-como">Como jogar</button><button class="bt" id="b-rec">Recordes</button><button class="bt" id="b-cartas">Novas cartas</button>${telaCheiaOk()?'<button class="bt" id="b-tela">Tela cheia</button>':''}</div>${toque()&&celularEmPe()&&!UI.dicaGiroFechada?'<p class="dica-giro" id="dica-giro"><span>Dica: gire o celular para jogar deitado</span><button type="button" id="dica-giro-x" aria-label="Fechar dica">×</button></p>':''}<p class="versao-jogo">Fase 5 · Etapa 4 — cartas por custo, magias mais inteligentes e ajustes</p></div></div>`);
+    <div class="mi-dir">${htmlStatsMenu()}<div class="menu menu-p"><button class="bt primario" id="b-jogar">Jogar</button><button class="bt" id="b-online">Jogar online</button><button class="bt" id="b-como">Como jogar</button><button class="bt" id="b-rec">Recordes</button><button class="bt" id="b-cartas">Novas cartas</button>${telaCheiaOk()?'<button class="bt" id="b-tela">Tela cheia</button>':''}</div>${toque()&&celularEmPe()&&!UI.dicaGiroFechada?'<p class="dica-giro" id="dica-giro"><span>Dica: gire o celular para jogar deitado</span><button type="button" id="dica-giro-x" aria-label="Fechar dica">×</button></p>':''}<p class="versao-jogo">Fase 5 · Etapa 5 — interface estilo TFT: tabuleiro maior, sinergias ao lado, itens em menu e juros dos rivais</p></div></div>`);
   retratosPend();pintarHeroiAnim(performance.now());$('tela').classList.add('menu');$('b-jogar').onclick=novaPartida;$('b-online').onclick=()=>mostrarOnline();$('b-como').onclick=()=>mostrarComoJogar(mostrarMenu);$('b-rec').onclick=mostrarRecordes;$('b-cartas').onclick=mostrarNovasCartas;
   {const bt=$('b-tela');if(bt)bt.onclick=alternarTelaCheia;const dx=$('dica-giro-x');if(dx)dx.onclick=()=>{UI.dicaGiroFechada=true;$('dica-giro').remove();};}
   ligarHerois();}
@@ -3838,7 +3838,8 @@ function iniciarDemo(){UI.demoBioma=BIOMAS[Math.floor(Math.random()*BIOMAS.lengt
    Camada de rede com dois transportes de mesma interface: PeerJS (WebRTC, real) e BroadcastChannel (?rede=local, duas abas).
    Mensagens JSON {t:tipo,...}; o handshake leva a versão do protocolo.
    ===================================================================================== */
-const PROTO=10; // 10 (Fase 5, etapa 4): ondas escolhem a direção que acerta mais inimigos (u.dir acompanha); curandeiros nerfados (magias de cura -25%, traço 1%/3% por 2 s); versões antigas não simulam o mesmo combate.
+const PROTO=11; // 11 (Fase 5, etapa 5): interface estilo TFT; a lista de jogadores enviada aos convidados inclui o ouro de cada um (campo ou)
+// Histórico: const PROTO=10; // 10 (Fase 5, etapa 4): ondas escolhem a direção que acerta mais inimigos (u.dir acompanha); curandeiros nerfados (magias de cura -25%, traço 1%/3% por 2 s); versões antigas não simulam o mesmo combate.
 // Histórico: const PROTO=9; // 9 (Fase 5, etapa 3): runas consumíveis (loja, mochila, armar/desarmar; as armadas viajam na equipe da luta: eq.ru/re no time e s.ru na unidade); snapshots ganham rl/mr/ra; comandos comprarRuna/armar/desarmar; versões antigas não simulam o mesmo combate.
 // Histórico: const PROTO=8; // 8 (Fase 5, etapa 3): bênçãos (escolha 1 de 3; as de combate viajam na equipe da luta, meta.bn); snapshots ganham bn/ob; comandos bencao/bencaoRr; versões antigas não simulam o mesmo combate.
 // Histórico: const PROTO=7; // 7 (Fase 5): poderes das vocações (ativo + passivo viajam na equipe da luta)
