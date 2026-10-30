@@ -1010,7 +1010,34 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
 /* separador SINERGIAS */
 /* separador SINERGIAS b */
 /* ===== UI-TFT ITENS: inicio ===== */
-/* (reservado) */
+/* inventário em menu suspenso (só desktop): no canto inferior esquerdo do tabuleiro fica a barra #itens-barra (botão "Itens" com contador + Forjar/Receitas);
+   o painel #itens vira um popover sobre o tabuleiro. menuItensSinc() move #itens e os botões para lá no desktop e os devolve ao #base no celular */
+#itens-barra{display:none}
+@media (min-width:901px) and (min-height:541px){
+ #itens-barra{position:absolute;left:8px;bottom:8px;z-index:31;display:flex;align-items:center;gap:4px;line-height:normal}
+ #app.menu #itens-barra,#app.menu #cvbox>#itens{display:none}
+ #itens-barra .bts{display:flex;gap:4px}#itens-barra .bts .bt{padding:5px 9px;font-size:10px;letter-spacing:.04em}
+ #bt-itens-menu{display:inline-flex;align-items:center;gap:6px;padding:4px 10px 4px 6px;font-size:12px;position:relative;background:linear-gradient(#262a3b,#12141e);border-color:#6b5a2e;box-shadow:0 2px 8px #000c}
+ #bt-itens-menu img{width:22px;height:22px;image-rendering:pixelated}
+ #bt-itens-menu .seta{font-size:8px;opacity:.75;transition:transform .15s}
+ #bt-itens-menu[aria-expanded="true"]{border-color:#e6d27a;color:#fff1c4;background:linear-gradient(#5a4a1c,#2d230c)}
+ #bt-itens-menu[aria-expanded="true"] .seta{transform:rotate(180deg)}
+ #bt-itens-menu .badge{min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:#8f241c;border:1px solid #e8584a;color:#fff;font:700 10px/16px Verdana,sans-serif;text-align:center;box-sizing:border-box}
+ #bt-itens-menu .badge[hidden]{display:none}
+ #bt-itens-menu.novo .badge{animation:itens-novo .55s ease-in-out 4 alternate}
+ #bt-itens-menu.novo{animation:itens-brilho .55s ease-in-out 4 alternate}
+ @keyframes itens-novo{from{transform:scale(1);background:#8f241c}to{transform:scale(1.35);background:#e8a11c;border-color:#ffe08a}}
+ @keyframes itens-brilho{from{box-shadow:0 2px 8px #000c}to{box-shadow:0 0 14px #ffd24acc}}
+ #app #cvbox>#itens{display:none;position:absolute;left:8px;bottom:52px;z-index:32;width:232px;max-height:calc(100% - 64px);overflow:auto;padding:8px;line-height:normal;
+  grid-column:auto;grid-row:auto;min-height:0;height:auto;background:linear-gradient(180deg,#191c29f7,#0d0f17f7);border:1px solid var(--ouro2);box-shadow:inset 0 0 0 1px #05060a,0 8px 24px #000e;border-radius:4px;transition:opacity .12s}
+ #app #cvbox>#itens.aberto{display:block}
+ #app #cvbox>#itens h3{margin-bottom:6px}
+ #app #cvbox>#itens #grade-itens{grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}#app #cvbox>#itens .slot{max-width:none}
+ /* arrastando um item/runa: fora do popover ele fica quase transparente e deixa passar o ponteiro (soltar sobre as unidades por baixo) */
+ #app #cvbox>#itens.arrasto{opacity:.92}
+ #app #cvbox>#itens.arrasto.fora{opacity:.12;pointer-events:none}
+}
+@media (prefers-reduced-motion:reduce){#bt-itens-menu.novo,#bt-itens-menu.novo .badge{animation:none}}
 /* ===== UI-TFT ITENS: fim ===== */
 /* separador ITENS */
 /* separador ITENS b */
@@ -3039,7 +3066,46 @@ function forjarUI(){const p=UI.jog;if(!p||UI.estado!=='jogo')return;const par=ac
   usarPlano({tipo:'forjar',a:par.c,b:par.c,r:codForjar(par.c,par.c),cmd:{t:'forjar',a:par.a,ca:par.c,b:par.b,cb:par.c}},{slot:par.a,slot2:par.b});}
 function hudItens(){const p=UI.jog;if(!p)return;let h='';
   for(let i=0;i<MAX_ITENS;i++){const c=p.itens[i];h+=`<div class="slot ${c!==undefined?'cheio':''}" data-s="${i}">${c!==undefined?htmlItem(c,{slot:i}):''}</div>`;}
-  $('grade-itens').innerHTML=h;const f=$('bt-forjar');if(f)f.style.display=acharParForja(p)?'':'none';if($('receita-lista'))atualizarReceitas();hudRunas();}
+  $('grade-itens').innerHTML=h;const f=$('bt-forjar');if(f)f.style.display=acharParForja(p)?'':'none';if($('receita-lista'))atualizarReceitas();hudRunas();menuItensBadge();}
+/* ---------- inventário em menu suspenso (desktop) ----------
+   No desktop o painel #itens sai do rodapé e vira um popover no canto inferior esquerdo do tabuleiro, aberto pelo botão "Itens" (#bt-itens-menu, com contador
+   de itens soltos + runas guardadas, que pisca quando chega algo novo). Forjar/Receitas ficam ao lado do botão, sempre à mão. Fecha com Esc, clique fora ou
+   o próprio botão; ao arrastar um item para fora do popover ele fica transparente e deixa o ponteiro passar até as unidades. No celular tudo volta ao #base. */
+const MQ_ITENS='(min-width:901px) and (min-height:541px)';
+const MI={mq:null,barra:null,bt:null,n:-1,t:0};
+const menuItensDesk=()=>!!(MI.mq&&MI.mq.matches);
+const menuItensAberto=()=>$('itens').classList.contains('aberto');
+function menuItensCriar(){if(MI.barra||typeof document==='undefined')return;
+  const b=document.createElement('div');b.id='itens-barra';
+  b.innerHTML=`<button class="bt peq" id="bt-itens-menu" type="button" aria-expanded="false" aria-controls="itens" aria-haspopup="true" title="Inventário de itens"><img src="${ICO.car}" alt=""><span>Itens</span><span class="badge" hidden></span><span class="seta" aria-hidden="true">▲</span></button>`;
+  MI.barra=b;MI.bt=b.firstChild;$('itens').setAttribute('role','group');$('itens').setAttribute('aria-label','Inventário de itens');
+  MI.bt.addEventListener('click',()=>menuItens(!menuItensAberto()));
+  MI.mq=matchMedia(MQ_ITENS);const f=()=>menuItensSinc();if(MI.mq.addEventListener)MI.mq.addEventListener('change',f);else MI.mq.addListener(f);
+  document.addEventListener('keydown',menuItensTecla,true);document.addEventListener('pointerdown',menuItensFora,true);
+  addEventListener('pointermove',menuItensArrasto);addEventListener('pointerup',menuItensSoltou);addEventListener('pointercancel',menuItensSoltou);
+  menuItensSinc();}
+/* desktop: barra + popover dentro de #cvbox; celular: #itens volta ao rodapé (antes da loja) e os botões voltam ao título */
+function menuItensSinc(){if(!MI.barra)return;const it=$('itens'),bts=document.querySelector('#bt-rec').parentNode,box=$('cvbox');
+  if(menuItensDesk()){if(MI.barra.parentNode!==box)box.appendChild(MI.barra);if(it.parentNode!==box)box.appendChild(it);if(bts.parentNode!==MI.barra)MI.barra.appendChild(bts);}
+  else{menuItens(false,true);const base=$('base');if(it.parentNode!==base)base.insertBefore(it,$('loja'));const h3=it.querySelector('h3');if(bts.parentNode!==h3)h3.appendChild(bts);}
+  menuItensBadge();}
+function menuItens(on,mudo){if(!MI.bt)return;const it=$('itens');on=!!on&&menuItensDesk()&&UI.estado==='jogo';
+  it.classList.toggle('aberto',on);it.classList.remove('arrasto','fora');MI.bt.setAttribute('aria-expanded',on?'true':'false');
+  if(on){MI.bt.classList.remove('novo');esconderTip();}
+  else if(mudo!==true&&mudo!=='sem-foco'&&it.contains(document.activeElement))MI.bt.focus();}
+function menuItensBadge(){if(!MI.bt)return;const p=UI.jog,n=p&&UI.estado==='jogo'?p.itens.length+(p.mr||[]).length:0,bg=MI.bt.querySelector('.badge');
+  bg.textContent=n;bg.hidden=!n;MI.bt.setAttribute('aria-label','Itens'+(n?` (${n} no inventário)`:''));
+  if(n>MI.n&&MI.n>=0&&!menuItensAberto()){MI.bt.classList.remove('novo');void MI.bt.offsetWidth;MI.bt.classList.add('novo');clearTimeout(MI.t);MI.t=setTimeout(()=>MI.bt.classList.remove('novo'),2400);}
+  MI.n=n;if(UI.estado!=='jogo'&&menuItensAberto())menuItens(false,true);}
+function menuItensTecla(ev){if(ev.key!=='Escape'||!menuItensAberto()||consultaAtual||UI.alvoRuna!==null||UI.alvoPoder||UI.drag)return;
+  if(ev.target.closest&&ev.target.closest('input,textarea,select'))return;
+  ev.preventDefault();ev.stopImmediatePropagation();menuItens(false,true);MI.bt.focus();}
+function menuItensFora(ev){if(!menuItensAberto()||ev.button>0)return;const t=ev.target;
+  if(!t.closest||t.closest('#itens,#itens-barra,#tela,#tip'))return;menuItens(false,'sem-foco');}
+/* durante o arrasto de um item ou runa do popover: sobre o popover ele fica visível (combinar com outro item); fora dele, quase invisível e sem capturar o ponteiro */
+function menuItensArrasto(ev){const d=UI.drag;if(!d||(d.tipo!=='item'&&d.tipo!=='runa')||!menuItensAberto())return;const it=$('itens'),r=it.getBoundingClientRect();
+  it.classList.add('arrasto');it.classList.toggle('fora',!(ev.clientX>=r.left&&ev.clientX<=r.right&&ev.clientY>=r.top&&ev.clientY<=r.bottom));}
+function menuItensSoltou(){const it=$('itens');if(it)it.classList.remove('arrasto','fora');}
 /* ---------- runas: ícones em pixel art (pedra cinza + glifo colorido, 32x32, desenhados em canvas no início; nenhum arquivo) ---------- */
 const GLIFOS={1:['...###...','...###...','...###...','#########','#########','#########','...###...','...###...','...###...'],
   2:['.#######.','#########','##.###.##','##.###.##','#########','.#######.','..#.#.#..','..#####..','.........'],
@@ -4121,7 +4187,7 @@ function iniciar(){fazIconesRuna();cv=$('cv');cx=cv.getContext('2d');ajustarCanv
   lerCfg();ligarCfg();addEventListener('pointerdown',somIniciar,{once:true});addEventListener('keydown',somIniciar,{once:true});
   $('jogadores').addEventListener('click',e=>{const r=e.target.closest('.jg');if(r){espiarJog(+r.dataset.id);if(celularEmPe())$('app').classList.remove('ver-jog');}});
   $('runas').addEventListener('click',e=>{const sl=e.target.closest('[data-s]');if(sl)runaClique(+sl.dataset.s);});
-  $('runas').addEventListener('pointerdown',pointerDownRuna);
+  $('runas').addEventListener('pointerdown',pointerDownRuna);menuItensCriar();
   $('runarm').addEventListener('click',e=>{const sl=e.target.closest('[data-a]');if(sl&&UI.estado==='jogo'&&!UI.pausado&&!UI.espectador)desarmarUI(+sl.dataset.a);});
   $('bencao').addEventListener('click',e=>{const c=e.target.closest('.bn-carta');if(c){bencaoEscolher(+c.dataset.i);return;}if(e.target.closest('#bn-rr'))bencaoRr();else if(e.target.closest('#bn-ver'))bencaoVer(true);});
   $('bn-pill').onclick=()=>bencaoVer(false);
