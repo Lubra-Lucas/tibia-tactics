@@ -1015,7 +1015,31 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
 /* separador ITENS */
 /* separador ITENS b */
 /* ===== UI-TFT JOGADORES: inicio ===== */
-/* (reservado) */
+/* linhas compactas (cabem ~8 numa coluna estreita de ~210px) com ouro e juros de cada jogador */
+#jogadores{gap:2px}
+.jg{grid-template-columns:34px minmax(0,1fr);gap:5px;padding:3px 4px;margin-bottom:0}
+.jg .av{width:34px;height:34px}
+.jg .nm{font-size:10.5px;gap:3px;text-overflow:clip}
+.jg .nm .n{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.jg .hpb{height:8px;margin-top:2px}
+.jg .rod{margin-top:2px;height:10px;gap:2px}
+.jg .rod b{width:7px;height:7px}
+.jg .bnl{margin-left:2px}
+.jg.eu{border-color:#5b8fd6;background:linear-gradient(90deg,#14233d,#0b0d14 75%);box-shadow:inset 3px 0 0 #5b8fd6}
+.jg.eu.opo{background:linear-gradient(90deg,#2d2310,#14233d)}
+.jg .jgo{margin-left:auto;flex:none;display:flex;align-items:center;gap:2px;font:700 10px Verdana;color:#ffe08a;text-shadow:0 1px 0 #000}
+.jg .jgo[hidden]{display:none}
+.jg .nm .jgo img{width:10px;height:10px;display:block}
+.jg .jgo b{min-width:12px}
+.jg .jgo .jr{font:700 9px Verdana;font-style:normal;color:#8fe6a0}
+.jg .jgo .jr.z{color:#6d6a5e}
+.jg .jgo .jp{display:flex;gap:1px;align-items:flex-end}
+.jg .jgo .jp u{width:3px;height:7px;background:#25231b;border:1px solid #3a3424;border-radius:1px;text-decoration:none}
+.jg .jgo .jp u.on{background:#f0c64a;border-color:#ffe48a;box-shadow:0 0 3px #f0c64a88}
+.jg .nm em:empty{display:none}
+.jg .nm em:not(:empty)+.jgo{margin-left:4px}
+.jg .jgo .jr+.jp{margin-left:1px}
+@media (orientation:landscape) and (max-height:540px){.jg .jgo .jp{display:none}}   /* coluna estreita do celular deitado: fica só o +N */
 /* ===== UI-TFT JOGADORES: fim ===== */
 /* separador JOGADORES */
 /* separador JOGADORES b */
@@ -2867,7 +2891,7 @@ function htmlTip(k){const [t,a]=k.split(':'),p=UI.jog;
   if(t==='rn'){const R=RUNA[+a];if(!R)return null;
     return `<h4><span>${esc(R.n)}</span><b style="color:#fff1c4">${R.custo} ouro</b></h4><div class="sb">Runa de ${R.alvo?'unidade':'time'} · só na próxima luta</div><div>${esc(R.d())}</div><div class="sb" style="margin:6px 0 0">${R.alvo?'Mochila: clique e escolha uma unidade (ou arraste até ela).':'Mochila: clique para armar.'} Máx. ${RN.armMax} armadas por luta.</div>`;}
   if(t==='bt'&&a==='runas')return `<h4><span>Mochila de runas</span></h4><div>Guarda até ${RN.mochila} runas (as armadas também ocupam vaga). Na preparação, clique numa runa para armá-la; clique numa armada (brilhando) para devolver. As armadas são gastas na PRÓXIMA luta.</div>`;
-  if(t==='jog'){const q=G.jog[+a],hs=(q.hist||[]);return `<h4><span>${esc(q.nome)}</span></h4>`+LTIP('Vida',Math.max(0,q.hp))+LTIP('Nível',q.nivel)+LTIP('Sequência',q.seq>0?q.seq+' vitórias':q.seq<0?(-q.seq)+' derrotas':'-')+
+  if(t==='jog'){const q=G.jog[+a],hs=(q.hist||[]);return `<h4><span>${esc(q.nome)}</span></h4>`+LTIP('Vida',Math.max(0,q.hp))+LTIP('Nível',q.nivel)+(q.vivo&&ouroConhecido(q)?LTIP('Ouro',q.ouro)+LTIP('Juros (1 a cada 10, máx. '+jurosMax(q)+')','+'+jurosDe(q)):'')+LTIP('Sequência',q.seq>0?q.seq+' vitórias':q.seq<0?(-q.seq)+' derrotas':'-')+
     (hs.length?LTIP('Últimas rodadas',hs.map(r=>({v:'V',d:'D',e:'E'}[r])).join(' ')):'')+(q.bn&&q.bn.length?`<div class="sb" style="margin:4px 0 0">Bênçãos: ${q.bn.map(id=>esc(BEN[id].n)).join(', ')}</div>`:'')+(q.vivo?`<div class="sb" style="margin:4px 0 0">${q===p?'Clique para voltar ao seu tabuleiro':'Clique para ver o tabuleiro'}</div>`:`<div class="sb">Eliminado em ${ROMANO(q.colocacao)} lugar</div>`);}
   if(t==='ouro'){const jm=jurosMax(p),juros=jurosDe(p),sq=bonusSeq(p.seq),th=temBn(p,8)?BN.thais:0,tot=5+juros+sq+th;
     let h=`<h4><span>Ouro</span><b style="color:#fff1c4">${p.ouro}</b></h4><div class="sb">Previsão para a próxima rodada</div>`+LTIP('Base','+5')+LTIP('Juros (1 a cada 10, máx. '+jm+')','+'+juros)+LTIP('Sequência de '+(p.seq<0?'derrotas':'vitórias'),'+'+sq)+(th?LTIP('Banco de Thais','+'+th):'')+LTIP('Total','+'+tot);
@@ -2935,7 +2959,7 @@ function retratosPend(r){r=r||document;
 const OLHO='<svg class="olho" viewBox="0 0 14 10"><path d="M1 5C3 1.5 11 1.5 13 5 11 8.5 3 8.5 1 5z" fill="none" stroke="#79b8ff" stroke-width="1.2"/><circle cx="7" cy="5" r="1.8" fill="#79b8ff"/></svg>';
 function hudJogadores(){if(!G)return;const cont=$('jogadores'),opo=oponenteLocal();
   if(cont._g!==G||cont.children.length!==G.jog.length){cont._g=G;
-    cont.innerHTML=G.jog.map(q=>`<div class="jg" data-id="${q.id}" data-tip="jog:${q.id}"><span class="pos"></span><div class="av"><canvas width="40" height="40"></canvas><span class="lv"></span></div><div class="inf"><div class="nm"><img src="${ICO.pvp}" alt="" style="display:none"><span class="n"></span><em></em></div><div class="hpb"><i class="ch" style="width:100%"></i><i class="h" style="width:100%"></i><span class="hpn"></span></div><div class="rod"><span class="hs"></span><span class="bnl"></span><span class="seq"></span></div></div>${OLHO}</div>`).join('');}
+    cont.innerHTML=G.jog.map(q=>`<div class="jg" data-id="${q.id}" data-tip="jog:${q.id}"><span class="pos"></span><div class="av"><canvas width="40" height="40"></canvas><span class="lv"></span></div><div class="inf"><div class="nm"><img src="${ICO.pvp}" alt="" style="display:none"><span class="n"></span><em></em><span class="jgo" hidden><img src="${ICO.ouro}" alt=""><b></b><i class="jr"></i><span class="jp"></span></span></div><div class="hpb"><i class="ch" style="width:100%"></i><i class="h" style="width:100%"></i><span class="hpn"></span></div><div class="rod"><span class="hs"></span><span class="bnl"></span><span class="seq"></span></div></div>${OLHO}</div>`).join('');}
   const ord=G.jog.slice().sort((a,b)=>(b.vivo-a.vivo)||(a.vivo?b.hp-a.hp:a.colocacao-b.colocacao));
   ord.forEach((q,i)=>{const el=cont.children[q.id];if(!el)return;const hum=(q.humano||q.hum)&&!q.local;
     el.style.order=i;el.className='jg'+(q.local?' eu':'')+(hum?' hum':'')+(opo===q?' opo':'')+(q.vivo?'':' morto')+(UI.espiar===q.id?' espiando':'');
@@ -2947,8 +2971,13 @@ function hudJogadores(){if(!G)return;const cont=$('jogadores'),opo=oponenteLocal
     const hpv=(UI.hpAtr&&UI.hpAtr.id===q.id)?UI.hpAtr.hp:q.hp,pc=Math.max(0,Math.min(100,hpv)),b=el.querySelector('.h');b.style.width=pc+'%';b.style.backgroundColor=corVida(pc/100);el.querySelector('.ch').style.width=pc+'%';el.querySelector('.hpn').textContent=Math.max(0,hpv);
     const hs=(q.hist||[]).slice(-5),pad=5-hs.length,hh=Array.from({length:5},(_,k)=>k<pad?'<b></b>':`<b class="${hs[k-pad]}"></b>`).join('');
     const hsEl=el.querySelector('.hs');if(hsEl._h!==hh){hsEl._h=hh;hsEl.innerHTML=hh;hsEl.style.display='flex';hsEl.style.gap='3px';}
+    {const og=el.querySelector('.jgo'),vis=q.vivo&&ouroConhecido(q);og.hidden=!vis;   // ouro e juros (estilo TFT): mesma regra da renda (jurosDe)
+      if(vis){const j=jurosDe(q),jm=jurosMax(q),k=q.ouro+'|'+j+'|'+jm;if(og._h!==k){og._h=k;og.dataset.ouro=q.ouro;og.dataset.juros=j;og.querySelector('b').textContent=q.ouro;
+        const jr=og.querySelector('.jr');jr.textContent='+'+j;jr.classList.toggle('z',!j);og.querySelector('.jp').innerHTML=Array.from({length:jm},(_,n)=>n<j?'<u class="on"></u>':'<u></u>').join('');}}}
     {const bl=el.querySelector('.bnl'),bh=iconesBn(q.bn);if(bl._h!==bh){bl._h=bh;bl.innerHTML=bh;}}
     const sq=Math.abs(q.seq),sEl=el.querySelector('.seq'),sh=sq>=2?`${FLAME}${sq}`:'';if(sEl._h!==sh){sEl._h=sh;sEl.innerHTML=sh;}sEl.className='seq '+(q.seq>0?'w':'l');});}
+/* o convidado online só conhece o ouro dos outros se o anfitrião mandar (campo ou do pubList; anfitrião antigo não manda) */
+function ouroConhecido(q){return !q.semOuro;}
 /* balão de emote (fala amarela do Tibia) sobre a linha do jogador */
 function falaNaLista(id,txt){const el=$('jogadores').children[id];if(!el)return;el.querySelectorAll('.fala').forEach(e=>e.remove());const s=document.createElement('span');s.className='fala';s.textContent=txt;el.appendChild(s);setTimeout(()=>s.remove(),3100);}
 
@@ -3753,7 +3782,7 @@ function onlineSair(){clearInterval(Online.tq);Online.tq=null;
 /* ---------- snapshots (o anfitrião é a única fonte da verdade) ---------- */
 /* tabuleiro público de um jogador (posições, estrelas e itens; nada da loja nem do ouro): [id,estrelas,x,y,itens|0] */
 const tbSer=q=>{const o=[];q.tab.forEach((l,y)=>l.forEach((inst,x)=>{if(inst)o.push([inst.id,inst.e,x,y,inst.itens.length?inst.itens.slice():0]);}));return o;};
-const pubList=com=>G.jog.map(q=>{const o={id:q.id,nome:q.nome,hp:q.hp,nivel:q.nivel,seq:q.seq,vivo:q.vivo,col:q.colocacao,voc:q.voc,hum:!!q.humano,pr:!!q.pronto,hh:(q.hist||[]).join(''),bn:q.bn||[]};if(com)o.tb=tbSer(q);return o;});
+const pubList=com=>G.jog.map(q=>{const o={id:q.id,nome:q.nome,hp:q.hp,nivel:q.nivel,seq:q.seq,vivo:q.vivo,col:q.colocacao,voc:q.voc,hum:!!q.humano,pr:!!q.pronto,hh:(q.hist||[]).join(''),bn:q.bn||[],ou:q.ouro};if(com)o.tb=tbSer(q);return o;});
 const snapPriv=p=>({ouro:p.ouro,xp:p.xp,nivel:p.nivel,hp:p.hp,seq:p.seq,travada:p.travada,podU:p.podU,podEsc:p.podEsc,podRuna:p.podRuna,cong:p.cong,vivo:p.vivo,colocacao:p.colocacao,banco:p.banco,tab:p.tab,itens:p.itens,loja:p.loja,renda:p.renda||null,drop:p.drop||null,nvitorias:p.nvitorias,pronto:!!p.pronto,bn:p.bn||[],ob:p.ob||null,rl:p.rl||null,mr:p.mr||[],ra:p.ra||[]});
 const carSer=()=>G.car?{itens:G.car.itens.slice(),ordem:G.car.ordem.map(q=>q.id),idx:G.car.idx,esc:G.car.esc}:null;
 function snapMsg(cl,t,extra){return Object.assign({t,rodada:G.rodada,fase:G.fase,info:G.info,fim:G.fim,jog:pubList(t==='rodada'||t==='res'),eu:snapPriv(cl.p),ack:cl.ack,car:carSer(),
@@ -3886,6 +3915,7 @@ function sombraG(m){const g={rodada:m.rodada,jog:[],pool:{},uid:0,fase:m.fase,fi
   const me=g.jog[Online.meuId];me.humano=true;me.local=true;return g;}
 function pubAplicar(lista){lista.forEach(pj=>{const q=G.jog[pj.id];if(!q)return;q.hist=pj.hh?pj.hh.split(''):[];if(q===UI.jog)return;
   q.nome=pj.nome;q.hp=pj.hp;q.nivel=pj.nivel;q.seq=pj.seq;q.vivo=pj.vivo;q.colocacao=pj.col;q.voc=pj.voc;q.hum=pj.hum;q.pronto=pj.pr;q.hist=pj.hh?pj.hh.split(''):[];q.bn=pj.bn||[];
+    q.semOuro=typeof pj.ou!=='number';if(!q.semOuro)q.ouro=pj.ou;              // ouro público (ou): sem o campo, a lista esconde o ouro
     if(pj.tb){q.tab=[0,1,2,3].map(()=>new Array(NC).fill(null));pj.tb.forEach(([id,e,x,y,it],k)=>{if(U[id]&&y>=0&&y<4&&x>=0&&x<NC)q.tab[y][x]={uid:q.id*1000+k,id,e,itens:it||[]};});}});}
 function privAplicar(me,pv){const dr=UI.drag,uid=dr&&dr.tipo==='un'&&dr.inst?dr.inst.uid:null;
   Object.assign(me,{ouro:pv.ouro,xp:pv.xp,nivel:pv.nivel,hp:pv.hp,seq:pv.seq,travada:pv.travada,podU:pv.podU,podEsc:pv.podEsc,podRuna:pv.podRuna,cong:pv.cong,vivo:pv.vivo,colocacao:pv.colocacao,banco:pv.banco,tab:pv.tab,itens:pv.itens,loja:pv.loja,renda:pv.renda,drop:pv.drop,nvitorias:pv.nvitorias,pronto:pv.pronto,bn:pv.bn||[],ob:pv.ob||null,rl:pv.rl||null,mr:pv.mr||[],ra:pv.ra||[]});
