@@ -97,7 +97,7 @@ class ItensCenaTests(unittest.TestCase):
         self.page.evaluate('UI.jog.itens=[3264,3357]; hudItens()')
         slot = self.page.locator('#grade-itens .slot[data-s="0"]').bounding_box()
         box = self.page.locator('#cv').bounding_box()
-        bank = self.page.evaluate('(()=>{const k=cv.getBoundingClientRect().width/cv.width;return {x:(BEN_X+16)*Z*k,y:(BEN_Y+16)*Z*k}})()')
+        bank = self.page.evaluate("ptCv({onde:'banco',i:0})")
         self.drag((slot['x']+slot['width']/2, slot['y']+slot['height']/2), (box['x']+bank['x'], box['y']+bank['y']))
         self.assertEqual(self.page.evaluate('UI.jog.banco.find(Boolean).itens'), [3264])
         self.assertEqual(self.page.evaluate('UI.jog.itens'), [3357])

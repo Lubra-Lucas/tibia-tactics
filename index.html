@@ -1480,7 +1480,7 @@ const VERSAO_SITE='2026-10-30.1';   // bumpar junto com <meta versao-site> e os 
    TIBIA TACTICS  -  auto-battler estilo TFT com visual do Tibia
    Parte 1: dados (unidades, sinergias, itens, monstros). Nada aqui toca o DOM.
    ===================================================================================== */
-const TS=32,NC=8,NR=8;                       // tile de 32 px, arena 8x8 (lado A embaixo = linhas 4..7, lado B em cima = 0..3)
+const TS=32,NC=7,NR=8;                       // sprite de 32 px; arena hexagonal 7x8 como no TFT (lado A embaixo = linhas 4..7, lado B em cima = 0..3)
 const SPR=window.SPR15||{roupas:{},criaturas:{},cadaveres:{}};
 const CB=window.COMB15||{efeitos:{},tiros:{},me:{},ani:{},magias:[],criaturas:{}};
 const E=n=>CB.me[n]||0, AN=n=>CB.ani[n]||0;   // nome -> id do efeito / míssil
@@ -1777,13 +1777,43 @@ function ondaPvE(est,n){
    Parte 2: MOTOR DE COMBATE (tick de 100 ms, determinístico pela semente, sem DOM nem canvas)
    Efeitos visuais só são gravados quando C.vis=true (modo silencioso para os bots).
    ===================================================================================== */
-const DIR8=[[0,-1],[1,0],[0,1],[-1,0],[1,-1],[1,1],[-1,1],[-1,-1]];
-const cheb=(a,b)=>Math.max(Math.abs(a.x-b.x),Math.abs(a.y-b.y));
-const dist2=(a,b)=>(a.x-b.x)*(a.x-b.x)+(a.y-b.y)*(a.y-b.y);
-function dirPara(a,b){const dx=b.x-a.x,dy=b.y-a.y;return Math.abs(dx)>=Math.abs(dy)?(dx>0?1:3):(dy>0?2:0);}   // 0 norte, 1 leste, 2 sul, 3 oeste
-/* área de magia: matriz virada ao norte; célula 2/3 = centro (3 também é atingida); gira 90° por direção */
-function tilesArea(mat,cx,cy,dir){let px=0,py=0;mat.forEach((l,y)=>l.forEach((v,x)=>{if(v===2||v===3){px=x;py=y;}}));const o=[];
-  mat.forEach((l,y)=>l.forEach((v,x)=>{if(v!==1&&v!==3)return;let dx=x-px,dy=y-py;for(let k=0;k<dir;k++){const t=dx;dx=-dy;dy=t;}o.push([cx+dx,cy+dy]);}));return o;}
+/* ---- geometria hexagonal (como no TFT): 7 colunas x 8 linhas, hexágonos "de ponta para cima", linhas ímpares deslocadas meia casa para a direita (odd-r).
+   Com 8 linhas (número par) a arena é simétrica por rotação de 180°: (x,y) -> (NC-1-x, NR-1-y), então os dois lados enxergam o mesmo tabuleiro.
+   Coordenadas guardadas: (x,y) "offset" (occ[y*NC+x]); as contas usam coordenadas axiais/cúbicas (q,r). ---- */
+const HEX_D=[[1,0],[1,-1],[0,-1],[-1,0],[-1,1],[0,1]];        // direções axiais 0..5: leste, nordeste, noroeste, oeste, sudoeste, sudeste (y cresce para baixo)
+const axQ=(x,y)=>x-((y-(y&1))>>1);                              // offset -> axial (q); r = y
+const offX=(q,r)=>q+((r-(r&1))>>1);                             // axial -> offset (x); y = r
+const distH=(a,b)=>{const dq=axQ(a.x,a.y)-axQ(b.x,b.y),dr=a.y-b.y;return (Math.abs(dq)+Math.abs(dr)+Math.abs(dq+dr))/2;};   // distância em hexágonos
+const vizH=(x,y,d)=>{const q=axQ(x,y)+HEX_D[d][0],r=y+HEX_D[d][1];return [offX(q,r),r];};   // vizinho na direção d
+/* centro "geométrico" (hexágono regular, vizinhos a distância 1): X = q + r/2, Y = r·√3/2. dist2 usa o dobro de X e é inteiro: 4·d² = (2ΔX)² + 3Δr² */
+const hexXY=(x,y)=>({X:x+((y&1)?.5:0),Y:y*0.8660254037844386});
+const dist2=(a,b)=>{const dx=2*(a.x-b.x)+((a.y&1)-(b.y&1)),dy=a.y-b.y;return dx*dx+3*dy*dy;};
+/* hexágonos a distância exata k (anel) e até r (disco), na ordem axial fixa (determinística) */
+function anelH(cx,cy,k){if(k<=0)return [[cx,cy]];const o=[];let q=axQ(cx,cy)+HEX_D[4][0]*k,r=cy+HEX_D[4][1]*k;
+  for(let d=0;d<6;d++)for(let i=0;i<k;i++){o.push([offX(q,r),r]);q+=HEX_D[d][0];r+=HEX_D[d][1];}return o;}
+function discoH(cx,cy,R){const o=[];for(let k=0;k<=R;k++)anelH(cx,cy,k).forEach(c=>o.push(c));return o;}
+/* direção hexagonal (0..5) que melhor aponta de a para b (pelo ângulo real); empate: a de menor índice */
+const ANG_D=[0,60,120,180,240,300].map(g=>g*Math.PI/180);
+function angH(a,b){const A=hexXY(a.x,a.y),B=hexXY(b.x,b.y);return Math.atan2(-(B.Y-A.Y),B.X-A.X);}
+const difAng=(a,b)=>{let d=Math.abs(a-b)%(2*Math.PI);return d>Math.PI?2*Math.PI-d:d;};
+function dirHexPara(a,b){if(a.x===b.x&&a.y===b.y)return 0;const t=angH(a,b);let m=0,md=9;for(let d=0;d<6;d++){const v=difAng(t,ANG_D[d]);if(v<md-1e-9){md=v;m=d;}}return m;}
+/* direção do sprite (0 norte, 1 leste, 2 sul, 3 oeste) */
+const dirSpr=d=>[1,0,0,3,2,2][d];
+function dirPara(a,b){const A=hexXY(a.x,a.y),B=hexXY(b.x,b.y),dx=B.X-A.X,dy=B.Y-A.Y;return Math.abs(dx)>=Math.abs(dy)?(dx>0?1:3):(dy>0?2:0);}   // 0 norte, 1 leste, 2 sul, 3 oeste
+/* área de magia: a matriz do Tibia (virada ao norte; célula 2/3 = quem lança) vira uma forma hexagonal equivalente:
+   - centro no meio da matriz (ex.: 3x3) -> disco de raio (lado-1)/2;
+   - centro embaixo (ondas/cones) -> para cada linha à frente (distância k), os L hexágonos do anel k mais alinhados com a direção (L = nº de casas da linha).
+   O nº de casas atingidas é o mesmo da matriz quadrada. dir = direção hexagonal 0..5 */
+const FORMA_H=new Map();
+function formaHex(mat){let f=FORMA_H.get(mat);if(f)return f;let px=0,py=0;mat.forEach((l,y)=>l.forEach((v,x)=>{if(v===2||v===3){px=x;py=y;}}));
+  if(py*2===mat.length-1&&px*2===mat[0].length-1)f={disco:py};
+  else{const larg=[];for(let y=py-1;y>=0;y--){let n=0;mat[y].forEach(v=>{if(v===1||v===3)n++;});larg.push(n);}f={larg};}
+  FORMA_H.set(mat,f);return f;}
+function tilesArea(mat,cx,cy,dir){const f=formaHex(mat);if(f.disco!==undefined)return discoH(cx,cy,f.disco);
+  const o=[[cx,cy]],a0=ANG_D[((dir%6)+6)%6],c={x:cx,y:cy};
+  f.larg.forEach((L,i)=>{const k=i+1;if(L<=0)return;if(L%2===0)L++;
+    anelH(cx,cy,k).map(([x,y],j)=>({x,y,d:difAng(angH(c,{x,y}),a0),j})).sort((p,q)=>(p.d-q.d)||(p.j-q.j)).slice(0,L).forEach(h=>o.push([h.x,h.y]));});
+  return o;}
 const dentro=(x,y)=>x>=0&&y>=0&&x<NC&&y<NR;
 
 /* ---- estatísticas de uma unidade (molde + estrelas) ---- */
@@ -1808,7 +1838,7 @@ function criarCombate(eqA,eqB,o){o=o||{};
   C.un.forEach(u=>{const ie=u.ie;
     if(ie.escIni){darEscudo(C,u,u.hpM*ie.escIni,8000);fx(C,'magic_blue',u.x,u.y);}
     if(ie.furtivo)u.furtivoAte=ie.furtivo;
-    if(ie.auraArm)C.un.forEach(v=>{if(v!==u&&v.lado===u.lado&&cheb(u,v)<=1)v.arm+=ie.auraArm;});});
+    if(ie.auraArm)C.un.forEach(v=>{if(v!==u&&v.lado===u.lado&&distH(u,v)<=1)v.arm+=ie.auraArm;});});
   // bênçãos de combate (vêm em eq.bn, então host e convidados simulam o mesmo): 5 vida, 6 vel. de ataque, 10 fúria, 11 último suspiro, 15 ascensão, 18 regeneração
   [eqA,eqB].forEach((eq,lado)=>{const bn=eq.bn;if(!bn||!bn.length)return;const meus=C.un.filter(u=>u.lado===lado&&!u.inv&&!u.pve);
     if(bn.includes(5))meus.forEach(u=>{u.hpM=Math.round(u.hpM*(1+BN.pele));u.hp=u.hpM;});
@@ -1837,12 +1867,12 @@ function runaUn(C,u,k){const R=RN;
   if(k===1)u.uh=true;
   else if(k===6){u.muroAte=R.mw.dur;agendar(C,150,()=>{if(!u.vivo)return;fx(C,'magic_blue',u.x,u.y);txt(C,u.x,u.y-.5,'Magic Wall','#6fb8ff');});}
   else if(k===7){u.b.ace={ate:R.hs.dur,v:R.hs.ace};agendar(C,150,()=>{if(!u.vivo)return;fx(C,'magic_green',u.x,u.y);txt(C,u.x,u.y-.5,'Haste','#7dff9a');});}}
-/* centro da explosão: a casa com mais inimigos no raio 1 (desempate: mais vida somada; depois a primeira da varredura) */
+/* centro da explosão: o hexágono com mais inimigos no raio 1 (desempate: mais vida somada; depois a primeira da varredura) */
 function centroRuna(C,lado){let b=null,bn=-1,bh=-1;
-  for(let y=0;y<NR;y++)for(let x=0;x<NC;x++){let n=0,h=0;C.un.forEach(v=>{if(v.vivo&&v.lado!==lado&&cheb({x,y},v)<=1){n++;h+=v.hp;}});if(n>bn||(n===bn&&h>bh)){bn=n;bh=h;b=[x,y];}}
+  for(let y=0;y<NR;y++)for(let x=0;x<NC;x++){let n=0,h=0;C.un.forEach(v=>{if(v.vivo&&v.lado!==lado&&distH({x,y},v)<=1){n++;h+=v.hp;}});if(n>bn||(n===bn&&h>bh)){bn=n;bh=h;b=[x,y];}}
   return bn>0?b:null;}
 function areaRuna(C,lado,cx,cy,dano,el,ef,f){const atingidos=[];
-  for(let y=cy-1;y<=cy+1;y++)for(let x=cx-1;x<=cx+1;x++){if(!dentro(x,y))continue;fx(C,ef,x,y,((x+y)&1)*40);
+  for(const [x,y] of discoH(cx,cy,1)){if(!dentro(x,y))continue;fx(C,ef,x,y,((x+y)&1)*40);
     const id=C.occ[y*NC+x],v=id&&C.map[id];if(v&&v.vivo&&v.lado!==lado){causar(C,null,v,dano,el,{magia:true,sem:true,rn:true});atingidos.push(v);if(f&&v.vivo)f(v);}}
   return atingidos;}
 /* runas sem alvo: agendadas no tempo certo para o time; src = null (dano "do ambiente", sem crédito no placar) */
@@ -1854,7 +1884,7 @@ function runaTime(C,lado,k,es){const R=RN,inim=()=>C.un.filter(v=>v.vivo&&v.lado
     areaRuna(C,lado,c[0],c[1],R.ava.d*es,'ice','icearea',v=>aplicarDeb(C,v,{lento:R.ava.lento,dur:R.ava.dur}));});
   else if(k===5)agendar(C,R.par.t,()=>{let al=null;inim().forEach(u=>{if(!al||u.atk>al.atk)al=u;});if(!al)return;   // Paralyze: maior ataque
     fx(C,'purpleenergy',al.x,al.y);txt(C,al.x,al.y-.5,'Paralyze','#c9a0ff');atordoar(C,al,R.par.stun);});
-  else if(k===8)agendar(C,R.eb.t,()=>{const ini=inim();if(!ini.length)return;   // Energy Bomb: campo 3x3 no centro do exército inimigo; 1 tique por segundo
+  else if(k===8)agendar(C,R.eb.t,()=>{const ini=inim();if(!ini.length)return;   // Energy Bomb: campo de raio 1 (7 hexágonos) no centro do exército inimigo; 1 tique por segundo
     let sx=0,sy=0;ini.forEach(v=>{sx+=v.x;sy+=v.y;});const cx=clamp(Math.round(sx/ini.length),1,NC-2),cy=clamp(Math.round(sy/ini.length),1,NR-2);
     txt(C,cx,cy-.5,'Energy Bomb','#d58cff');
     const tique=n=>{areaRuna(C,lado,cx,cy,R.eb.d*es,'energy','energyarea');if(n<R.eb.n)agendar(C,1000,()=>tique(n+1));};tique(1);});}
@@ -1915,13 +1945,13 @@ function saltar(C,u){const ini=C.un.filter(v=>v.lado!==u.lado&&v.vivo);if(!ini.l
   // inimigo mais ao fundo (lado A salta para y baixo, lado B para y alto)
   let alvo=null,mel=-1e9;ini.forEach(v=>{const prof=u.lado===0?-v.y:v.y;if(prof>mel||(prof===mel&&C.r()<.5)){mel=prof;alvo=v;}});
   let melhor=null,ms=-1e9;
-  for(const [dx,dy] of DIR8){const x=alvo.x+dx,y=alvo.y+dy;if(!dentro(x,y)||C.occ[y*NC+x])continue;const s=(u.lado===0?-y:y)*10+C.r();if(s>ms){ms=s;melhor=[x,y];}}
+  for(let d=0;d<6;d++){const [x,y]=vizH(alvo.x,alvo.y,d);if(!dentro(x,y)||C.occ[y*NC+x])continue;const s=(u.lado===0?-y:y)*10+C.r();if(s>ms){ms=s;melhor=[x,y];}}
   if(!melhor)return;
   fx(C,'teleport',u.x,u.y);C.occ[u.y*NC+u.x]=0;u.x=u.fx=melhor[0];u.y=u.fy=melhor[1];C.occ[u.y*NC+u.x]=u.uid;fx(C,'teleport',u.x,u.y,100);u.alvo=alvo;u.prox=100;}
 
 /* ---- saídas visuais (só no modo com render) ---- */
 function fx(C,nome,x,y,atraso){if(!C.vis)return;const id=typeof nome==='number'?nome:E(nome);if(!id||!CB.efeitos[id])return;C.fx.push({id,x,y,b:C.t+(atraso||0)});if(C.fx.length>400)C.fx.splice(0,C.fx.length-400);}
-function tiro(C,nome,a,b){const id=AN(nome);const d=(id&&CB.tiros[id])?Math.round(130*Math.sqrt(Math.sqrt((b.x-a.x)*(b.x-a.x)+(b.y-a.y)*(b.y-a.y)))):0;
+function tiro(C,nome,a,b){const id=AN(nome);const d=(id&&CB.tiros[id])?Math.round(130*Math.sqrt(Math.sqrt(dist2(a,b)/4))):0;   // tempo de voo pela distância real entre os centros dos hexágonos
   if(C.vis&&d)C.tiros.push({id,x1:a.x,y1:a.y,x2:b.x,y2:b.y,b:C.t,dur:d});return d||120;}
 function txt(C,x,y,t,cor,g){if(!C.vis)return;C.txts.push({x,y,t,cor,g:!!g,b:C.t});if(C.txts.length>120)C.txts.shift();}
 function imp(C,k){if(C.vis)C.imp.push({b:C.t,k});}   // impactos visuais (tremor de tela / congelamento): só o render lê
@@ -1961,7 +1991,7 @@ function causar(C,src,u,bruto,el,o){o=o||{};if(!u.vivo)return 0;
   if(src&&src.rouboM&&o.hab)curar(C,src,d*src.rouboM,true);                      // Vampirismo também cura nas magias
   if(u.ie.manaHurt&&u.manaM)u.mana=Math.min(u.manaM,u.mana+u.ie.manaHurt);      // Knight Armor: mana ao apanhar
   if(src&&src!==u&&!o.refl&&src.vivo){                                           // reflexo: Golden Armor (golpes corpo a corpo) e Demon Shield (dano mágico)
-    if(o.basico&&u.ie.refl&&cheb(src,u)<=1){fx(C,'blockhit',src.x,src.y);causar(C,u,src,d*u.ie.refl,'phys',{refl:true,sem:true});}
+    if(o.basico&&u.ie.refl&&distH(src,u)<=1){fx(C,'blockhit',src.x,src.y);causar(C,u,src,d*u.ie.refl,'phys',{refl:true,sem:true});}
     else if(o.magia&&u.ie.reflMag&&!o.sem){fx(C,'blockhit',src.x,src.y);causar(C,u,src,d*u.ie.reflMag,el,{refl:true,sem:true,magia:true});}}
   if(u.uh&&u.hp>0&&u.hp<u.hpM*RN.uh.lim){u.uh=false;curar(C,u,u.hpM*RN.uh.cura);fx(C,'green_rings',u.x,u.y);fx(C,'hearts',u.x,u.y,100);txt(C,u.x,u.y-.5,'Ultimate Healing','#ff7a9a',true);}   // Ultimate Healing (runa): uma vez
   if(u.ie.escMeio&&!u.escMeioUsado&&u.hp>0&&u.hp<u.hpM*.5){u.escMeioUsado=true;darEscudo(C,u,u.hpM*u.ie.escMeio,6000);fx(C,'magic_blue',u.x,u.y);txt(C,u.x,u.y,'barreira','#9fe8a0');}   // Magic Plate Armor
@@ -1975,8 +2005,8 @@ function morrer(C,u,src){if(!u.vivo)return;
   u.vivo=false;u.hp=0;if(C.occ[u.y*NC+u.x]===u.uid)C.occ[u.y*NC+u.x]=0;C.vivos[u.lado]--;if(C.vivos[u.lado]<=0)imp(C,'final');
   C.mortos.push({u,t:C.t,x:u.x,y:u.y});fx(C,'poff',u.x,u.y);
   if(C.sus&&C.sus[u.lado]===1&&!u.inv&&!u.pve){C.sus[u.lado]=2;fx(C,'firearea',u.x,u.y);      // Último Suspiro: só a primeira morte de cada lado
-    C.un.filter(v=>v.vivo&&v.lado!==u.lado&&cheb(v,u)<=1).forEach(v=>{fx(C,'firearea',v.x,v.y);causar(C,u,v,u.hpM*BN.sus,'fire',{magia:true,sem:true});});}
-  if(u.morteFogo){const inimigos=C.un.filter(v=>v.vivo&&v.lado!==u.lado&&cheb(v,u)<=1);fx(C,'firearea',u.x,u.y);
+    C.un.filter(v=>v.vivo&&v.lado!==u.lado&&distH(v,u)<=1).forEach(v=>{fx(C,'firearea',v.x,v.y);causar(C,u,v,u.hpM*BN.sus,'fire',{magia:true,sem:true});});}
+  if(u.morteFogo){const inimigos=C.un.filter(v=>v.vivo&&v.lado!==u.lado&&distH(v,u)<=1);fx(C,'firearea',u.x,u.y);
     inimigos.forEach(v=>{fx(C,'firearea',v.x,v.y);causar(C,u,v,u.atk*u.morteFogo,'fire',{magia:true});});}
   if(src&&src!==u&&src.vivo&&src.ie.killHeal){curar(C,src,src.hpM*src.ie.killHeal);fx(C,'green_rings',src.x,src.y);}}
 
@@ -1984,13 +2014,14 @@ function morrer(C,u,src){if(!u.vivo)return;
 function alvoProvocado(C,u){const id=bv(u,'provocado'),v=id&&C.map[id];return v&&v.vivo&&v.lado!==u.lado?v:null;}
 function escolherAlvo(C,u){const provocado=alvoProvocado(C,u);if(provocado)return provocado;let melhor=null;
   for(let passe=0;passe<2&&!melhor;passe++){let md=1e9,n=0;      // 1º passe ignora quem está furtivo (Stealth Ring); se só sobrar furtivo, ataca mesmo assim
-    for(const v of C.un){if(!v.vivo||v.lado===u.lado||(passe===0&&v.furtivoAte>C.t))continue;const d=cheb(u,v)*100+dist2(u,v);
+    for(const v of C.un){if(!v.vivo||v.lado===u.lado||(passe===0&&v.furtivoAte>C.t))continue;const d=distH(u,v)*1000+dist2(u,v);
       if(d<md){md=d;melhor=v;n=1;}else if(d===md){n++;if(C.r()<1/n)melhor=v;}}}
   return melhor;}
-function passoBFS(C,u,t){const ini=u.y*NC+u.x,prev=new Int16Array(NC*NR).fill(-1);prev[ini]=ini;const fila=[ini],ds=embaralhar(DIR8.slice(),C.r);
+const DIRS6=[0,1,2,3,4,5];
+function passoBFS(C,u,t){const ini=u.y*NC+u.x,prev=new Int16Array(NC*NR).fill(-1);prev[ini]=ini;const fila=[ini],ds=embaralhar(DIRS6.slice(),C.r);
   for(let h=0;h<fila.length;h++){const c=fila[h],cx=c%NC,cy=(c/NC)|0;
-    if(c!==ini&&Math.max(Math.abs(cx-t.x),Math.abs(cy-t.y))<=u.al){let p=c;while(prev[p]!==ini)p=prev[p];return p;}
-    for(const [dx,dy] of ds){const nx=cx+dx,ny=cy+dy;if(!dentro(nx,ny))continue;const i=ny*NC+nx;if(prev[i]>=0||C.occ[i])continue;prev[i]=c;fila.push(i);}}
+    if(c!==ini&&distH({x:cx,y:cy},t)<=u.al){let p=c;while(prev[p]!==ini)p=prev[p];return p;}
+    for(const d of ds){const [nx,ny]=vizH(cx,cy,d);if(!dentro(nx,ny))continue;const i=ny*NC+nx;if(prev[i]>=0||C.occ[i])continue;prev[i]=c;fila.push(i);}}
   return -1;}
 function mover(C,u,t){const p=passoBFS(C,u,t);if(p<0)return false;const nx=p%NC,ny=(p/NC)|0;
   const dur=Math.max(100,Math.ceil(300/movEff(u)/100)*100);
@@ -2007,7 +2038,7 @@ function atacar(C,u,t){u.prox=C.t+Math.round(1000/asEff(u));u.dir=dirPara(u,t);
   if(ie.pesado&&n%3===0){b*=1+ie.pesado;pes=true;}                              // Giant Sword: o 3º golpe é pesado
   const ranged=u.al>1,a=u.d.atq||(ranged?AR:null);let atraso=130;
   if(ranged)atraso=tiro(C,a.t,u,t);
-  u.lunge={b:C.t,dx:Math.sign(t.x-u.x),dy:Math.sign(t.y-u.y)};
+  {const A=hexXY(u.x,u.y),B=hexXY(t.x,t.y),dx=B.X-A.X,dy=B.Y-A.Y,n=Math.hypot(dx,dy)||1;u.lunge={b:C.t,dx:dx/n,dy:dy/n};}   // investida visual na direção real do alvo
   const hitN=a?a.hit:u.d.hit||'drawblood',el=u.el;
   agendar(C,atraso,()=>{if(!t.vivo)return;
     fx(C,hitN,t.x,t.y);if(crit)fx(C,'critical_damage',t.x,t.y);if(pes)fx(C,'explosionhit',t.x,t.y);
@@ -2021,8 +2052,8 @@ function efeitosGolpe(C,u,t,b,el,n){const ie=u.ie;
   if(ie.stunPct&&t.vivo&&C.r()<ie.stunPct){atordoar(C,t,1000);fx(C,'energyhit',t.x,t.y);}                       // Thunder Hammer
   if(ie.burn&&t.vivo){const dd=u.atk*ie.burn,q=t.dots.find(x=>x.tag==='brasa'&&x.src===u);                        // Fire Sword
     if(q){q.n=3;q.d=Math.max(q.d,dd);}else t.dots.push({src:u,el:'fire',d:dd,n:3,prox:C.t+1000,ef:'hitbyfire',tag:'brasa'});}
-  if(ie.cleave)C.un.forEach(v=>{if(v.vivo&&v.lado!==u.lado&&v!==t&&cheb(v,t)<=1){fx(C,'hitarea',v.x,v.y);causar(C,u,v,b*ie.cleave,el,{sem:true,magia:el!=='phys'});}});   // Stonecutter Axe
-  if(ie.pierce){const x=t.x+Math.sign(t.x-u.x),y=t.y+Math.sign(t.y-u.y);                                           // Arbalest: o inimigo logo atrás
+  if(ie.cleave)C.un.forEach(v=>{if(v.vivo&&v.lado!==u.lado&&v!==t&&distH(v,t)<=1){fx(C,'hitarea',v.x,v.y);causar(C,u,v,b*ie.cleave,el,{sem:true,magia:el!=='phys'});}});   // Stonecutter Axe
+  if(ie.pierce){const [x,y]=vizH(t.x,t.y,dirHexPara(u,t));                                                         // Arbalest: o inimigo logo atrás (próximo hexágono na direção do golpe)
     if(dentro(x,y)){const vid=C.occ[y*NC+x],v=vid&&C.map[vid];if(v&&v.vivo&&v.lado!==u.lado){fx(C,'hitarea',x,y);causar(C,u,v,b*ie.pierce,el,{sem:true,magia:el!=='phys'});}}}
   if(ie.chuva&&n%4===0){const ra=u.d.atq||AR;                                                                      // Elethriel's Elemental Bow
     C.un.filter(v=>v.vivo&&v.lado!==u.lado&&v!==t).sort((p,q)=>dist2(p,t)-dist2(q,t)||p.uid-q.uid).slice(0,2).forEach(v=>{
@@ -2030,7 +2061,7 @@ function efeitosGolpe(C,u,t,b,el,n){const ie=u.ie;
 function atordoar(C,u,ms){if(!u.vivo)return;ms=Math.round(ms*(1-Math.min(.9,u.ie.stunRed||0)));const f=u.stunAte;u.stunAte=Math.max(u.stunAte,C.t+ms);fx(C,'stun',u.x,u.y-0.3);if(f<C.t)txt(C,u.x,u.y,'atordoado','#ffe680');}
 
 /* =====================================================================================
-   HABILIDADES: cada tipo toca o efeito real em cada tile atingido
+   HABILIDADES: cada tipo toca o efeito real em cada hexágono atingido
    ===================================================================================== */
 const habDano=(u,m)=>m*u.sk*(1+u.ap)*(u.d.pve?1:1);
 const habCura=(u,m)=>habDano(u,m)*(1+(u.ie.curaPlus||0));                  // Dragon Necklace: curas maiores
@@ -2038,17 +2069,17 @@ const ECO_OK={alvo:1,onda:1,self:1,pos:1,cura:1,curaAmigo:1,curaArea:1};      //
 function escalaHab(h,k){const c=Object.assign({},h);if(c.m)c.m*=k;if(c.dot)c.dot=Object.assign({},c.dot,{m:c.dot.m*k});return c;}
 function venenar(C,u,v,raw){v.dots.push({src:u,el:'earth',d:raw*u.ie.veneno/4,n:4,prox:C.t+1000,ef:'hitbypoison',tag:'veneno'});}   // Snakebite Rod
 function auraInfernal(C,u){const dd=(u.atk*.5+u.sk*.15)*(1+u.ap)*u.ie.aura;                                                         // Demon Helmet
-  C.un.forEach(v=>{if(v.vivo&&v.lado!==u.lado&&cheb(u,v)<=1){fx(C,'hitbyfire',v.x,v.y);causar(C,u,v,dd,'fire',{magia:true,sem:true});}});}
+  C.un.forEach(v=>{if(v.vivo&&v.lado!==u.lado&&distH(u,v)<=1){fx(C,'hitbyfire',v.x,v.y);causar(C,u,v,dd,'fire',{magia:true,sem:true});}});}
 function auraCura(C,u){let a=null,mp=.98;                                                                                           // Sacred Tree Amulet
-  C.un.forEach(v=>{if(!v.vivo||v.lado!==u.lado||cheb(u,v)>2)return;const p=v.hp/v.hpM;if(p<mp){mp=p;a=v;}});
+  C.un.forEach(v=>{if(!v.vivo||v.lado!==u.lado||distH(u,v)>2)return;const p=v.hp/v.hpM;if(p<mp){mp=p;a=v;}});
   if(a){fx(C,'green_rings',a.x,a.y);curar(C,a,u.hpM*u.ie.auraCura,false,u);}}
 function podeLancar(C,u,t){const h=u.hab;if(!h||bv(u,'silencio'))return false;const tp=h.t==='seq'?h.seq[0].t:h.t;
   if(tp==='cura')return u.hp<u.hpM*.9;
-  if(tp==='curaAmigo'||tp==='curaArea')return C.un.some(v=>v.vivo&&v.lado===u.lado&&v.hp<v.hpM*.85&&(tp==='curaAmigo'||cheb(u,v)<=(h.raio||2)))||(h.t==='seq'&&t&&cheb(u,t)<=u.al);
-  if(tp==='invocar'||tp==='buff')return !!t&&cheb(u,t)<=Math.max(u.al,3)+ (tp==='buff'?1:3);
-  return !!t&&cheb(u,t)<=u.al;}
+  if(tp==='curaAmigo'||tp==='curaArea')return C.un.some(v=>v.vivo&&v.lado===u.lado&&v.hp<v.hpM*.85&&(tp==='curaAmigo'||distH(u,v)<=(h.raio||2)))||(h.t==='seq'&&t&&distH(u,t)<=u.al);
+  if(tp==='invocar'||tp==='buff')return !!t&&distH(u,t)<=Math.max(u.al,3)+ (tp==='buff'?1:3);
+  return !!t&&distH(u,t)<=u.al;}
 function alvoHabilidade(C,u,t){if(!u.hab.finaliza||alvoProvocado(C,u))return t;
-  return C.un.filter(v=>v.vivo&&v.lado!==u.lado&&cheb(u,v)<=u.al&&v.furtivoAte<=C.t).sort((a,b)=>a.hp/a.hpM-b.hp/b.hpM||a.uid-b.uid)[0]||t;}
+  return C.un.filter(v=>v.vivo&&v.lado!==u.lado&&distH(u,v)<=u.al&&v.furtivoAte<=C.t).sort((a,b)=>a.hp/a.hpM-b.hp/b.hpM||a.uid-b.uid)[0]||t;}
 function lancar(C,u,h){const t=u.alvo;u.mana=u.ie.manaRet?Math.round(u.manaM*Math.min(.9,u.ie.manaRet)):0;if(u.mana>0)txt(C,u.x,u.y,'+mana','#6fa8ff');if(C.vis&&!u.pve&&!u.inv&&u.d.c===5)imp(C,'hab5');u.livreEm=Math.max(u.livreEm,C.t+500);u.prox=Math.max(u.prox,C.t+700);
   if(t)u.dir=dirPara(u,t);
   fala(C,u,h.p);
@@ -2057,7 +2088,7 @@ function lancar(C,u,h){const t=u.alvo;u.mana=u.ie.manaRet?Math.round(u.manaM*Mat
   if(u.ie.escLanca){darEscudo(C,u,u.hpM*u.ie.escLanca,4000);fx(C,'magic_blue',u.x,u.y);}              // Mastermind Shield
   if(u.ie.eco){const k=u.ie.eco;agendar(C,850,()=>{if(!u.vivo)return;const al=u.alvo&&u.alvo.vivo?u.alvo:t;   // Ferumbras' Hat: a magia sai de novo
     fx(C,'purpleenergy',u.x,u.y);txt(C,u.x,u.y,'eco','#c9a0ff');seq.forEach(s=>{if(ECO_OK[s.t])acaoHab(C,u,escalaHab(s,k),al);});});}}
-function areaTiles(h,cx,cy,dir){if(h.area)return tilesArea(h.area,cx,cy,dir);const r=h.raio||1,o=[];for(let y=-r;y<=r;y++)for(let x=-r;x<=r;x++)o.push([cx+x,cy+y]);return o;}
+function areaTiles(h,cx,cy,dir){if(h.area)return tilesArea(h.area,cx,cy,dir);return discoH(cx,cy,h.raio||1);}   // raio r = disco hexagonal de raio r (era um quadrado (2r+1)x(2r+1))
 function danoArea(C,u,h,tiles,el,mult,efNome,tempoEscalonado){let n=0;
   tiles.forEach(([x,y],i)=>{if(!dentro(x,y))return;if(efNome)fx(C,efNome,x,y,tempoEscalonado?(i%5)*40:0);
     const vid=C.occ[y*NC+x];if(!vid)return;const v=C.map[vid];if(!v||!v.vivo||v.lado===u.lado)return;
@@ -2068,32 +2099,32 @@ function danoArea(C,u,h,tiles,el,mult,efNome,tempoEscalonado){let n=0;
 function aplicarDeb(C,v,deb){if(!v.vivo)return;const dur=deb.dur||4000;Object.keys(deb).forEach(k=>{if(k==='dur')return;
   const antes=bv(v,k),b=v.b[k];v.b[k]={ate:Math.max(C.t+dur,b&&b.ate>C.t?b.ate:0),v:Math.max(antes,deb[k])};
   if(k==='ferida'&&!antes)txt(C,v.x,v.y,'Ferida','#ed7971');if(k==='silencio'&&!antes)txt(C,v.x,v.y,'Silêncio','#cba5ff');});fx(C,'sound_purple',v.x,v.y);}
-function provocar(C,u,ms,raio){C.un.forEach(v=>{if(!v.vivo||v.lado===u.lado||cheb(u,v)>raio)return;v.b.provocado={ate:C.t+ms,v:u.uid};v.alvo=u;txt(C,v.x,v.y,'Provocado','#f4c978');});fx(C,'yellow_rings',u.x,u.y);}
+function provocar(C,u,ms,raio){C.un.forEach(v=>{if(!v.vivo||v.lado===u.lado||distH(u,v)>raio)return;v.b.provocado={ate:C.t+ms,v:u.uid};v.alvo=u;txt(C,v.x,v.y,'Provocado','#f4c978');});fx(C,'yellow_rings',u.x,u.y);}
 function aplicarDot(C,u,v,dot){v.dots.push({src:u,el:dot.el,d:habDano(u,dot.m)/dot.dur,n:dot.dur,prox:C.t+1000,ef:dot.ef});}
-/* onda: avalia as 4 direções e escolhe a que atinge mais inimigos vivos (alvo atual vale ×1,5); empate: direção do alvo (dirPara), depois ordem fixa 0-3; sem RNG */
+/* onda: avalia as 6 direções hexagonais e escolhe a que atinge mais inimigos vivos (alvo atual vale ×1,5); empate: direção do alvo (dirHexPara), depois ordem fixa 0-5; sem RNG */
 function melhorDirOnda(C,u,h,t,pref){let melhor=pref,mp=-1;
-  [pref,0,1,2,3].forEach(d=>{let p=0;tilesArea(h.area,u.x,u.y,d).forEach(([x,y])=>{if(!dentro(x,y))return;const vid=C.occ[y*NC+x];if(!vid)return;const v=C.map[vid];if(v&&v.vivo&&v.lado!==u.lado)p+=v===t?1.5:1;});
+  [pref,0,1,2,3,4,5].forEach(d=>{let p=0;tilesArea(h.area,u.x,u.y,d).forEach(([x,y])=>{if(!dentro(x,y))return;const vid=C.occ[y*NC+x];if(!vid)return;const v=C.map[vid];if(v&&v.vivo&&v.lado!==u.lado)p+=v===t?1.5:1;});
     if(p>mp+1e-9){mp=p;melhor=d;}});
   return melhor;}
-function acaoHab(C,u,h,t){const el=h.el||'phys',dir=t?dirPara(u,t):(u.lado===0?0:2);
+function acaoHab(C,u,h,t){const el=h.el||'phys',dir=t?dirHexPara(u,t):(u.lado===0?1:4);   // direção hexagonal (sem alvo: para a frente)
   switch(h.t){
     case 'alvo':{if(!t||!t.vivo)return;const d=h.tiro?tiro(C,h.tiro,u,t):80,dano=habDano(u,h.m);
       agendar(C,d,()=>{if(!t.vivo)return;const fatal=h.finaliza&&t.hp/t.hpM<=h.finaliza.limiar,raw=dano*(fatal?h.finaliza.mult:1);fx(C,h.ef,t.x,t.y);if(fatal)fx(C,'fatal',t.x,t.y);const r=causar(C,u,t,raw,el,{magia:true,hab:true});if(u.ie.veneno&&t.vivo)venenar(C,u,t,raw);if(h.stun)atordoar(C,t,h.stun);if(h.deb)aplicarDeb(C,t,h.deb);if(h.dot&&t.vivo)aplicarDot(C,u,t,h.dot);if(h.drena&&r)curar(C,u,r*h.drena);});break;}
-    case 'onda':{const d2=melhorDirOnda(C,u,h,t,dir);u.dir=d2;if(t&&h.tiro)tiro(C,h.tiro,u,t);danoArea(C,u,h,tilesArea(h.area,u.x,u.y,d2),el,h.m,h.ef,true);break;}
+    case 'onda':{const d2=melhorDirOnda(C,u,h,t,dir);u.dir=dirSpr(d2);if(t&&h.tiro)tiro(C,h.tiro,u,t);danoArea(C,u,h,tilesArea(h.area,u.x,u.y,d2),el,h.m,h.ef,true);break;}
     case 'self':{const tl=areaTiles(h,u.x,u.y,dir).filter(([x,y])=>!(x===u.x&&y===u.y));danoArea(C,u,h,tl,el,h.m,h.ef,false);if(h.provoca)provocar(C,u,h.provoca,h.raio||1);break;}
     case 'pos':{if(!t)return;const d=h.tiro?tiro(C,h.tiro,u,t):60,cx=t.x,cy=t.y;
       agendar(C,d,()=>{danoArea(C,u,h,areaTiles(h,cx,cy,0),el,h.m,h.ef,false);});break;}
     case 'cura':{fx(C,h.ef||'magic_blue',u.x,u.y);curar(C,u,habCura(u,h.m));break;}
     case 'curaAmigo':{let a=null,mp=2;C.un.forEach(v=>{if(!v.vivo||v.lado!==u.lado)return;const p=v.hp/v.hpM;if(p<mp){mp=p;a=v;}});if(!a)return;
       fx(C,h.ef||'magic_blue',a.x,a.y);curar(C,a,habCura(u,h.m),false,u);if(a!==u)fx(C,'magic_green',u.x,u.y);break;}
-    case 'curaArea':{const r=h.raio||2;fx(C,'magic_green',u.x,u.y);C.un.forEach(v=>{if(!v.vivo||v.lado!==u.lado||cheb(u,v)>r)return;fx(C,h.ef||'magic_blue',v.x,v.y);curar(C,v,habCura(u,h.m),false,u);});break;}
+    case 'curaArea':{const r=h.raio||2;fx(C,'magic_green',u.x,u.y);C.un.forEach(v=>{if(!v.vivo||v.lado!==u.lado||distH(u,v)>r)return;fx(C,h.ef||'magic_blue',v.x,v.y);curar(C,v,habCura(u,h.m),false,u);});break;}
     case 'invocar':{const n=h.n||1,molde=U[h.id],mul=(C.invMul&&C.invMul[u.lado])||1;let k=0;
-      const livres=[];for(const [dx,dy] of embaralhar(DIR8.slice(),C.r)){const x=u.x+dx,y=u.y+dy;if(dentro(x,y)&&!C.occ[y*NC+x])livres.push([x,y]);}
-      if(livres.length<n){for(let r=2;r<=3&&livres.length<n;r++)for(let y=-r;y<=r;y++)for(let x=-r;x<=r;x++){const xx=u.x+x,yy=u.y+y;if(Math.max(Math.abs(x),Math.abs(y))===r&&dentro(xx,yy)&&!C.occ[yy*NC+xx])livres.push([xx,yy]);}}
+      const livres=[];for(const d of embaralhar(DIRS6.slice(),C.r)){const [x,y]=vizH(u.x,u.y,d);if(dentro(x,y)&&!C.occ[y*NC+x])livres.push([x,y]);}
+      if(livres.length<n){for(let r=2;r<=3&&livres.length<n;r++)for(const [xx,yy] of anelH(u.x,u.y,r)){if(dentro(xx,yy)&&!C.occ[yy*NC+xx])livres.push([xx,yy]);}}
       for(let i=0;i<n&&i<livres.length;i++){const [x,y]=livres[i];const nu=novoUnit(C,{d:Object.assign({},molde,{hab:null}),e:1,x,y,inv:true,hpMul:.55*ESTR[u.e||1]*mul},u.lado);nu.hp=nu.hpM;nu.prox=C.t+500;nu.livreEm=C.t+400;nu.dir=u.dir;nu.manaM=0;
         nu.arm=Math.round(nu.arm*.7);fx(C,h.ef||'magic_red',x,y);k++;}
       if(k)txt(C,u.x,u.y,'invocou!','#d9b45a');break;}
-    case 'buff':{const alvos=h.raio?C.un.filter(v=>v.vivo&&v.lado===u.lado&&cheb(u,v)<=h.raio):[u];
+    case 'buff':{const alvos=h.raio?C.un.filter(v=>v.vivo&&v.lado===u.lado&&distH(u,v)<=h.raio):[u];
       alvos.forEach(v=>{fx(C,h.ef||'magic_green',v.x,v.y);
         if(h.buff){Object.keys(h.buff).forEach(k=>{if(k==='dur')return;v.b[k]={ate:C.t+(h.buff.dur||4000),v:h.buff[k]};});}
         if(h.escudo){v.b.escudo={ate:C.t+(h.dur||5000),v:Math.round(v.hpM*h.escudo)};txt(C,v.x,v.y,'escudo','#9fe8a0');}});break;}
@@ -2123,11 +2154,11 @@ function passo(C){if(C.fim)return;C.t+=100;C.tk++;
 function agir(C,u){if(C.t<u.stunAte||C.t<u.livreEm)return;
   const provocado=alvoProvocado(C,u);let t=provocado||u.alvo;if(provocado)u.alvo=provocado;
   if(!t||!t.vivo)t=u.alvo=escolherAlvo(C,u);
-  else if(!provocado&&cheb(u,t)>u.al){const p=escolherAlvo(C,u);if(p&&cheb(u,p)<cheb(u,t))t=u.alvo=p;}
+  else if(!provocado&&distH(u,t)>u.al){const p=escolherAlvo(C,u);if(p&&distH(u,p)<distH(u,t))t=u.alvo=p;}
   if(!t)return;
   u.dir=dirPara(u,t);
   if(u.hab&&u.manaM&&u.mana>=u.manaM&&podeLancar(C,u,t)){u.alvo=alvoHabilidade(C,u,t);lancar(C,u,u.hab);return;}
-  if(cheb(u,t)<=u.al){if(C.t>=u.prox)atacar(C,u,t);}
+  if(distH(u,t)<=u.al){if(C.t>=u.prox)atacar(C,u,t);}
   else mover(C,u,t);}
 function finalizar(C){if(C.fim)return;C.fim=true;
   const a=C.vivos[0],b=C.vivos[1];
@@ -2144,6 +2175,7 @@ const NOMES_BOT=['Eruaran','Kaz Mortis','Dreadbane','Sir Galthor','Mystara','Lor
 const ODDS=[null,[100,0,0,0,0],[100,0,0,0,0],[75,25,0,0,0],[55,30,15,0,0],[45,33,20,2,0],[25,40,30,5,0],[19,30,35,15,1],[15,20,35,25,5],[15,20,35,22,8]];
 const NEED={3:6,4:10,5:20,6:36,7:48,8:80};
 const MAX_BANCO=9,MAX_ITENS=15,TAB_Y=4;                  // TAB_Y: primeira linha do lado de baixo da arena
+const COLS_CENTRO=[3,2,4,1,5,0,6],COLS_PONTAS=[0,6,1,5,2,4,3];   // ordem de preenchimento das colunas (do centro para as pontas e vice-versa)
 const VOCS=['knight','paladin','sorcerer','druid'];
 /* ---------- poderes das vocações (Fase 5): um ativo (1x por rodada, só na preparação, custa ouro) + um passivo ---------- */
 let PODERES_OFF=false;   // balanceamento/testes: desliga ativos e passivos (G.opt.semPoderes)
@@ -2203,7 +2235,7 @@ const RUNA=[null,
   {n:'Paralyze',sg:'PAR',custo:2,alvo:false,cor:'#c9a0ff',c:()=>`Aos ${RN.par.t/1000} s: atordoa o maior ataque por ${RN.par.stun/1000} s`,d:()=>`Aos ${RN.par.t/1000} s da próxima luta, atordoa por ${RN.par.stun/1000} s o inimigo com maior ataque.`},
   {n:'Magic Wall',sg:'MW',custo:2,alvo:true,cor:'#6fb8ff',c:()=>`Imune a dano nos ${RN.mw.dur/1000} s iniciais`,d:()=>`A unidade não recebe dano nos primeiros ${RN.mw.dur/1000} s da próxima luta.`},
   {n:'Haste',sg:'HS',custo:1,alvo:true,cor:'#7dff9a',c:()=>`+${pct(RN.hs.ace)}% de velocidade por ${RN.hs.dur/1000} s`,d:()=>`A unidade ganha +${pct(RN.hs.ace)}% de velocidade de ataque e de movimento nos primeiros ${RN.hs.dur/1000} s da próxima luta.`},
-  {n:'Energy Bomb',sg:'EB',custo:3,alvo:false,cor:'#d58cff',c:()=>`Aos ${RN.eb.t/1000} s: campo de energia ${RN.eb.d}/s+`,d:()=>`Aos ${RN.eb.t/1000} s da próxima luta, um campo de energia 3x3 no centro do exército inimigo causa ${RN.eb.d} de dano base por segundo durante ${RN.eb.n} s (cresce ${pct(RN.esc)}% por estágio).`}];
+  {n:'Energy Bomb',sg:'EB',custo:3,alvo:false,cor:'#d58cff',c:()=>`Aos ${RN.eb.t/1000} s: campo de energia ${RN.eb.d}/s+`,d:()=>`Aos ${RN.eb.t/1000} s da próxima luta, um campo de energia de raio 1 (7 hexágonos) no centro do exército inimigo causa ${RN.eb.d} de dano base por segundo durante ${RN.eb.n} s (cresce ${pct(RN.esc)}% por estágio).`}];
 RUNA.forEach((r,i)=>{if(r)r.id=i;});
 const runasTotal=p=>(p.mr||[]).length+(p.ra||[]).length;
 function infoRodada(i){if(i<3)return {est:1,n:i+1,tipo:'pve',nome:'1-'+(i+1)};const k=i-3,est=2+Math.floor(k/6),n=k%6+1;
@@ -2296,7 +2328,7 @@ function comprarXP(p){if(p.nivel>=9||p.ouro<4)return false;p.ouro-=4;ganharXP(p,
 function rolar(G,p){if(p.ouro<2)return false;p.ouro-=2;rolarLoja(G,p);p.rolados++;return true;}
 /* mover unidade: destino {onde:'banco',i} ou {onde:'tab',x,y}; troca se ocupado; respeita o limite do nível */
 function moverUn(p,de,para,emCombate){
-  if(para.onde==='tab'&&(para.y<0||para.y>3||para.x<0||para.x>7))return false;
+  if(para.onde==='tab'&&(para.y<0||para.y>3||para.x<0||para.x>NC-1))return false;
   if((de.onde==='tab'||para.onde==='tab')&&emCombate)return false;
   const dest=para.onde==='banco'?p.banco[para.i]:p.tab[para.y][para.x],orig=de.onde==='banco'?p.banco[de.i]:p.tab[de.y][de.x];
   if(!orig)return false;
@@ -2404,16 +2436,16 @@ const tierCar=id=>ITEM[id]&&ITEM[id].perg?2:1;
    ===================================================================================== */
 function espDeJog(p,lado,est){const ar=est===undefined?[]:(p.ra||[]).filter(a=>runaValida(p,a));   // runas armadas só entram na equipe de uma luta de verdade (est = estágio); pré-visualizações ficam sem
   const un=[];p.tab.forEach((l,y)=>l.forEach((inst,x)=>{if(!inst)return;
-  const s={d:U[inst.id],e:inst.e,x:lado===0?x:7-x,y:lado===0?TAB_Y+y:3-y,itens:inst.itens.slice(),inst,esc:p.podEsc&&inst.uid===p.podEsc},ru=ar.filter(a=>a.u&&a.u===inst.uid).map(a=>a.k);if(ru.length)s.ru=ru;un.push(s);}));
+  const s={d:U[inst.id],e:inst.e,x:lado===0?x:NC-1-x,y:lado===0?TAB_Y+y:3-y,itens:inst.itens.slice(),inst,esc:p.podEsc&&inst.uid===p.podEsc},ru=ar.filter(a=>a.u&&a.u===inst.uid).map(a=>a.k);if(ru.length)s.ru=ru;un.push(s);}));
   return {un,voc:PODERES_OFF?null:p.voc,sd:!PODERES_OFF&&p.voc==='sorcerer'&&p.podRuna,bn:(p.bn||[]).slice(),ru:ar.filter(a=>!a.u).map(a=>a.k),re:est||0};}
 function monDef(id,f){const m=MON[id],sp=SPR.criaturas[id];
   return {id:'m_'+id,mon:id,mf:f,nome:m.n,spr:id,voc:null,c:0,o:'pve',k:'pve',pve:true,hp:Math.round(m.hp*f*HPG),atk:Math.round(m.atk*f),arm:m.arm,al:m.al,as:m.as,sk:Math.round((m.sk||0)*f),
     hit:m.hit||'drawblood',atq:m.atq||null,el:m.el||'phys',hab:m.hab||null,mana:m.hab?70:0,m0:m.hab?25:0,cad:sp&&sp.cad};}
 function espPvE(est,n){const w=ondaPvE(est,n),lista=[];w.m.forEach(([id,q])=>{for(let i=0;i<q;i++)lista.push(id);});
-  const cols=[3,4,2,5,1,6,0,7],un=[],frente=lista.filter(id=>MON[id].al<=1),fundo=lista.filter(id=>MON[id].al>1);
+  const cols=COLS_CENTRO,un=[],frente=lista.filter(id=>MON[id].al<=1),fundo=lista.filter(id=>MON[id].al>1);
   const pos=[];for(let y=0;y<4;y++)cols.forEach(x=>pos.push([x,y]));
-  let k=0;frente.forEach(id=>{const [x,y]=pos[k++];un.push({d:monDef(id,w.f),e:1,x:7-x,y:3-y});});
-  k=Math.max(k,8);fundo.forEach(id=>{const [x,y]=pos[k++];un.push({d:monDef(id,w.f),e:1,x:7-x,y:3-y});});
+  let k=0;frente.forEach(id=>{const [x,y]=pos[k++];un.push({d:monDef(id,w.f),e:1,x:NC-1-x,y:3-y});});
+  k=Math.max(k,NC);fundo.forEach(id=>{const [x,y]=pos[k++];un.push({d:monDef(id,w.f),e:1,x:NC-1-x,y:3-y});});
   return {un};}
 
 /* =====================================================================================
@@ -2468,14 +2500,14 @@ function posicionarBot(p){const L=todos(p),N=limUn(p);
     sel.push(rest.splice(bi,1)[0]);}
   p.tab.forEach(l=>l.fill(null));p.banco.fill(null);
   rest.forEach(c=>{const v=vagaBanco(p);if(v>=0)p.banco[v]=c.inst;});
-  const cols=[3,4,2,5,1,6,0,7],uso=[[],[],[],[]];
+  const cols=COLS_CENTRO;
   const classe=inst=>{const d=U[inst.id];return d.k==='assassino'?'ass':d.al>=3?'fundo':d.al===2?'meio':'frente';};
   const g={frente:[],meio:[],fundo:[],ass:[]};sel.forEach(c=>g[classe(c.inst)].push(c.inst));
   g.frente.sort((a,b)=>U[b.id].hp*ESTR[b.e]-U[a.id].hp*ESTR[a.e]);
   const poe=(inst,y,ord)=>{for(let yy=y;yy<4;yy++){for(const x of ord){if(!p.tab[yy][x]){p.tab[yy][x]=inst;return true;}}}for(let yy=y-1;yy>=0;yy--){for(const x of ord){if(!p.tab[yy][x]){p.tab[yy][x]=inst;return true;}}}return false;};
-  g.frente.forEach(i=>poe(i,0,cols));g.ass.forEach(i=>poe(i,1,[0,7,1,6,2,5,3,4]));g.meio.forEach(i=>poe(i,2,cols));g.fundo.forEach(i=>poe(i,3,cols));}
+  g.frente.forEach(i=>poe(i,0,cols));g.ass.forEach(i=>poe(i,1,COLS_PONTAS));g.meio.forEach(i=>poe(i,2,cols));g.fundo.forEach(i=>poe(i,3,cols));}
 /* preenche o tabuleiro com unidades do banco (usado quando o relógio do humano acaba com vagas livres) */
-function autoPosicionar(p){let mudou=false;const cols=[3,4,2,5,1,6,0,7];
+function autoPosicionar(p){let mudou=false;const cols=COLS_CENTRO;
   while(contarTab(p)<limUn(p)){const L=todos(p).filter(L=>L.onde==='banco').sort((a,b)=>potUn(b.inst)-potUn(a.inst))[0];if(!L)break;const d=U[L.inst.id];
     const ordem=d.k==='assassino'?[1,2,0,3]:d.al>=3?[3,2,1,0]:d.al===2?[2,1,3,0]:[0,1,2,3];let ok=false;
     for(const y of ordem){for(const x of cols){if(!p.tab[y][x]){p.tab[y][x]=L.inst;p.banco[L.i]=null;ok=true;break;}}if(ok)break;}
@@ -2659,8 +2691,39 @@ function relatorioLote(R){const med=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:
    ===================================================================================== */
 const IMG=p=>'tibia-assets/sprites15/'+p;
 const ICO={ouro:IMG('ui/gold.png'),pvp:IMG('ui/arena.png'),pve:IMG('itens/3114.png'),car:IMG('ui/inventario.png'),loot:IMG('ui/loot.png')};
-const CW0=352,BY=34,BEN_Y=BY+NR*TS+17,CH=BEN_Y+TS+13;      // dimensões lógicas do canvas (px de jogo); o núcleo CW0 tem margens laterais de 48 px que abrigam os avatares
-let CW=CW0,BX=(CW0-NC*TS)/2,BEN_X=(CW0-9*TS)/2;   // no desktop o mundo alarga até a largura da tela (ajustarCanvas): o núcleo fica centrado e o chão escurecido preenche as laterais
+/* tabuleiro hexagonal em perspectiva "3/4" (como no TFT): hexágonos de 36 px de largura, linhas a cada 27 px (achatadas na vertical), sprites sempre em pé.
+   Toda conversão casa <-> pixel passa por celPx / pxCel (e locPx para banco + tabuleiro do jogador). */
+const HW=36,HV=27,HH=36,HPE=6;                 // hexágono: largura, passo entre linhas (3/4 da altura), altura, espessura da plataforma
+const PES=22;                                  // o quadro de 32 px da arte começa PES px acima do centro do hexágono (os pés pisam logo abaixo do centro)
+const TAB_W=NC*HW+HW/2,TAB_H=(NR-1)*HV+HH;     // caixa do tabuleiro: 270 x 225
+const BSW=34,BSH=32;                           // vaga do banco
+const CW0=TAB_W+96,BY=34,BEN_Y=BY+TAB_H+HPE+14,CH=BEN_Y+BSH+9;      // dimensões lógicas do canvas (px de jogo); o núcleo CW0 tem margens laterais de 48 px que abrigam os avatares
+let CW=CW0,BX=(CW0-TAB_W)/2,BEN_X=(CW0-MAX_BANCO*BSW)/2;   // no desktop o mundo alarga até a largura da tela (ajustarCanvas): o núcleo fica centrado e o chão escurecido preenche as laterais
+/* centro (px do mundo) do hexágono (x,y) da arena; aceita frações (efeitos e textos deslocados) */
+function celPx(x,y){const r=Math.round(y);return {x:BX+HW/2+x*HW+((r&1)?HW/2:0),y:BY+HH/2+y*HV};}
+/* px do mundo -> casa: {onde:'tab',x,y} (seu lado, y 0..3 = linhas 4..7), {onde:'inim',x,y} (linhas 0..3), {onde:'banco',i} ou {onde:'fora'} */
+function pxCel(lx,ly){
+  if(ly>=BEN_Y&&ly<BEN_Y+BSH&&lx>=BEN_X&&lx<BEN_X+MAX_BANCO*BSW)return {onde:'banco',i:Math.floor((lx-BEN_X)/BSW)};
+  const r0=Math.floor((ly-BY-HH/2)/HV);let m=null,md=1e9;const k=HW/HH*1.1547;          // escolhe o centro mais próximo no hexágono "desachatado"
+  for(let r=r0-1;r<=r0+2;r++){if(r<0||r>=NR)continue;const x=Math.round((lx-BX-HW/2-((r&1)?HW/2:0))/HW);if(x<0||x>=NC)continue;
+    const c=celPx(x,r),dx=lx-c.x,dy=(ly-c.y)*k,d=dx*dx+dy*dy;if(d<md){md=d;m={x,y:r,c};}}
+  if(m){const dx=Math.abs(lx-m.c.x),dy=Math.abs(ly-m.c.y);if(dx<=HW/2+.5&&dy<=HH/2-dx*HH/(2*HW)+.5)return m.y>=TAB_Y?{onde:'tab',x:m.x,y:m.y-TAB_Y}:{onde:'inim',x:m.x,y:m.y};}
+  return {onde:'fora',lx,ly};}
+const bancoPx=i=>({x:BEN_X+i*BSW+BSW/2,y:BEN_Y+BSH/2+4});
+const locPx=L=>L.onde==='banco'?bancoPx(L.i):celPx(L.x,L.y+TAB_Y);          // banco ou tabuleiro do jogador (lado de baixo)
+const orgPx=c=>({X:Math.round(c.x-16),Y:Math.round(c.y-PES)});              // canto do quadro de 32 px da arte sobre um centro
+const locOrg=L=>orgPx(locPx(L));
+/* ponto (px CSS, relativo ao canto do canvas) do centro de uma casa ({onde:'tab'|'banco'|'inim',...}): ajuda os testes e outras camadas a clicar/posicionar coisas */
+function ptCv(L){const k=cv?cv.getBoundingClientRect().width/CW:ZD,c=L.onde==='banco'||L.onde==='tab'?locPx(L):celPx(L.x,L.y);return {x:c.x*k,y:c.y*k};}
+/* retângulos do tabuleiro e do banco em px CSS relativos a #cvw (para a interface posicionar sobreposições ao lado deles) */
+function rectCv(x,y,w,h){const w0=$('cvw');if(!cv||!w0)return {x:0,y:0,w:0,h:0};const cr=cv.getBoundingClientRect(),wr=w0.getBoundingClientRect(),k=cr.width/CW;
+  return {x:cr.left-wr.left+x*k,y:cr.top-wr.top+y*k,w:w*k,h:h*k};}
+function rectTabuleiro(){return rectCv(BX,BY,TAB_W,TAB_H+HPE);}
+function rectBanco(){return rectCv(BEN_X,BEN_Y,MAX_BANCO*BSW,BSH);}
+/* caminho de um hexágono (d = recuo em px) e da vaga do banco */
+function hexSub(g,x,y,d){const k=1-(d||0)/(HW/2),w=HW/2*k,h=HH/2*k;g.moveTo(x,y-h);g.lineTo(x+w,y-h/2);g.lineTo(x+w,y+h/2);g.lineTo(x,y+h);g.lineTo(x-w,y+h/2);g.lineTo(x-w,y-h/2);g.closePath();}
+function hexPath(g,x,y,d){g.beginPath();hexSub(g,x,y,d);}
+function formaLoc(g,L,d){d=d||0;if(L.onde==='banco'){g.beginPath();g.rect(BEN_X+L.i*BSW+d,BEN_Y+d,BSW-2*d,BSH-2*d);}else{const c=locPx(L);hexPath(g,c.x,c.y,d);}}
 let cv=null,cx=null,Z=2,ZD=2,DPR=1;   // Z = escala de desenho (inteira), ZD = px CSS por px lógico (exibição)
 const UI={estado:'menu',vel:1,acc:0,fimEm:0,C:null,demo:false,prev:null,prevSujo:true,drag:null,mx:0,my:0,hover:null,fxPrep:[],sujo:{},sujoRet:false,
   voc:'knight',timer:30,timerMax:30,fimShow:0,ultPassoReal:0,jogoParado:false,
@@ -2727,7 +2790,9 @@ function pintarAndar(c,id,rt,rapido){const d=U[id];if(!d||!c)return;const f=folh
 let ESP=false;   // espelhado: o jogador local é o lado B da luta (humano x humano); a cena gira 180° para ele se ver embaixo
 const MX=x=>ESP?NC-1-x:x,MY=y=>ESP?NR-1-y:y;
 const FY=y=>{if(!ESP)return y;const r=Math.round(y);return NR-1-r+(y-r);};   // efeitos com deslocamento fracionário (ícone acima da unidade)
-function posU(u,rt){if(!u.dur||rt>=u.t0+u.dur)return {x:MX(u.x),y:MY(u.y)};const p=clamp((rt-u.t0)/u.dur,0,1);return {x:MX(lerp(u.fx,u.x,p)),y:MY(lerp(u.fy,u.y,p))};}
+const celPxV=(x,y)=>celPx(MX(x),FY(y));   // centro na vista (girada 180° quando o jogador é o lado B)
+/* centro (px do mundo, já na vista) da unidade, interpolado durante o passo entre dois hexágonos */
+function posU(u,rt){const b=celPx(MX(u.x),MY(u.y));if(!u.dur||rt>=u.t0+u.dur)return b;const p=clamp((rt-u.t0)/u.dur,0,1),a=celPx(MX(u.fx),MY(u.fy));return {x:lerp(a.x,b.x,p),y:lerp(a.y,b.y,p)};}
 const andando=(u,rt)=>u.dur>0&&rt<u.t0+u.dur+70&&rt>=u.t0;
 function pintarSprite(d,dir,X,Y,rt,u){const f=folhaDe(d);if(!f)return null;const im=folhaImg(f.src);if(!im)return f;let q=0;
   if(u&&andando(u,rt)&&f.andar>0){const por=Math.max(1,f.andar/2);q=f.parado+Math.floor((rt-u.andaDesde)/(u.dur/por))%f.andar;}
@@ -2736,11 +2801,13 @@ function pintarSprite(d,dir,X,Y,rt,u){const f=folhaDe(d);if(!f)return null;const
 function quadro(f,t){let q=0;while(q<f.n-1&&(t-=f.ms[q])>=0)q++;return q;}
 
 /* ---- efeitos e mísseis (mesma lógica do Tibia Idle, em tiles flutuantes) ---- */
-function desenharFx(lista,rt){for(const e of lista){const t=rt-e.b;if(t<0)continue;const f=CB.efeitos[e.id];if(!f)continue;if(f._tot===undefined)f._tot=f.ms.reduce((a,b)=>a+b,0);if(t>=f._tot)continue;
-  const im=folhaImg(f.src);if(!im)continue;const q=quadro(f,t);cx.drawImage(im,f.x+q*f.w,f.y,f.w,f.h,Math.round(BX+MX(e.x)*TS+32-f.w),Math.round(BY+FY(e.y)*TS+32-f.h),f.w,f.h);}}
+/* efeitos: e.x/e.y em casas da arena (px=false) ou já em px do mundo (px=true: efeitos da interface na preparação) */
+function desenharFx(lista,rt,px){for(const e of lista){const t=rt-e.b;if(t<0)continue;const f=CB.efeitos[e.id];if(!f)continue;if(f._tot===undefined)f._tot=f.ms.reduce((a,b)=>a+b,0);if(t>=f._tot)continue;
+  const im=folhaImg(f.src);if(!im)continue;const q=quadro(f,t),c=px?e:celPxV(e.x,e.y);cx.drawImage(im,f.x+q*f.w,f.y,f.w,f.h,Math.round(c.x-16+32-f.w),Math.round(c.y-PES+32-f.h),f.w,f.h);}}
 function desenharTiros(lista,rt){for(const m of lista){const t=(rt-m.b)/m.dur;if(t<0||t>=1)continue;const f=CB.tiros[m.id],im=f&&folhaImg(f.src);if(!im)continue;
-  const k=Math.round(Math.atan2(MY(m.y2)-MY(m.y1),MX(m.x2)-MX(m.x1))/(Math.PI/4)),pp={0:[2,1],1:[2,2],2:[1,2],3:[0,2],4:[0,1],'-4':[0,1],'-1':[2,0],'-2':[1,0],'-3':[0,0]}[k]||[2,1];
-  const x=lerp(MX(m.x1),MX(m.x2),t),y=lerp(MY(m.y1),MY(m.y2),t);cx.drawImage(im,f.x+pp[0]*f.w,f.y+pp[1]*f.h,f.w,f.h,Math.round(BX+x*TS+32-f.w),Math.round(BY+y*TS+32-f.h),f.w,f.h);}}
+  const a=celPxV(m.x1,m.y1),b=celPxV(m.x2,m.y2);
+  const k=Math.round(Math.atan2(b.y-a.y,b.x-a.x)/(Math.PI/4)),pp={0:[2,1],1:[2,2],2:[1,2],3:[0,2],4:[0,1],'-4':[0,1],'-1':[2,0],'-2':[1,0],'-3':[0,0]}[k]||[2,1];
+  const x=lerp(a.x,b.x,t),y=lerp(a.y,b.y,t);cx.drawImage(im,f.x+pp[0]*f.w,f.y+pp[1]*f.h,f.w,f.h,Math.round(x-16+32-f.w),Math.round(y-PES+32-f.h),f.w,f.h);}}
 
 /* ---- cores da barra de vida (padrão do cliente Tibia) ---- */
 function corVida(p){return p>=.96?'#00bc00':p>=.6?'#60c060':p>=.3?'#c0c000':p>=.1?'#c03030':'#7f0000';}
@@ -2770,31 +2837,43 @@ function moldura(g,x,y,w,h,pal,t){
   [[X0,Y0],[X0+W-t,Y0],[X0,Y0+H-t],[X0+W-t,Y0+H-t]].forEach(([px,py])=>{      // placas dos cantos com rebite
     const pg=g.createLinearGradient(px,py,px+t,py+t);pg.addColorStop(0,pal.br);pg.addColorStop(.55,pal.a);pg.addColorStop(1,pal.b);g.fillStyle=pg;g.fillRect(px,py,t,t);
     g.strokeStyle='#000';g.strokeRect(px+.5,py+.5,t-1,t-1);g.strokeStyle='rgba(255,255,255,.5)';g.strokeRect(px+1.5,py+1.5,t-3,t-3);rebite(px+t/2,py+t/2,t>6?2:1.4);});}
-/* fundo estático do tabuleiro (chão, grade, molduras, banco) desenhado uma vez numa tela fora da vista */
+/* fundo estático do tabuleiro (chão, plataforma hexagonal, banco) desenhado uma vez numa tela fora da vista */
 const FUNDO={key:'',cv:null};
 function pintarFundo(g,b,chao){const pal=PAL[b];
   g.fillStyle='#05060a';g.fillRect(0,0,CW,CH);
   for(let y=0;y<CH;y+=TS)for(let x=0;x<CW;x+=TS)g.drawImage(chao,(((x/TS)*3+(y/TS)*7)%5)*32,0,32,32,x,y,TS,TS);   // o mundo ao redor, escurecido
   g.fillStyle='rgba(4,5,9,.80)';g.fillRect(0,0,CW,CH);
   let vg=g.createRadialGradient(CW/2,CH*.45,40,CW/2,CH*.45,CW*.75);vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(0,0,0,.65)');g.fillStyle=vg;g.fillRect(0,0,CW,CH);
-  moldura(g,BX,BY,NC*TS,NR*TS,pal,8);
-  for(let y=0;y<NR;y++)for(let x=0;x<NC;x++){const X=BX+x*TS,Y=BY+y*TS;
-    g.drawImage(chao,((x*7+y*13)%5)*32,0,32,32,X-.25,Y-.25,32.5,32.5);
-    if(pal.tom){g.fillStyle=pal.tom;g.fillRect(X,Y,TS,TS);}
-    g.fillStyle=((x+y)&1)?'rgba(0,0,0,.26)':'rgba(0,0,0,.08)';g.fillRect(X,Y,TS,TS);
-    g.fillStyle=y>=4?'rgba(70,120,210,.10)':'rgba(210,70,55,.11)';g.fillRect(X,Y,TS,TS);}
-  g.strokeStyle='rgba(235,205,130,.12)';g.lineWidth=.5;g.beginPath();
-  for(let i=0;i<=NC;i++){g.moveTo(BX+i*TS,BY);g.lineTo(BX+i*TS,BY+NR*TS);}for(let i=0;i<=NR;i++){g.moveTo(BX,BY+i*TS);g.lineTo(BX+NC*TS,BY+i*TS);}g.stroke();
-  g.strokeStyle='rgba(217,180,90,.65)';g.lineWidth=1.2;g.setLineDash([5,3]);g.beginPath();g.moveTo(BX,BY+4*TS);g.lineTo(BX+NC*TS,BY+4*TS);g.stroke();g.setLineDash([]);
-  g.fillStyle='rgba(217,180,90,.9)';[BX,BX+NC*TS].forEach(px=>{g.beginPath();g.moveTo(px,BY+4*TS-4);g.lineTo(px+(px===BX?5:-5),BY+4*TS);g.lineTo(px,BY+4*TS+4);g.fill();});
-  // sombra interna da moldura
-  const sh=g.createLinearGradient(BX,BY,BX,BY+14);sh.addColorStop(0,'rgba(0,0,0,.4)');sh.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=sh;g.fillRect(BX,BY,NC*TS,14);
-  // banco
-  moldura(g,BEN_X,BEN_Y,9*TS,TS,pal,5);
-  for(let i=0;i<9;i++){const X=BEN_X+i*TS;g.drawImage(chao,(i%5)*32,0,32,32,X,BEN_Y,32,32);g.fillStyle='rgba(0,0,0,.50)';g.fillRect(X,BEN_Y,TS,TS);
-    g.strokeStyle='rgba(217,180,90,.35)';g.lineWidth=1;g.strokeRect(X+.5,BEN_Y+.5,TS-1,TS-1);}}
+  const cels=[];for(let y=0;y<NR;y++)for(let x=0;x<NC;x++)cels.push({x,y,c:celPx(x,y)});
+  // sombra da plataforma no chão
+  g.save();g.fillStyle='rgba(0,0,0,.55)';g.filter='blur(6px)';g.beginPath();cels.forEach(o=>hexSub(g,o.c.x,o.c.y+HPE+5,-3));g.fill();g.restore();
+  // borda escura e lateral (espessura) da plataforma: dá a sensação de tabuleiro inclinado, visto de frente e de cima
+  g.fillStyle='#000';g.beginPath();cels.forEach(o=>{hexSub(g,o.c.x,o.c.y,-1.6);hexSub(g,o.c.x,o.c.y+HPE,-1.6);});g.fill();
+  const lat=g.createLinearGradient(0,BY,0,BY+TAB_H+HPE);lat.addColorStop(0,pal.b);lat.addColorStop(1,pal.a);
+  g.fillStyle=lat;g.beginPath();cels.forEach(o=>hexSub(g,o.c.x,o.c.y+HPE,-.6));g.fill();g.fillStyle='rgba(0,0,0,.45)';g.fill();
+  // tampo de cada hexágono: textura do chão (grade contínua de 32 px recortada), tom do bioma, sombreado de 3 cores, tom do lado e chanfro
+  cels.forEach(({x,y,c})=>{g.save();hexPath(g,c.x,c.y,.8);g.clip();
+    const gx0=Math.floor((c.x-HW/2-BX)/32),gx1=Math.floor((c.x+HW/2-BX)/32),gy0=Math.floor((c.y-HH/2-BY)/32),gy1=Math.floor((c.y+HH/2-BY)/32);
+    for(let gy=gy0;gy<=gy1;gy++)for(let gx=gx0;gx<=gx1;gx++)g.drawImage(chao,(((gx*7+gy*13)%5+5)%5)*32,0,32,32,BX+gx*32-.25,BY+gy*32-.25,32.5,32.5);
+    if(pal.tom){g.fillStyle=pal.tom;g.fill();}
+    const tri=(((axQ(x,y)-y)%3)+3)%3;g.fillStyle=['rgba(0,0,0,.06)','rgba(0,0,0,.17)','rgba(0,0,0,.27)'][tri];g.fillRect(c.x-HW,c.y-HH,2*HW,2*HH);
+    g.fillStyle=y>=TAB_Y?'rgba(70,120,210,.11)':'rgba(210,70,55,.12)';g.fillRect(c.x-HW,c.y-HH,2*HW,2*HH);
+    const bv=g.createLinearGradient(0,c.y-HH/2,0,c.y+HH/2);bv.addColorStop(0,'rgba(255,240,200,.13)');bv.addColorStop(.45,'rgba(255,240,200,0)');bv.addColorStop(1,'rgba(0,0,0,.24)');g.fillStyle=bv;g.fillRect(c.x-HW,c.y-HH,2*HW,2*HH);
+    g.restore();
+    hexPath(g,c.x,c.y,1.3);g.strokeStyle='rgba(235,205,130,.20)';g.lineWidth=.8;g.stroke();});
+  // divisa entre os lados: o contorno de baixo da linha 3 (zigue-zague dourado tracejado) e setas nas pontas
+  g.strokeStyle='rgba(217,180,90,.75)';g.lineWidth=1.2;g.setLineDash([4,3]);g.beginPath();
+  for(let x=0;x<NC;x++){const c=celPx(x,TAB_Y-1);if(!x)g.moveTo(c.x-HW/2,c.y+HH/4);g.lineTo(c.x,c.y+HH/2);g.lineTo(c.x+HW/2,c.y+HH/4);}g.stroke();g.setLineDash([]);
+  {const l=celPx(0,TAB_Y),r=celPx(NC-1,TAB_Y-1);g.fillStyle='rgba(217,180,90,.9)';
+    [[l.x-HW/2-1,l.y-HH/4,1],[r.x+HW/2+1,r.y+HH/4,-1]].forEach(([px,py,s])=>{g.beginPath();g.moveTo(px-s*4,py-4);g.lineTo(px+s*1,py);g.lineTo(px-s*4,py+4);g.fill();});}
+  // banco (vagas retangulares na frente do seu lado)
+  moldura(g,BEN_X,BEN_Y,MAX_BANCO*BSW,BSH,pal,5);
+  for(let i=0;i<MAX_BANCO;i++){const X=BEN_X+i*BSW;g.save();g.beginPath();g.rect(X,BEN_Y,BSW,BSH);g.clip();g.drawImage(chao,(i%5)*32,0,32,32,X,BEN_Y,32,32);g.drawImage(chao,((i+2)%5)*32,0,32,32,X+32,BEN_Y,32,32);g.restore();
+    g.fillStyle='rgba(0,0,0,.50)';g.fillRect(X,BEN_Y,BSW,BSH);
+    g.strokeStyle='rgba(217,180,90,.35)';g.lineWidth=1;g.strokeRect(X+.5,BEN_Y+.5,BSW-1,BSH-1);
+    g.fillStyle='rgba(0,0,0,.35)';g.beginPath();g.ellipse(X+BSW/2,BEN_Y+BSH-6,11,3.5,0,0,7);g.fill();}}
 function fundoPronto(b){const chao=folhaImg('tactics-assets/chao_'+b+'.png');if(!chao)return null;
-  const k=b+'|'+Z*DPR+'|'+CW;if(FUNDO.key===k&&FUNDO.cv)return FUNDO.cv;
+  const k=b+'|'+Z*DPR+'|'+CW+'|'+BX;if(FUNDO.key===k&&FUNDO.cv)return FUNDO.cv;
   const c=FUNDO.cv||(FUNDO.cv=document.createElement('canvas'));c.width=Math.round(CW*Z*DPR);c.height=Math.round(CH*Z*DPR);
   const g=c.getContext('2d');g.setTransform(c.width/CW,0,0,c.height/CH,0,0);g.imageSmoothingEnabled=false;pintarFundo(g,b,chao);FUNDO.key=k;return c;}
 
@@ -2803,32 +2882,30 @@ function desenharTabuleiro(rt){
   const bg=fundoPronto(b);
   if(bg){cx.save();cx.setTransform(1,0,0,1,0,0);cx.drawImage(bg,0,0);cx.restore();}else{cx.fillStyle='#08090d';cx.fillRect(0,0,CW,CH);}
   // na preparação o seu lado é iluminado (pulso suave)
-  if(prep){const a=.11+.035*Math.sin(rt/650),gx=BX+NC*TS/2,gy=BY+NR*TS+6,gr=cx.createRadialGradient(gx,gy,8,gx,gy,205);
-    gr.addColorStop(0,'rgba('+pal.luz+','+(a*2.4).toFixed(3)+')');gr.addColorStop(1,'rgba('+pal.luz+',0)');cx.fillStyle=gr;cx.fillRect(BX,BY+4*TS,NC*TS,4*TS);
-    cx.fillStyle='rgba(80,140,255,.07)';cx.fillRect(BX,BY+4*TS,NC*TS,4*TS);}
+  if(prep){const a=.11+.035*Math.sin(rt/650),gx=BX+TAB_W/2,gy=BY+TAB_H+6,gr=cx.createRadialGradient(gx,gy,8,gx,gy,205);
+    gr.addColorStop(0,'rgba('+pal.luz+','+(a*2.4).toFixed(3)+')');gr.addColorStop(1,'rgba('+pal.luz+',0)');
+    cx.beginPath();for(let y=TAB_Y;y<NR;y++)for(let x=0;x<NC;x++){const c=celPx(x,y);hexSub(cx,c.x,c.y,.8);}
+    cx.fillStyle=gr;cx.fill();cx.fillStyle='rgba(80,140,255,.07)';cx.fill();}
   // destaques de arrastar e soltar: casas válidas, casa de destino e alcance da unidade
   const dr=UI.drag;
   if(dr&&dr.tipo==='un'){const p=UI.jog,cheio=contarTab(p)>=limUn(p);
-    for(let y=0;y<4;y++)for(let x=0;x<NC;x++){if(!(UI.fase==='prep'&&(p.tab[y][x]||dr.de.onde==='tab'||!cheio)))continue;const X=BX+x*TS,Y=BY+(y+4)*TS;
-      cx.fillStyle='rgba(110,230,120,.13)';cx.fillRect(X+1,Y+1,TS-2,TS-2);cx.strokeStyle='rgba(150,255,160,.38)';cx.lineWidth=1;cx.strokeRect(X+1.5,Y+1.5,TS-3,TS-3);}
-    for(let i=0;i<9;i++){cx.fillStyle='rgba(110,230,120,.10)';cx.fillRect(BEN_X+i*TS+1,BEN_Y+1,TS-2,TS-2);}
+    for(let y=0;y<4;y++)for(let x=0;x<NC;x++){if(!(UI.fase==='prep'&&(p.tab[y][x]||dr.de.onde==='tab'||!cheio)))continue;
+      formaLoc(cx,{onde:'tab',x,y},1.5);cx.fillStyle='rgba(110,230,120,.13)';cx.fill();cx.strokeStyle='rgba(150,255,160,.38)';cx.lineWidth=1;cx.stroke();}
+    for(let i=0;i<MAX_BANCO;i++){formaLoc(cx,{onde:'banco',i},1);cx.fillStyle='rgba(110,230,120,.10)';cx.fill();}
     const c=dr.cel;
-    if(c){cx.fillStyle=dr.ok?'rgba(110,230,120,.32)':'rgba(230,90,70,.34)';
-      if(c.onde==='tab')cx.fillRect(BX+c.x*TS,BY+(c.y+4)*TS,TS,TS);else if(c.onde==='banco')cx.fillRect(BEN_X+c.i*TS,BEN_Y,TS,TS);
-      if(dr.ok&&c.onde==='tab'){const al=U[dr.inst.id].al,ox=c.x,oy=c.y+4;   // alcance: as casas que a unidade atinge de onde vai cair
-        for(let y=Math.max(0,oy-al);y<=Math.min(NR-1,oy+al);y++)for(let x=Math.max(0,ox-al);x<=Math.min(NC-1,ox+al);x++){if(x===ox&&y===oy)continue;
-          const X=BX+x*TS,Y=BY+y*TS;cx.fillStyle='rgba(255,196,70,.17)';cx.fillRect(X,Y,TS,TS);cx.strokeStyle='rgba(255,210,100,.55)';cx.lineWidth=.8;cx.strokeRect(X+.5,Y+.5,TS-1,TS-1);}}}}
+    if(c){formaLoc(cx,c,.8);cx.fillStyle=dr.ok?'rgba(110,230,120,.32)':'rgba(230,90,70,.34)';cx.fill();
+      if(dr.ok&&c.onde==='tab'){const al=U[dr.inst.id].al,o={x:c.x,y:c.y+TAB_Y};   // alcance: os hexágonos que a unidade atinge de onde vai cair
+        for(let y=0;y<NR;y++)for(let x=0;x<NC;x++){const d=distH(o,{x,y});if(!d||d>al)continue;
+          const q=celPx(x,y);hexPath(cx,q.x,q.y,1.2);cx.fillStyle='rgba(255,196,70,.17)';cx.fill();cx.strokeStyle='rgba(255,210,100,.55)';cx.lineWidth=.8;cx.stroke();}}}}
   if(dr&&dr.tipo==='item'){const p=UI.jog;                                                         // casas onde o item serve: dourado = equipar, verde = combinar/forjar, roxo = encantar
     const cor=pl=>pl.tipo==='equipar'?'rgba(240,215,110,.15)':pl.tipo==='encantar'?'rgba(190,120,255,.28)':'rgba(110,230,160,.28)';
-    todos(p).forEach(L=>{const pl=planoSobreUn(p,dr.idx,L);if(!pl||pl.erro)return;cx.fillStyle=cor(pl);
-      if(L.onde==='tab')cx.fillRect(BX+L.x*TS+1,BY+(L.y+4)*TS+1,TS-2,TS-2);else cx.fillRect(BEN_X+L.i*TS+1,BEN_Y+1,TS-2,TS-2);});
-    if(dr.alvo){const a=dr.alvo;cx.fillStyle=dr.ok?'rgba(240,215,110,.34)':'rgba(230,90,70,.30)';
-      if(a.onde==='tab')cx.fillRect(BX+a.x*TS,BY+(a.y+4)*TS,TS,TS);else cx.fillRect(BEN_X+a.i*TS,BEN_Y,TS,TS);}}
+    todos(p).forEach(L=>{const pl=planoSobreUn(p,dr.idx,L);if(!pl||pl.erro)return;formaLoc(cx,L,1.2);cx.fillStyle=cor(pl);cx.fill();});
+    if(dr.alvo){formaLoc(cx,dr.alvo,.8);cx.fillStyle=dr.ok?'rgba(240,215,110,.34)':'rgba(230,90,70,.30)';cx.fill();}}
 }
 
 /* ---- barra acima da unidade: vida em divisões de 300 (tamanho do tanque), mana azul, estrelas; borda verde (aliado) ou vermelha (inimigo) ---- */
-function desenharBarras(u,px,py,rt,alfa){const f=folhaDe(u.d),altura=f?Math.min(f.h,64):32,off=Math.min(Math.max(altura-30,0)*.55,15);
-  const sx=(BX+px*TS+16)*Z,sy=(BY+py*TS-off-2)*Z,w=Math.round(28*Z),h=Math.max(6,Math.round(4*Z)),mh=u.manaM?Math.max(3,Math.round(2*Z)):0;
+function desenharBarras(u,PX,PY,rt,alfa){const f=folhaDe(u.d),altura=f?Math.min(f.h,64):32,off=Math.min(Math.max(altura-30,0)*.55,15);   // PX/PY: centro do hexágono (px do mundo)
+  const sx=PX*Z,sy=(PY-PES-off-2)*Z,w=Math.round(28*Z),h=Math.max(6,Math.round(4*Z)),mh=u.manaM?Math.max(3,Math.round(2*Z)):0;
   const es=(u.b&&u.b.escudo&&u.C&&u.b.escudo.ate>u.C.t&&u.b.escudo.v>0)?u.b.escudo.v:0,tot=Math.max(u.hpM,u.hp+es),hp=clamp(u.hp/u.hpM,0,1),cor=corVida(hp);
   const aliado=u.lado===(ESP?1:0),x0=Math.round(sx-w/2),y0=Math.round(sy),H=h+(mh?mh+1:0);
   cx.save();cx.setTransform(DPR,0,0,DPR,0,0);cx.globalAlpha=alfa===undefined?1:alfa;
@@ -2853,10 +2930,10 @@ function estrela(x,y,r,e){const c=EST_COR[e]||EST_COR[3];cx.save();cx.beginPath(
   cx.fillStyle=c[0];cx.fill();cx.shadowBlur=0;cx.fillStyle='rgba(255,255,255,.35)';cx.beginPath();cx.arc(x-r*.22,y-r*.25,r*.28,0,7);cx.fill();cx.restore();}
 function desenharTextos(C,rt){
   cx.save();cx.setTransform(DPR,0,0,DPR,0,0);cx.textAlign='center';cx.lineJoin='round';
-  for(const t of C.txts){const age=rt-t.b;if(age<0||age>1050)continue;const sx=(BX+MX(t.x)*TS+16+(((t.b/100)|0)%5-2)*3)*Z,sy=(BY+MY(t.y)*TS-4-age*.016)*Z,a=age>750?1-(age-750)/300:1;
+  for(const t of C.txts){const age=rt-t.b;if(age<0||age>1050)continue;const c=celPxV(t.x,t.y),sx=(c.x+(((t.b/100)|0)%5-2)*3)*Z,sy=(c.y-PES-4-age*.016)*Z,a=age>750?1-(age-750)/300:1;
     cx.globalAlpha=a;cx.font='bold '+Math.round((t.g?5.2:3.6)*Z+(t.g?1:2))+'px Verdana';cx.lineWidth=3.2;cx.strokeStyle='#000';cx.strokeText(t.t,sx,sy);cx.fillStyle=t.cor;cx.fillText(t.t,sx,sy);}
   // falas (palavras mágicas em amarelo, como no Tibia)
-  for(const f of C.falas){const age=rt-f.b;if(age<0||age>1700)continue;const p=posU(f.u,rt),sx=(BX+p.x*TS+16)*Z,sy=(BY+p.y*TS-22-age*.008)*Z;
+  for(const f of C.falas){const age=rt-f.b;if(age<0||age>1700)continue;const p=posU(f.u,rt),sx=p.x*Z,sy=(p.y-PES-22-age*.008)*Z;
     cx.globalAlpha=age>1300?1-(age-1300)/400:1;cx.font='bold '+Math.round(3.4*Z+2)+'px Verdana';cx.lineWidth=3.2;cx.strokeStyle='#000';cx.strokeText(f.t,sx,sy);cx.fillStyle='#ffe14a';cx.fillText(f.t,sx,sy);}
   cx.restore();}
 
@@ -2870,13 +2947,13 @@ function iconesItens(u,X,Y,alfa){const it=u.itens||[],SZ=10,P=10.6,x0=X+(32-(it.
   cx.globalAlpha=1;});}
 
 /* ---- desenha uma unidade (combate ou pré-visualização) ---- */
-function desenharUnidade(u,rt,estatico){const p=estatico?{x:u.x,y:u.y}:posU(u,rt);let ox=0,oy=0;
+function desenharUnidade(u,rt,estatico){const p=estatico?celPx(u.x,u.y):posU(u,rt);let ox=0,oy=0;   // p = centro do hexágono (px do mundo)
   if(u.lunge&&!estatico){const a=rt-u.lunge.b;if(a>=0&&a<200){const k=Math.sin(Math.PI*a/200)*4*(ESP?-1:1);ox=u.lunge.dx*k;oy=u.lunge.dy*k;}}
   if(!estatico&&!UI.reduz&&UI.celebra&&u.vivo&&u.C===UI.celebra.C&&u.lado===(ESP?1:0)){const a=performance.now()-UI.celebra.b;if(a>200&&a<3800)oy-=Math.abs(Math.sin((a-200)/180+u.uid*.9))*5;}   // pulinho de vitória
-  const X=BX+p.x*TS+ox,Y=BY+p.y*TS+oy;
-  cx.fillStyle='rgba(0,0,0,.38)';cx.beginPath();cx.ellipse(BX+p.x*TS+16,BY+p.y*TS+28,13.5,6,0,0,7);cx.fill();   // sombra escura sob a unidade (contraste)
-  cx.fillStyle=u.lado===(ESP?1:0)?'rgba(80,140,255,.30)':'rgba(255,80,70,.30)';cx.beginPath();cx.ellipse(BX+p.x*TS+16,BY+p.y*TS+27,12.5,5,0,0,7);cx.fill();
-  if(u.b&&u.C&&u.b.escudo&&u.b.escudo.ate>u.C.t&&u.b.escudo.v>0){cx.strokeStyle='rgba(180,235,255,.7)';cx.lineWidth=1;cx.beginPath();cx.ellipse(BX+p.x*TS+16,BY+p.y*TS+27,14,6,0,0,7);cx.stroke();}
+  const o=orgPx(p),X=o.X+ox,Y=o.Y+oy,sx=p.x,sy=p.y-PES+28;   // (sx,sy): onde os pés pisam (28 px abaixo do topo da arte)
+  cx.fillStyle='rgba(0,0,0,.38)';cx.beginPath();cx.ellipse(sx,sy,13.5,6,0,0,7);cx.fill();   // sombra escura sob a unidade (contraste)
+  cx.fillStyle=u.lado===(ESP?1:0)?'rgba(80,140,255,.30)':'rgba(255,80,70,.30)';cx.beginPath();cx.ellipse(sx,sy-1,12.5,5,0,0,7);cx.fill();
+  if(u.b&&u.C&&u.b.escudo&&u.b.escudo.ate>u.C.t&&u.b.escudo.v>0){cx.strokeStyle='rgba(180,235,255,.7)';cx.lineWidth=1;cx.beginPath();cx.ellipse(sx,sy-1,14,6,0,0,7);cx.stroke();}
   const furt=!estatico&&u.C&&u.furtivoAte>u.C.t;if(furt)cx.globalAlpha=.42;      // Stealth Ring: invisível nos primeiros segundos
   const f=pintarSprite(u.d,ESP&&!estatico?(u.dir+2)%4:u.dir,X,Y,rt,estatico?null:u);if(furt)cx.globalAlpha=1;
   if(!f){cx.fillStyle='#a33';cx.fillRect(X+8,Y+8,16,20);}
@@ -2886,23 +2963,23 @@ function desenharUnidade(u,rt,estatico){const p=estatico?{x:u.x,y:u.y}:posU(u,rt
 function renderCombate(C,rt){
   // cadáveres
   for(const m of C.mortos){const age=rt-m.t;if(age>6000)continue;const cd=cadDe(m.u.d);if(!cd)continue;const im=folhaImg(cd.src);if(!im)continue;
-    cx.globalAlpha=age>5000?1-(age-5000)/1000:1;cx.drawImage(im,0,0,cd.w,cd.h,BX+MX(m.x)*TS+32-cd.w,BY+MY(m.y)*TS+32-cd.h,cd.w,cd.h);cx.globalAlpha=1;}
+    const o=orgPx(celPx(MX(m.x),MY(m.y)));cx.globalAlpha=age>5000?1-(age-5000)/1000:1;cx.drawImage(im,0,0,cd.w,cd.h,o.X+32-cd.w,o.Y+32-cd.h,cd.w,cd.h);cx.globalAlpha=1;}
   const oculto=monOculto(),vivos=C.un.filter(u=>u.vivo&&u!==oculto).map(u=>({u,p:posU(u,rt)})).sort((a,b)=>a.p.y-b.p.y||a.p.x-b.p.x);
-  vivos.forEach(o=>{desenharUnidade(o.u,rt,false);iconesItens(o.u,BX+o.p.x*TS,BY+o.p.y*TS,1);});
+  vivos.forEach(o=>{desenharUnidade(o.u,rt,false);const g=orgPx(o.p);iconesItens(o.u,g.X,g.Y,1);});   // de trás para a frente (linha de cima primeiro)
   desenharFx(C.fx,rt);desenharTiros(C.tiros,rt);
   // passar o mouse numa unidade: linha fina até o alvo atual
   const h=UI.hoverU;
-  if(h&&h.vivo&&h.alvo&&h.alvo.vivo){const a=posU(h,rt),b=posU(h.alvo,rt),ax=BX+a.x*TS+16,ay=BY+a.y*TS+18,bx=BX+b.x*TS+16,by=BY+b.y*TS+18;
+  if(h&&h.vivo&&h.alvo&&h.alvo.vivo){const a=posU(h,rt),b=posU(h.alvo,rt),ax=a.x,ay=a.y-PES+18,bx=b.x,by=b.y-PES+18;
     cx.save();cx.strokeStyle=h.lado===(ESP?1:0)?'rgba(150,205,255,.9)':'rgba(255,155,135,.9)';cx.lineWidth=1;cx.setLineDash([3,2.5]);
     cx.beginPath();cx.moveTo(ax,ay);cx.lineTo(bx,by);cx.stroke();cx.setLineDash([]);cx.beginPath();cx.arc(bx,by,6,0,7);cx.stroke();cx.beginPath();cx.arc(ax,ay,5,0,7);cx.stroke();cx.restore();}
   vivos.forEach(o=>desenharBarras(o.u,o.p.x,o.p.y,rt));
   desenharTextos(C,rt);}
 function renderPrev(rt){const P=UI.prev;if(!P)return;const dr=UI.drag,now=performance.now();
   const lista=P.un.filter(u=>!(dr&&dr.tipo==='un'&&dr.inst&&u.inst===dr.inst)&&!(u.inst&&UI.voando[u.inst.uid]>now)).sort((a,b)=>a.y-b.y||a.x-b.x);
-  lista.forEach(u=>{cx.globalAlpha=u.lado===0?1:.78;desenharUnidade(u,rt,true);iconesItens(u,BX+u.x*TS,BY+u.y*TS,u.lado===0?1:.8);cx.globalAlpha=1;});
-  lista.forEach(u=>desenharBarras(u,u.x,u.y,rt,u.lado===0?1:.8));}
+  lista.forEach(u=>{cx.globalAlpha=u.lado===0?1:.78;const o=orgPx(desenharUnidade(u,rt,true));iconesItens(u,o.X,o.Y,u.lado===0?1:.8);cx.globalAlpha=1;});
+  lista.forEach(u=>{const c=celPx(u.x,u.y);desenharBarras(u,c.x,c.y,rt,u.lado===0?1:.8);});}
 function renderBanco(rt){const p=UI.jog;if(!p)return;const now=performance.now();
-  p.banco.forEach((inst,i)=>{if(!inst)return;if(UI.drag&&UI.drag.tipo==='un'&&UI.drag.inst===inst)return;if(UI.voando[inst.uid]>now)return;const X=BEN_X+i*TS,Y=BEN_Y;
+  p.banco.forEach((inst,i)=>{if(!inst)return;if(UI.drag&&UI.drag.tipo==='un'&&UI.drag.inst===inst)return;if(UI.voando[inst.uid]>now)return;const {X,Y}=orgPx(bancoPx(i));
     pintarSprite(U[inst.id],2,X,Y,rt,null);iconesItens(inst,X,Y,1);
     for(let k=0;k<inst.e;k++)estrela(X+16+(k-(inst.e-1)/2)*8.6,Y+5,4.2,inst.e);});}
 
@@ -2917,7 +2994,7 @@ function falaAvatar(txt,x,y,age){const a=age>2600?1-(age-2600)/500:1;cx.save();c
   const yy=y-age*.004;cx.strokeText(txt,x,yy);cx.fillStyle='#ffe14a';cx.fillText(txt,x,yy);cx.restore();}
 function desenharAvatares(now){if(UI.demo||!G||!UI.jog)return;
   const esp=UI.espiar!=null,eu=esp?G.jog[UI.espiar]:UI.jog,op=esp||UI.fase==='resultado'&&!UI.C?null:oponenteLocal();
-  const cena=(q,esq,Y0,desl)=>{if(!q)return;const X0=esq?BX-TS-8:BX+NC*TS+8;
+  const cena=(q,esq,Y0,desl)=>{if(!q)return;const X0=posAvatarTab(esq).X;
     const t=(now+desl)%7000;let dx=0,dir=2,andar=false;const s=esq?1:-1;
     if(!UI.reduz){if(t<1500){dx=s*9*t/1500;dir=esq?1:3;andar=true;}else if(t<3500){dx=s*9;}else if(t<5000){dx=s*9*(1-(t-3500)/1500);dir=esq?3:1;andar=true;}}
     const hb=UI.avHit[q.id],hit=hb&&now-hb<650?hb:0;if(hit)dx+=(Math.floor(now/45)%2?2.5:-2.5)*(1-(now-hit)/650);
@@ -2931,17 +3008,17 @@ function desenharAvatares(now){if(UI.demo||!G||!UI.jog)return;
     let nm=q.nome;if(nm.length>9)nm=nm.slice(0,8)+'.';cx.strokeText(nm,X0+16,Y0+37);cx.fillStyle=esq?'#b8d4ff':'#ffc0b6';cx.fillText(nm,X0+16,Y0+37);
     cx.fillStyle='#000';cx.fillRect(X0+3,Y0+39,26,4);cx.fillStyle='#2a2a2a';cx.fillRect(X0+4,Y0+40,24,2);cx.fillStyle=corVida(hp);cx.fillRect(X0+4,Y0+40,Math.round(24*hp),2);cx.restore();
     const em=UI.emotes[q.id];if(em&&now-em.b<3100)falaAvatar(em.t,X0+16,Y0-2,now-em.b);};
-  cena(eu,true,BY+5*TS-4,0);
-  if(op)cena(op,false,BY+TS*.5,2300);
+  cena(eu,true,posAvatarTab(true).Y,0);
+  if(op)cena(op,false,posAvatarTab(false).Y,2300);
   desenharAtaque(now);
   // efeitos sobre o avatar (sangue ao perder vida)
   const A=UI.fxAv;for(let i=A.length-1;i>=0;i--){const e=A[i];if(!desenharFxPx(e.id,e.X,e.Y,now-e.b))A.splice(i,1);}}
 
 /* ---- poder da vocação na preparação: escudo do Utamo Tempo sobre a unidade marcada e brilho nas unidades no modo de escolha ---- */
 function desenharMarcaPoder(now){const p=UI.jog;if(!p||UI.demo||UI.C||UI.espiar!==null||UI.fase!=='prep')return;
-  const pos=L=>L.onde==='tab'?[BX+L.x*TS,BY+(L.y+4)*TS]:[BEN_X+L.i*TS,BEN_Y];
+  const pos=L=>{const o=locOrg(L);return [o.X,o.Y];};
   if(UI.alvoPoder==='un'||(UI.alvoRuna!==null&&p.mr[UI.alvoRuna]!==undefined&&RUNA[p.mr[UI.alvoRuna]].alvo)){const a=UI.reduz?.5:.5+.25*Math.sin(now/260);
-    todos(p).forEach(L=>{const [X,Y]=pos(L);cx.fillStyle='rgba(111,184,255,'+(.16*a/.5).toFixed(3)+')';cx.fillRect(X+1,Y+1,TS-2,TS-2);cx.strokeStyle='rgba(159,216,255,'+(.95*a/.5).toFixed(3)+')';cx.lineWidth=1;cx.strokeRect(X+1.5,Y+1.5,TS-3,TS-3);});}
+    todos(p).forEach(L=>{formaLoc(cx,L,1.5);cx.fillStyle='rgba(111,184,255,'+(.16*a/.5).toFixed(3)+')';cx.fill();cx.strokeStyle='rgba(159,216,255,'+(.95*a/.5).toFixed(3)+')';cx.lineWidth=1;cx.stroke();});}
   p.ra.forEach(a=>{if(!a.u)return;const L=todos(p).find(L=>L.inst.uid===a.u);if(!L)return;const [X,Y]=pos(L),R=RUNA[a.k];       // selo da runa armada sobre a unidade
     cx.fillStyle='#000c';cx.beginPath();cx.arc(X+TS-9,Y+9,8,0,7);cx.fill();cx.strokeStyle=R.cor;cx.lineWidth=1.5;cx.stroke();
     if(R.img&&R.img.complete)cx.drawImage(R.img,X+TS-16,Y+2,14,14);});
@@ -2952,11 +3029,11 @@ function desenharMarcaPoder(now){const p=UI.jog;if(!p||UI.demo||UI.C||UI.espiar!
 function desenharDestaques(now){const tr=UI.hoverTr,id=UI.hoverCartaId;if((!tr&&!id)||!UI.jog||UI.demo||UI.espiar!==null)return;
   const comb=d=>!!d&&!d.pve&&((tr&&(d.o===tr||d.k===tr))||(id&&d.id===id));
   const a=UI.reduz?.5:.5+.15*Math.sin(now/520);
-  const marca=(X,Y)=>{cx.fillStyle='rgba(255,226,130,'+(.14*a/.5).toFixed(3)+')';cx.fillRect(X+1,Y+1,TS-2,TS-2);
-    cx.strokeStyle='rgba(255,226,130,'+(.85*a/.5).toFixed(3)+')';cx.lineWidth=1;cx.strokeRect(X+1.5,Y+1.5,TS-3,TS-3);
-    cx.fillStyle='rgba(255,226,130,'+(.30*a/.5).toFixed(3)+')';cx.beginPath();cx.ellipse(X+16,Y+27,14,6,0,0,7);cx.fill();};
-  if(UI.C){const C=UI.C,meu=C.esp?1:0;C.un.forEach(u=>{if(!u.vivo||u.lado!==meu||u.inv||!comb(u.d))return;const p=posU(u,UI.C.t+UI.acc);marca(BX+p.x*TS,BY+p.y*TS);});return;}
-  todos(UI.jog).forEach(L=>{if(!comb(U[L.inst.id]))return;if(L.onde==='tab')marca(BX+L.x*TS,BY+(L.y+4)*TS);else marca(BEN_X+L.i*TS,BEN_Y);});}
+  const marca=(c,forma)=>{forma();cx.fillStyle='rgba(255,226,130,'+(.14*a/.5).toFixed(3)+')';cx.fill();
+    cx.strokeStyle='rgba(255,226,130,'+(.85*a/.5).toFixed(3)+')';cx.lineWidth=1;cx.stroke();
+    cx.fillStyle='rgba(255,226,130,'+(.30*a/.5).toFixed(3)+')';cx.beginPath();cx.ellipse(c.x,c.y-PES+27,14,6,0,0,7);cx.fill();};
+  if(UI.C){const C=UI.C,meu=C.esp?1:0;C.un.forEach(u=>{if(!u.vivo||u.lado!==meu||u.inv||!comb(u.d))return;const p=posU(u,UI.C.t+UI.acc);marca(p,()=>hexPath(cx,p.x,p.y,1.5));});return;}
+  todos(UI.jog).forEach(L=>{if(!comb(U[L.inst.id]))return;marca(locPx(L),()=>formaLoc(cx,L,1.5));});}
 
 /* ---- ataque do avatar no fim da luta (o "pequeno herói" do TFT): só visual, ~1,5 s, pulável (clique no tabuleiro ou Espaço).
    PvP: o avatar do vencedor corre até o do perdedor e lança a magia da vocação. PvE perdido: o monstro mais forte que sobrou ataca o seu avatar. ---- */
@@ -2983,7 +3060,7 @@ function iniciarAtaqueAvatar(d,p){UI.atq=null;UI.hpAtr=null;if(!G||UI.demo||!UI.
     else o={atk:{id:op.id,voc:op.voc,X:PO.X,Y:PO.Y},alvo:{id:p.id,esq:true,X:PE.X,Y:PE.Y},mag:MAGIA_AV[op.voc]||MAGIA_AV.knight,dano:d.dano||0,perdId:p.id,perdQ:p};}
   else if(d.v==='d'){const m=C.un.filter(u=>u.vivo&&u.lado===1).sort((a,b)=>b.hpM-a.hpM)[0];if(!m)return;       // PvE perdido: o monstro mais forte que sobrou
     const at=m.d.atq,dist=m.al>1;
-    o={atk:{id:-1,mon:m,X:BX+m.x*TS,Y:BY+m.y*TS},alvo:{id:p.id,esq:true,X:PE.X,Y:PE.Y},mag:{pal:'',perto:!dist,tiro:dist?(at?at.t:'arrow'):null,efs:[[at?at.hit:(m.d.hit||'drawblood'),0,0,0]],som:'golpe'},dano:0,perdId:p.id,mon:m};}
+    const om=orgPx(celPx(MX(m.x),MY(m.y)));o={atk:{id:-1,mon:m,X:om.X,Y:om.Y},alvo:{id:p.id,esq:true,X:PE.X,Y:PE.Y},mag:{pal:'',perto:!dist,tiro:dist?(at?at.t:'arrow'):null,efs:[[at?at.hit:(m.d.hit||'drawblood'),0,0,0]],som:'golpe'},dano:0,perdId:p.id,mon:m};}
   if(!o)return;
   UI.atq=criarAtaque(o);
   if(o.dano>0&&o.perdQ)UI.hpAtr={id:o.perdId,hp:o.perdQ.hp+o.dano};}                                // a vida desce na lista só quando o golpe acerta
@@ -3022,13 +3099,13 @@ function desenharAnims(now){const A=UI.anims;if(!A.length)return;
       cx.save();cx.globalAlpha=al;cx.translate(a.X+16,y);const sc=t<.15?.6+t/.15*.6:1.2-.2*Math.min(1,(t-.15)*3);cx.scale(sc,sc);
       for(let k=0;k<n;k++)estrela((k-(n-1)/2)*r*2.3-4,0,r);cx.font='bold 15px Verdana';cx.textAlign='left';cx.lineJoin='round';cx.lineWidth=3;cx.strokeStyle='#4a2f00';cx.fillStyle='#ffe27a';
       const wx=(n-1)/2*r*2.3+r*.9;cx.strokeText('!',wx-4,6);cx.fillText('!',wx-4,6);cx.restore();}}}
-function fusaoFim(a){const now=performance.now(),tx=(a.fim.X-BX)/TS,ty=(a.fim.Y-BY)/TS;
+function fusaoFim(a){const now=performance.now(),tx=a.fim.X+16,ty=a.fim.Y+PES;   // fxPrep em px do mundo (centro da casa)
   UI.fxPrep.push({id:E('magic_blue'),x:tx,y:ty,b:now});UI.fxPrep.push({id:E('yellow_rings'),x:tx,y:ty,b:now+110});
   UI.anims.push({k:'texto',b:now,dur:1100,X:a.fim.X,Y:a.fim.Y,e:a.e});delete UI.voando[a.alvo];UI.prevSujo=true;Sons.fundir&&Sons.fundir();}
 
 /* ---- clímax da luta (só visual, lê C.t / C.tempoMax; não mexe no motor nem sorteia nada): barra de força das equipes e morte súbita ---- */
 function desenharClimax(C,rt,now){
-  const meu=ESP?1:0,w=244,x0=BX-38,y0=5,h=13,rd=UI.reduz;   // barra à esquerda do botão Placar (que fica no canto superior direito)
+  const meu=ESP?1:0,w=244,x0=BX-31,y0=5,h=13,rd=UI.reduz;   // barra à esquerda do botão Placar (que fica no canto superior direito)
   // barra "cabo de guerra": vida total viva (invocações incluídas) do seu time (azul) contra o inimigo (vermelho)
   let a=0,b=0;C.un.forEach(u=>{if(u.vivo)(u.lado===meu?(a+=u.hp):(b+=u.hp));});
   let F=UI.forca;if(!F||F.C!==C){F=UI.forca={C,a,b,ult:now,lid:0,vir:0,virLado:0,t0:now};}
@@ -3040,7 +3117,7 @@ function desenharClimax(C,rt,now){
   // morte súbita ativa: vinheta e borda vermelhas ficam ATRÁS da barra de força
   const TM=C.tempoMax,rest=TM-rt,sdOn=rt>=TM&&!C.fim,age=rt-TM,p=rd?.7:.5+.5*Math.sin(age/170);
   if(sdOn){const al=.16+.16*p;cx.save();let gr=cx.createRadialGradient(CW/2,CH/2,CH*.28,CW/2,CH/2,CW*.62);gr.addColorStop(0,'rgba(255,0,0,0)');gr.addColorStop(1,'rgba(230,20,10,'+(al*1.8)+')');cx.fillStyle=gr;cx.fillRect(0,0,CW,CH);   // vinheta vermelha
-    cx.strokeStyle='rgba(255,50,40,'+(.35+.5*p)+')';cx.lineWidth=3;cx.strokeRect(BX-6,BY-6,NC*TS+12,NR*TS+12);cx.restore();}   // borda da arena
+    cx.strokeStyle='rgba(255,50,40,'+(.35+.5*p)+')';cx.lineWidth=3;cx.strokeRect(BX-6,BY-6,TAB_W+12,TAB_H+HPE+12);cx.restore();}   // borda da arena
   cx.save();cx.translate(tr,0);
   cx.fillStyle='rgba(0,0,0,.75)';cx.fillRect(x0-1,y0-1,w+2,h+2);
   const wa=Math.round(w*fr);
@@ -3068,7 +3145,7 @@ function somClimax(C,rt){if(UI.demo||!C.vis)return;let S=UI.sdSom;if(!S||S.C!==C
 function render(){if(!cx)return;const C=UI.C,rt=C?C.t+UI.acc:performance.now(),now=performance.now();ESP=!!(C&&C.esp);
   cx.setTransform(Z*DPR,0,0,Z*DPR,0,0);cx.imageSmoothingEnabled=false;cx.globalAlpha=1;
   desenharTabuleiro(rt);
-  if(C)renderCombate(C,rt);else{renderPrev(rt);desenharFx(UI.fxPrep,now);}
+  if(C)renderCombate(C,rt);else{renderPrev(rt);desenharFx(UI.fxPrep,now,true);}
   desenharAvatares(now);
   if(UI.jog&&!UI.demo&&UI.espiar==null)renderBanco(C?now:rt);
   desenharMarcaPoder(now);
@@ -3077,7 +3154,7 @@ function render(){if(!cx)return;const C=UI.C,rt=C?C.t+UI.acc:performance.now(),n
   if(C&&!UI.demo&&C.vis)desenharClimax(C,rt,now);
   // hover sutil
   if(UI.hoverCel&&!UI.drag&&!UI.demo&&UI.espiar==null){const c=UI.hoverCel;cx.strokeStyle='rgba(255,230,140,.55)';cx.lineWidth=1;
-    if(c.onde==='tab')cx.strokeRect(BX+c.x*TS+.5,BY+(c.y+4)*TS+.5,TS-1,TS-1);else if(c.onde==='banco')cx.strokeRect(BEN_X+c.i*TS+.5,BEN_Y+.5,TS-1,TS-1);}
+    if(c.onde==='tab'||c.onde==='banco'){formaLoc(cx,c,1);cx.stroke();}}
 }
 function sincCombate(){const a=$('app'),cb=UI.fase==='combate'&&!!UI.C&&!UI.demo,c=cb&&!UI.lojaAberta;
   if(cb&&UI.jog){const o=UI.jog.ouro;$('mini-ouro').textContent=o;$('bt-m-rolar').disabled=o<2;$('bt-m-xp').disabled=o<4||UI.jog.nivel>=9;}
@@ -3108,7 +3185,7 @@ function ajustarCanvas(){const box=$('cvbox');if(!box||!cv)return;
   if(zr<1){Z=ZD=Math.max(.25,Math.floor(zr*16)/16);cv.style.imageRendering='';}
   else if(Math.abs(zr-zi)<.02){Z=ZD=zi;cv.style.imageRendering='';}
   else{Z=Math.min(4,Math.ceil(zr));ZD=zr;cv.style.imageRendering='auto';}
-  CW=larga?Math.max(CW0,2*Math.floor((box.clientWidth-2)/ZD/2)):CW0;BX=(CW-NC*TS)/2;BEN_X=(CW-9*TS)/2;   // largura par: BX/BEN_X inteiros
+  CW=larga?Math.max(CW0,2*Math.floor((box.clientWidth-2)/ZD/2)):CW0;BX=(CW-TAB_W)/2;BEN_X=(CW-MAX_BANCO*BSW)/2;   // largura par: BX/BEN_X inteiros
   cv.style.width=Math.floor(CW*ZD)+'px';cv.style.height=Math.floor(CH*ZD)+'px';cv.width=Math.round(CW*Z*DPR);cv.height=Math.round(CH*Z*DPR);
   if(cx)cx.imageSmoothingEnabled=false;   // redimensionar o canvas zera o estado do contexto
   const lado=(box.clientWidth-CW0*ZD)/2,livre=lado-lat,m=$('meter'),fora=livre>=176;
@@ -3431,8 +3508,8 @@ function mostrarPrevia(ev,pl){const el=$('previa');if(!pl){el.style.display='non
   el.className=pl.erro?'ruim':'';el.innerHTML=h;el.style.display='block';
   const w=el.offsetWidth,hh=el.offsetHeight;el.style.left=Math.round(clamp(ev.clientX-w/2,6,innerWidth-w-6))+'px';el.style.top=Math.round(clamp(ev.clientY-hh-34,6,innerHeight-hh-6))+'px';}
 const esconderPrevia=()=>{const el=$('previa');if(el)el.style.display='none';};
-/* posição (em tiles do canvas) de uma unidade do tabuleiro ou do banco, para os efeitos do COMB15 */
-const tilePos=L=>L.onde==='banco'?{x:(BEN_X+L.i*TS-BX)/TS,y:(BEN_Y-BY)/TS}:{x:L.x,y:L.y+4};
+/* posição (centro em px do mundo) de uma unidade do tabuleiro ou do banco, para os efeitos do COMB15 */
+const tilePos=L=>locPx(L);   // centro (px do mundo) da casa: os efeitos da preparação (UI.fxPrep) usam px
 /* efeito do COMB15 sobre um elemento da página (inventário): lista de [nome do efeito, atraso em ms] */
 function fxSobreEl(el,lista,esc2){if(UI.reduz||!el||!document.body)return;const r=el.getBoundingClientRect(),S=128,c=document.createElement('canvas');c.width=S;c.height=S;
   c.style.cssText=`position:fixed;left:${Math.round(r.left+r.width/2-S/2)}px;top:${Math.round(r.top+r.height/2-S/2)}px;width:${S}px;height:${S}px;z-index:90;pointer-events:none;image-rendering:pixelated`;
@@ -3450,7 +3527,7 @@ function usarPlano(pl,ctx){if(!pl)return false;if(pl.erro){aviso(pl.erro);return
   if(t==='equipar'){Sons.equipar();sobreUn('magic_green');}
   else if(t==='combinar'){Sons.combinar();aviso(`${nomeItem(pl.a)} + ${nomeItem(pl.b)} → ${nomeItem(pl.r)}`,2800);sobreUn('magic_blue');sobreUn('sparkling');
     if(ctx&&ctx.slot2!==undefined)fxSobreEl(els[Math.min(ctx.slot,ctx.slot2)],[['magic_blue',0],['sparkling',120]],2);}
-  else if(t==='forjar'){Sons.forja();aviso(`Forja: ${nomeItem(pl.r)}!`,2800);if(pos){UI.fxPrep.push({id:E('yellow_rings'),x:pos.x,y:pos.y,b:agora});UI.fxPrep.push({id:E('firework_yellow'),x:pos.x,y:pos.y-.3,b:agora+150});}
+  else if(t==='forjar'){Sons.forja();aviso(`Forja: ${nomeItem(pl.r)}!`,2800);if(pos){UI.fxPrep.push({id:E('yellow_rings'),x:pos.x,y:pos.y,b:agora});UI.fxPrep.push({id:E('firework_yellow'),x:pos.x,y:pos.y-8,b:agora+150});}
     if(ctx&&ctx.slot2!==undefined)fxSobreEl(els[Math.min(ctx.slot,ctx.slot2)],[['yellow_rings',0],['firework_yellow',160]],2);}
   else{Sons.encanta();aviso(`${nomeItem(pl.b)} → ${nomeItem(pl.r)}`,2800);sobreUn('purpleenergy');sobreUn('magic_red');}
   posAcao();return true;}
@@ -3689,7 +3766,7 @@ function unidadeEm(cel){const p=UI.jog;if(!cel)return null;if(cel.onde==='banco'
 const capturarPos=()=>{const m={};todos(UI.jog).forEach(L=>{m[L.inst.uid]={onde:L.onde,x:L.x,y:L.y,i:L.i,id:L.inst.id,e:L.inst.e};});return m;};
 /* a carta "voa" da loja até a vaga onde a unidade entrou */
 function voarCompra(el,L,dur){const r=el.getBoundingClientRect(),cr=cv.getBoundingClientRect();
-  const X=L.onde==='banco'?BEN_X+L.i*TS:BX+L.x*TS,Y=L.onde==='banco'?BEN_Y:BY+(L.y+4)*TS;
+  const {X,Y}=locOrg(L);
   const tx=cr.left+(X+16)/CW*cr.width,ty=cr.top+(Y+16)/CH*cr.height;
   const g=document.createElement('div');g.className='voo';g.style.cssText=`left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px`;
   const cl=el.cloneNode(true);cl.removeAttribute('data-tip');cl.classList.remove('pert','pert3','tem');
@@ -3697,7 +3774,7 @@ function voarCompra(el,L,dur){const r=el.getBoundingClientRect(),cr=cv.getBoundi
   g.appendChild(cl);document.body.appendChild(g);
   const s=Math.max(.1,(TS*cr.width/CW)/r.width);
   const a=g.animate([{transform:'translate(0px,0px) scale(1)',opacity:1},{transform:`translate(${tx-r.left-r.width*s/2}px,${ty-r.top-r.height*s/2}px) scale(${s})`,opacity:.8}],{duration:dur,easing:'cubic-bezier(.5,.05,.8,.5)',fill:'forwards'});
-  a.onfinish=()=>{g.remove();UI.fxPrep.push({id:E('poff'),x:(X-BX)/TS,y:(Y-BY)/TS,b:performance.now()});};
+  a.onfinish=()=>{g.remove();UI.fxPrep.push({id:E('poff'),x:X+16,y:Y+PES,b:performance.now()});};
   setTimeout(()=>g.remove(),dur+400);}
 function comprarUI(i){const p=UI.jog;if(p&&p.rl&&p.rl.i===i){comprarRunaUI(i);return;}if(!p||!p.loja[i])return;const antes=capturarPos(),el=document.querySelector('#cartas .cslot[data-i="'+i+'"] .carta');
   if(!acaoLocal({t:'comprar',i}))return;
@@ -3712,9 +3789,9 @@ function posAcao(antes,atraso){const p=UI.jog;UI.prevSujo=true;marcar('topo','si
   if(p.fusoes&&p.fusoes.length){const now=performance.now();
     p.fusoes.forEach(inst=>{aviso(`${U[inst.id].nome} subiu para ${inst.e} estrela${inst.e>1?'s':''}!`);
       const L=todos(p).find(L=>L.inst===inst);if(!L)return;
-      const fim=L.onde==='tab'?{X:BX+L.x*TS,Y:BY+(L.y+4)*TS}:{X:BEN_X+L.i*TS,Y:BEN_Y};
+      const fim=locOrg(L);
       if(antes&&!UI.reduz){const vivos=new Set(todos(p).map(M=>M.inst.uid)),ini=[];
-        Object.keys(antes).forEach(uid=>{const a=antes[uid];if(vivos.has(+uid)||a.id!==inst.id||a.e!==inst.e-1||ini.length>=2)return;ini.push({id:a.id,X:a.onde==='tab'?BX+a.x*TS:BEN_X+a.i*TS,Y:a.onde==='tab'?BY+(a.y+4)*TS:BEN_Y});});
+        Object.keys(antes).forEach(uid=>{const a=antes[uid];if(vivos.has(+uid)||a.id!==inst.id||a.e!==inst.e-1||ini.length>=2)return;ini.push(Object.assign({id:a.id},locOrg(a)));});
         UI.voando[inst.uid]=now+(atraso||0)+520;UI.anims.push({k:'fusao',b:now+(atraso||0),dur:480,ini,fim,alvo:inst.uid,e:inst.e});}
       else fusaoFim({fim,e:inst.e,alvo:inst.uid});});
     p.fusoes=[];}}
@@ -3760,7 +3837,7 @@ function enviarEmote(k){if(!(k>=0&&k<EMOTES.length)||!UI.jog)return;fecharEmotes
   if(Online.guest&&Online.tr)Online.tr.paraHost({t:'emote',k});else if(Online.host)Online.emoteHost(UI.jog.id,k);}
 
 /* ---------- avatar ferido (efeito drawblood) ---------- */
-function posAvatarTab(esq){return {X:esq?BX-TS-8:BX+NC*TS+8,Y:esq?BY+5*TS-4:BY+TS*.5};}
+function posAvatarTab(esq){return esq?{X:BX-40,Y:Math.round(BY+HH/2+5.5*HV-PES)}:{X:BX+TAB_W+8,Y:Math.round(BY+HH/2+.5*HV-PES)};}   // ao lado do seu lado (esquerda, embaixo) e do inimigo (direita, em cima)
 function feriuAvatar(id,esq){const now=performance.now();UI.avHit[id]=now;const P=posAvatarTab(esq);UI.fxAv.push({id:E('drawblood'),X:P.X,Y:P.Y,b:now});UI.fxAv.push({id:E('drawblood'),X:P.X+3,Y:P.Y-2,b:now+160});}
 
 /* ---------- placar da luta (damage meter): calculado a partir dos contadores do motor ---------- */
@@ -3816,11 +3893,10 @@ function registrarStats(C,desc){const st=UI.stats,p=UI.jog;if(!st||!C||!desc)ret
    ===================================================================================== */
 function celAt(ev){const r=cv.getBoundingClientRect(),lx=(ev.clientX-r.left)/r.width*CW,ly=(ev.clientY-r.top)/r.height*CH;
   if(lx<0||ly<0||lx>=CW||ly>=CH)return null;
-  if(ly>=BEN_Y&&ly<BEN_Y+TS&&lx>=BEN_X&&lx<BEN_X+9*TS)return {onde:'banco',i:Math.floor((lx-BEN_X)/TS)};
-  if(lx>=BX&&lx<BX+NC*TS&&ly>=BY&&ly<BY+NR*TS){const x=Math.floor((lx-BX)/TS),y=Math.floor((ly-BY)/TS);return y>=4?{onde:'tab',x,y:y-4}:{onde:'inim',x,y};}
-  return {onde:'fora',lx,ly};}
-function unidadeCombateEm(cel,rt){const C=UI.C;if(!C||cel.onde==='banco'||cel.onde==='fora')return null;const cx_=cel.x,cy_=cel.onde==='tab'?cel.y+4:cel.y;
-  return C.un.find(u=>{if(!u.vivo)return false;const p=posU(u,rt);return Math.round(p.x)===cx_&&Math.round(p.y)===cy_;})||null;}
+  return pxCel(lx,ly);}
+/* unidade em combate sob a casa apontada (na vista): a mais próxima do centro do hexágono, mesmo andando */
+function unidadeCombateEm(cel,rt){const C=UI.C;if(!C||cel.onde==='banco'||cel.onde==='fora')return null;const c=celPx(cel.x,cel.onde==='tab'?cel.y+TAB_Y:cel.y);let m=null,md=(HW*.6)*(HW*.6);
+  C.un.forEach(u=>{if(!u.vivo)return;const p=posU(u,rt),d=(p.x-c.x)*(p.x-c.x)+(p.y-c.y)*(p.y-c.y);if(d<md){md=d;m=u;}});return m;}
 function iniciarArrasto(d,ev){UI.drag=d;const g=$('ghost');g.style.display='block';g.style.left=ev.clientX+'px';g.style.top=ev.clientY+'px';
   if(d.tipo==='un'){g.innerHTML='<canvas width="56" height="56"></canvas>';pintarRetrato(g.firstChild,d.inst.id,0);}else if(d.tipo==='runa')g.innerHTML=`<img src="${RUNA[d.k].ic}" alt="" style="width:40px;height:40px;image-rendering:pixelated">`;else g.innerHTML=htmlItem(d.id,{tip:false});
   esconderTip();cartaHover(null);UI.hoverTr=null;if(d.tipo==='un'){$('venda-v').textContent=valorVenda(d.inst);$('zona-venda').classList.add('on');}Sons.pegar();}
