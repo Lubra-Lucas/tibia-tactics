@@ -1,4 +1,4 @@
-"""Layout estilo TFT: a arena ocupa a tela e os painéis flutuam sobre ela.
+"""Layout estilo TFT: cena única — a arena ocupa a tela e sinergias, itens, jogadores e caldeirões flutuam colados ao tabuleiro.
 python3 -m unittest discover -s tests -v  (requer Python Playwright e Chromium; CHROMIUM_PATH aponta o executável).
 """
 import functools
@@ -19,7 +19,8 @@ class QuietHandler(http.server.SimpleHTTPRequestHandler):
 MEDIDAS = """() => {
   const r = id => { const b = document.getElementById(id).getBoundingClientRect(); return {l:b.left, t:b.top, r:b.right, b:b.bottom, w:b.width, h:b.height}; };
   const cv = r('cv'), k = cv.w / CW;
-  return {cv, box: r('cvbox'), esq: r('esq'), dir: r('dir'), faixa: r('faixa-rodada'), CW, CW0, BX, BEN_X, ZD,
+  return {cv, box: r('cvbox'), esq: r('esq'), dir: r('dir'), faixa: r('faixa-rodada'), itens: r('itens'), topo: r('topo'), base: r('base'), CW, CW0, BX, BEN_X, ZD,
+    W: innerWidth, fundoEsq: getComputedStyle(document.getElementById('esq')).backgroundImage, livre: document.getElementById('app').classList.contains('meter-livre'),
     nucleo: {l: cv.l + (CW - CW0) / 2 * k, r: cv.l + (CW + CW0) / 2 * k, t: cv.t, b: cv.b},
     pos: getComputedStyle(document.getElementById('esq')).position, cheia: document.getElementById('app').classList.contains('faixa-cheia')};
 }"""
@@ -68,13 +69,22 @@ class LayoutTests(unittest.TestCase):
         self.assertEqual(m['BX'], (m['CW'] - 256) / 2)
         self.assertEqual(m['BX'] % 1, 0)
         self.assertEqual(m['BEN_X'] % 1, 0)
-        # o núcleo (tabuleiro + avatares) nunca fica embaixo dos painéis flutuantes nem da próxima onda
+        # o núcleo (tabuleiro + avatares) nunca fica embaixo dos painéis flutuantes; sinergias e itens colados à esquerda, jogadores à direita
         n = m['nucleo']
         self.assertLessEqual(m['esq']['r'], n['l'] + 1)
+        self.assertLessEqual(m['itens']['r'], n['l'] + 1)
         self.assertGreaterEqual(m['dir']['l'], n['r'] - 1)
-        if not m['cheia']:
-            self.assertLessEqual(m['faixa']['r'], n['l'] + 1)
-            self.assertGreaterEqual(m['faixa']['l'], m['esq']['r'])
+        self.assertLess(n['l'] - m['esq']['r'], 40, 'sinergias ao lado do tabuleiro')
+        self.assertLess(m['dir']['l'] - n['r'], 40, 'jogadores ao lado do tabuleiro')
+        self.assertGreaterEqual(m['esq']['l'], 0)
+        self.assertLessEqual(m['dir']['r'], m['W'])
+        # próxima onda: cartão no topo da coluna de jogadores
+        self.assertGreaterEqual(m['faixa']['l'], m['dir']['l'] - 1)
+        self.assertLessEqual(m['faixa']['r'], m['dir']['r'] + 1)
+        # cena única: topo fino, sem caixas pesadas atrás das colunas
+        self.assertLessEqual(m['topo']['h'], 50)
+        self.assertEqual(m['fundoEsq'], 'none')
+        self.assertLessEqual(m['itens']['b'], m['base']['t'] if m['base']['h'] else m['box']['b'])
 
     def test_board_fills_desktop_screens(self):
         for w, h, minimo in [(1536, 730, 440), (1920, 1080, 760), (1366, 768, 470)]:
@@ -95,9 +105,10 @@ class LayoutTests(unittest.TestCase):
         self.assertGreater(m['cv']['h'], m0['cv']['h'] + 80)
         self.page.keyboard.press('p')
         meter = self.page.evaluate("(() => {const e=document.getElementById('meter'),b=e.getBoundingClientRect();return {on:e.classList.contains('on'),fora:e.classList.contains('fora'),l:b.left,r:b.right}})()")
-        if meter['on'] and meter['fora']:
-            self.assertGreaterEqual(meter['l'], m['nucleo']['r'])
-            self.assertLessEqual(meter['r'], m['dir']['l'])
+        self.assertTrue(meter['on'])
+        if meter['fora'] and m['livre']:
+            self.assertGreaterEqual(meter['l'], m['dir']['r'])   # placar ao lado da coluna de jogadores
+            self.assertLessEqual(meter['r'], m['W'])
 
     def test_drag_from_bench_to_board_with_wide_world(self):
         self.abrir(1536, 730)
