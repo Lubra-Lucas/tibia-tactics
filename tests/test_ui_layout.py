@@ -19,7 +19,7 @@ class QuietHandler(http.server.SimpleHTTPRequestHandler):
 MEDIDAS = """() => {
   const r = id => { const b = document.getElementById(id).getBoundingClientRect(); return {l:b.left, t:b.top, r:b.right, b:b.bottom, w:b.width, h:b.height}; };
   const cv = r('cv'), k = cv.w / CW;
-  return {cv, box: r('cvbox'), esq: r('esq'), dir: r('dir'), faixa: r('faixa-rodada'), CW, CW0, BX, BEN_X, ZD,
+  return {cv, box: r('cvbox'), esq: r('esq'), dir: r('dir'), faixa: r('faixa-rodada'), CW, CW0, BX, BEN_X, ZD, TAB_W,
     nucleo: {l: cv.l + (CW - CW0) / 2 * k, r: cv.l + (CW + CW0) / 2 * k, t: cv.t, b: cv.b},
     pos: getComputedStyle(document.getElementById('esq')).position, cheia: document.getElementById('app').classList.contains('faixa-cheia')};
 }"""
@@ -65,7 +65,7 @@ class LayoutTests(unittest.TestCase):
         # a arena preenche a caixa inteira: sem faixas pretas nas laterais
         self.assertGreaterEqual(m['cv']['w'], m['box']['w'] - 2 * m['ZD'] - 4)
         self.assertGreater(m['CW'], m['CW0'])
-        self.assertEqual(m['BX'], (m['CW'] - 256) / 2)
+        self.assertEqual(m['BX'], (m['CW'] - m['TAB_W']) / 2)
         self.assertEqual(m['BX'] % 1, 0)
         self.assertEqual(m['BEN_X'] % 1, 0)
         # o núcleo (tabuleiro + avatares) nunca fica embaixo dos painéis flutuantes nem da próxima onda
@@ -104,7 +104,7 @@ class LayoutTests(unittest.TestCase):
         self.page.evaluate("UI.jog.loja=['minotaur_guard',null,null,null,null]; hudLoja()")
         self.page.locator('#cartas .cslot[data-i="0"] .art').click()
         box = self.page.locator('#cv').bounding_box()
-        p = self.page.evaluate('({bank:{x:(BEN_X+16)*ZD,y:(BEN_Y+16)*ZD},board:{x:(BX+16)*ZD,y:(BY+4*TS+16)*ZD}})')
+        p = self.page.evaluate("({bank:ptCv({onde:'banco',i:0}),board:ptCv({onde:'tab',x:0,y:0})})")
         self.page.mouse.move(box['x'] + p['bank']['x'], box['y'] + p['bank']['y'])
         self.page.mouse.down()
         self.page.mouse.move(box['x'] + p['board']['x'], box['y'] + p['board']['y'], steps=8)
@@ -115,7 +115,7 @@ class LayoutTests(unittest.TestCase):
         for w, h in [(844, 390), (390, 844), (800, 1000)]:
             with self.subTest(tela=f'{w}x{h}'):
                 m = self.abrir(w, h, is_mobile=w < 900, has_touch=w < 900)
-                self.assertEqual(m['CW'], 352)
+                self.assertEqual(m['CW'], m['CW0'])
                 self.assertEqual(m['BX'], 48)
                 self.assertNotEqual(m['pos'], 'absolute')
                 self.fechar()
