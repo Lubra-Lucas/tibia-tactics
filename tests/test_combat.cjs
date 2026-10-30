@@ -558,3 +558,77 @@ test('hex pathing: melee units walk hex by hex until adjacent and then attack', 
     return {ok,passos,dist:distH(a,b),atacou:a.nAt>0,inicio:distH({x:3,y:7},{x:3,y:0})};})())`));
   assert.ok(r.ok,'every step goes to a neighbouring hex');assert.ok(r.atacou);assert.equal(r.dist,1);assert.equal(r.passos,r.inicio-1);
 });
+
+test('TFT walking pace: one hex takes about 0.4 s at base speed', () => {
+  const run=engine();run(scene);
+  const r=JSON.parse(run(`JSON.stringify((()=>{const C=criarCombate({un:[spec('knight',3,7)]},{un:[spec('orc',3,0)]},{seed:4,semSalto:true});const a=C.un[0];C.t=100;agir(C,a);return {dur:a.dur,livre:a.livreEm-C.t};})())`));
+  assert.equal(r.dur,400);assert.equal(r.livre,400);
+});
+
+test('TFT targeting: a unit sticks to its target in range even when a closer enemy shows up, and retargets the nearest when it dies', () => {
+  const run=engine();run(scene);
+  const r=JSON.parse(run(`JSON.stringify((()=>{const C=criarCombate({un:[spec('hunter',3,7)]},{un:[spec('orc',3,3),spec('orc',2,6)]},{seed:2,semSalto:true});const u=C.un[0],far=C.un[1],near=C.un[2];
+    u.alvo=far;agir(C,u);const fica=u.alvo===far&&u.nAt===1;
+    far.vivo=false;C.t=5000;agir(C,u);return {fica,troca:u.alvo===near,dLonge:distH(u,far),dPerto:distH(u,near)};})())`));
+  assert.ok(r.dPerto<r.dLonge&&r.dLonge<=4);
+  assert.ok(r.fica,'keeps shooting the target it already had');
+  assert.ok(r.troca,'picks the closest enemy after the target dies');
+});
+
+test('TFT targeting: a melee unit whose target is walled off walks to the nearest reachable enemy instead of idling', () => {
+  const run=engine();run(scene);
+  const r=JSON.parse(run(`JSON.stringify((()=>{const muro=[0,1,2,3,4,5].map(d=>vizH(3,2,d)).map(([x,y])=>spec('hunter',x,y));
+    const C=criarCombate({un:[spec('knight',3,6)].concat(muro)},{un:[spec('orc',3,2),spec('orc',6,0)]},{seed:3,semSalto:true});const u=C.un[0],t=C.un[C.un.length-2],alt=C.un[C.un.length-1];
+    u.alvo=t;C.t=100;agir(C,u);return {cercado:passoBFS(C,u,t),alvo:u.alvo===alt,andou:u.dur>0,maisLonge:distH({x:3,y:6},alt)>distH({x:3,y:6},t)};})())`));
+  assert.equal(r.cercado,-1);assert.ok(r.maisLonge);
+  assert.ok(r.alvo,'switches to the reachable enemy');assert.ok(r.andou,'and starts walking right away');
+});
+
+test('assassins leap next to the backline carry (ranged, high value) instead of the tank on the same row', () => {
+  const run=engine();run(scene);
+  for(const seed of [1,2,3,4,5]){
+    const r=JSON.parse(run(`JSON.stringify((()=>{const C=criarCombate({un:[spec('amazon',0,6),spec('elf',6,6),spec('knight',3,4)]},{un:[spec('behemoth',3,0,1),spec('hunter',5,0),spec('orc',3,3)]},{seed:${seed}});
+      const a=C.un.filter(u=>u.lado===0&&u.salta),h=C.un[4];return {n:a.length,ok:a.every(u=>u.alvo===h&&distH(u,h)===1&&u.salto),orig:a.map(u=>[u.salto.x,u.salto.y].join()).sort()};})())`));
+    assert.equal(r.n,2);assert.ok(r.ok,`seed ${seed}`);assert.deepEqual(r.orig,['0,6','6,6']);
+  }
+  // carry no canto com as casas vizinhas ocupadas: os assassinos escolhem outro alvo, e nunca duas unidades na mesma casa
+  const r=JSON.parse(run(`JSON.stringify((()=>{const C=criarCombate({un:[spec('amazon',0,6),spec('elf',6,6)]},{un:[spec('hunter',6,0),spec('knight',5,0),spec('sorcerer',5,1),spec('druid',6,1),spec('orc',2,2)]},{seed:9});
+    const a=C.un.filter(u=>u.lado===0),occ=new Set(C.un.map(u=>u.x+','+u.y));return {ok:a.every(u=>u.alvo!==C.un[2]),unicos:occ.size===C.un.length};})())`));
+  assert.ok(r.ok);assert.ok(r.unicos);
+});
+
+test('bot formation: tanks in the front centre, main carry in the back corner, healer behind the tanks, guards when the last rival had assassins', () => {
+  const run=engine();
+  const place=opoAss=>JSON.parse(run(`JSON.stringify((()=>{semente(5);const G=novoJogo({semVis:true});const p=G.jog[1];p.nivel=7;p.banco.fill(null);p.tab.forEach(l=>l.fill(null));
+    ['knight','dwarf_guard','orc_warrior','hunter','paladin','druid','bonebeast'].forEach((id,i)=>{p.banco[i]=novoInst(G,id);});p.banco[3].e=2;p.opoAss=${opoAss};posicionarBot(p);
+    const o={};p.tab.forEach((l,y)=>l.forEach((inst,x)=>{if(inst)o[inst.id]=[x,y];}));return o;})())`));
+  const a=place(0);
+  assert.equal(Object.keys(a).length,7);
+  assert.equal(a.knight[1],0);assert.equal(a.dwarf_guard[1],0);
+  assert.ok([2,3,4].includes(a.knight[0])&&[2,3,4].includes(a.dwarf_guard[0]),'tanks in the centre of the front row');
+  assert.deepEqual(a.hunter,[6,3],'the 2-star carry goes to the back corner');
+  assert.equal(a.paladin[1],3);assert.equal(a.druid[1],2);
+  assert.equal(a.orc_warrior[1],0);assert.equal(a.bonebeast[1],0);
+  const b=place(2);
+  assert.deepEqual(b.hunter,[6,3]);
+  const viz=Object.entries(b).filter(([,c])=>(c[0]===5&&c[1]===3)||(c[0]===6&&c[1]===2)).map(([id])=>id);
+  assert.equal(viz.length,2,'both neighbours of the corner carry are taken');
+  assert.ok(viz.some(id=>['knight','dwarf_guard','orc_warrior','bonebeast'].includes(id)),'one of them is a melee bodyguard');
+});
+
+test('the combat-start entrance is visual only: same seed gives the same fight with or without rendering and entrance poses', () => {
+  const run=engine();run(scene);
+  run(`globalThis.performance={now:()=>globalThis.__agora||0};`);
+  const sum=`C=>JSON.stringify({t:C.t,v:C.venc,u:C.un.map(u=>[u.d.id,u.x,u.y,u.hp,u.mana,u.st.d,u.st.c])})`;
+  const A=`{un:[spec('amazon',0,6),spec('elf',6,6),spec('knight',3,4),spec('hunter',6,7),spec('druid',2,7)]}`,B=`{un:[spec('behemoth',3,3,1),spec('hunter',5,0),spec('orc',2,3),spec('sorcerer',1,0)]}`;
+  const r=JSON.parse(run(`JSON.stringify((()=>{const S=${sum};const silent=simular(criarCombate(${A},${B},{seed:42}));
+    const C=criarCombate(${A},${B},{seed:42,vis:true});UI.C=C;UI.demo=false;iniciarEntrada();const poses=[];
+    for(const e of [-1,0,100,300,600,850]){UI.ent.ini=e<0?null:0;globalThis.__agora=Math.max(0,e);UI.ent.cache=null;const p=poseEntrada(C);
+      poses.push({e,oculto:C.un.filter(u=>u.lado===1).filter(u=>p.un.get(u).a===0).length,salto:C.un.filter(u=>u.salto).map(u=>Math.round(p.un.get(u).oy))});}
+    const antes=S(C);simular(C);return {igual:S(C)===S(silent),antes0:JSON.parse(antes).t===0,poses};})())`));
+  assert.ok(r.antes0,'entrance poses never advance the simulation');
+  assert.ok(r.igual,'rendered fight equals the silent one');
+  assert.equal(r.poses[0].oculto,4,'before the entrance starts the enemy army is hidden');
+  assert.equal(r.poses[r.poses.length-1].oculto,0,'every enemy has appeared before the fight starts');
+  assert.ok(r.poses.some(p=>p.salto.some(oy=>oy<-5)),'the assassins are airborne at some point of the leap');
+});

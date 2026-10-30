@@ -267,8 +267,9 @@ class InterfaceTests(unittest.TestCase):
         self.page.wait_for_function("document.querySelector('#sim').textContent.startsWith('partidas ')", timeout=60000)
         text = self.page.locator('#sim').inner_text()
         self.assertIn('partidas 3 | erros 0 | travas 0', text)
-        # Canonical seed with the 53-card roster on the 7x8 hex board (square 8x8 board: 388/403; Etapa 1 had 400 fights).
-        self.assertIn('lutas PvP/PvE 416', text)
+        # Canonical seed with the 53-card roster on the 7x8 hex board (square 8x8 board: 388/403; Etapa 1 had 400 fights;
+        # hex board before the TFT walking pace / backline assassin leap / bot formation: 416).
+        self.assertIn('lutas PvP/PvE 396', text)
 
 if __name__ == '__main__':
     unittest.main()

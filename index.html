@@ -1837,12 +1837,16 @@ function aplicarTracos(C){
   if(!C.semSalto)embaralhar(C.un.filter(u=>u.salta),C.r).forEach(u=>saltar(C,u));
 }
 function saltar(C,u){const ini=C.un.filter(v=>v.lado!==u.lado&&v.vivo);if(!ini.length)return;
-  // inimigo mais ao fundo (lado A salta para y baixo, lado B para y alto)
-  let alvo=null,mel=-1e9;ini.forEach(v=>{const prof=u.lado===0?-v.y:v.y;if(prof>mel||(prof===mel&&C.r()<.5)){mel=prof;alvo=v;}});
-  let melhor=null,ms=-1e9;
-  for(let d=0;d<6;d++){const [x,y]=vizH(alvo.x,alvo.y,d);if(!dentro(x,y)||C.occ[y*NC+x])continue;const s=(u.lado===0?-y:y)*10+C.r();if(s>ms){ms=s;melhor=[x,y];}}
-  if(!melhor)return;
-  fx(C,'teleport',u.x,u.y);C.occ[u.y*NC+u.x]=0;u.x=u.fx=melhor[0];u.y=u.fy=melhor[1];C.occ[u.y*NC+u.x]=u.uid;fx(C,'teleport',u.x,u.y,100);u.alvo=alvo;u.prox=100;}
+  // como no TFT: o alvo é o carry da retaguarda. Nota = linha mais ao fundo (lado A salta para y baixo, lado B para y alto) e, na mesma linha,
+  // quem ataca de longe e vale mais (custo x estrelas); guardiões e invocações por último. Só alvos com casa livre ao lado; empate pela semente.
+  const nota=v=>(u.lado===0?-v.y:v.y)*100+(v.al>=2?30:0)+(v.d.k==='guardiao'?-20:0)+(v.inv?-50:0)+(v.d.c||1)*(v.e||1);
+  let alvo=null,melhor=null,mel=-1e9;
+  for(const v of ini){let pos=null,ms=-1e9;
+    for(let d=0;d<6;d++){const [x,y]=vizH(v.x,v.y,d);if(!dentro(x,y)||C.occ[y*NC+x])continue;const s=(u.lado===0?-y:y)*10+C.r();if(s>ms){ms=s;pos=[x,y];}}
+    if(!pos)continue;const s=nota(v);if(s>mel||(s===mel&&C.r()<.5)){mel=s;alvo=v;melhor=pos;}}
+  if(!melhor)return;   // carry cercado (ex.: no canto com guarda-costas): o assassino não salta e entra a pé
+  fx(C,'teleport',u.x,u.y);u.salto={x:u.x,y:u.y};   // origem do salto: só o render lê (arco na entrada da luta)
+  C.occ[u.y*NC+u.x]=0;u.x=u.fx=melhor[0];u.y=u.fy=melhor[1];C.occ[u.y*NC+u.x]=u.uid;fx(C,'teleport',u.x,u.y,100);u.alvo=alvo;u.prox=100;}
 
 /* ---- saídas visuais (só no modo com render) ---- */
 function fx(C,nome,x,y,atraso){if(!C.vis)return;const id=typeof nome==='number'?nome:E(nome);if(!id||!CB.efeitos[id])return;C.fx.push({id,x,y,b:C.t+(atraso||0)});if(C.fx.length>400)C.fx.splice(0,C.fx.length-400);}
@@ -1912,14 +1916,14 @@ function escolherAlvo(C,u){const provocado=alvoProvocado(C,u);if(provocado)retur
     for(const v of C.un){if(!v.vivo||v.lado===u.lado||(passe===0&&v.furtivoAte>C.t))continue;const d=distH(u,v)*1000+dist2(u,v);
       if(d<md){md=d;melhor=v;n=1;}else if(d===md){n++;if(C.r()<1/n)melhor=v;}}}
   return melhor;}
-const DIRS6=[0,1,2,3,4,5];
+const DIRS6=[0,1,2,3,4,5],PASSO_MS=400;   // PASSO_MS: tempo base de um passo (um hexágono)
 function passoBFS(C,u,t){const ini=u.y*NC+u.x,prev=new Int16Array(NC*NR).fill(-1);prev[ini]=ini;const fila=[ini],ds=embaralhar(DIRS6.slice(),C.r);
   for(let h=0;h<fila.length;h++){const c=fila[h],cx=c%NC,cy=(c/NC)|0;
     if(c!==ini&&distH({x:cx,y:cy},t)<=u.al){let p=c;while(prev[p]!==ini)p=prev[p];return p;}
     for(const d of ds){const [nx,ny]=vizH(cx,cy,d);if(!dentro(nx,ny))continue;const i=ny*NC+nx;if(prev[i]>=0||C.occ[i])continue;prev[i]=c;fila.push(i);}}
   return -1;}
 function mover(C,u,t){const p=passoBFS(C,u,t);if(p<0)return false;const nx=p%NC,ny=(p/NC)|0;
-  const dur=Math.max(100,Math.ceil(300/movEff(u)/100)*100);
+  const dur=Math.max(100,Math.ceil(PASSO_MS/movEff(u)/100)*100);   // ~0,4 s por hexágono (ritmo de caminhada do TFT)
   C.occ[u.y*NC+u.x]=0;C.occ[p]=u.uid;
   const cont=C.t-(u.t0+u.dur)<=100&&u.dur>0;if(!cont)u.andaDesde=C.t;
   u.fx=u.x;u.fy=u.y;u.x=nx;u.y=ny;u.t0=C.t;u.dur=dur;u.livreEm=C.t+dur;u.dir=dirPara({x:u.fx,y:u.fy},u);return true;}
@@ -2054,7 +2058,10 @@ function agir(C,u){if(C.t<u.stunAte||C.t<u.livreEm)return;
   u.dir=dirPara(u,t);
   if(u.hab&&u.manaM&&u.mana>=u.manaM&&podeLancar(C,u,t)){u.alvo=alvoHabilidade(C,u,t);lancar(C,u,u.hab);return;}
   if(distH(u,t)<=u.al){if(C.t>=u.prox)atacar(C,u,t);}
-  else mover(C,u,t);}
+  else if(!mover(C,u,t)&&!provocado){const p=alvoAlcancavel(C,u,t);if(p){u.alvo=p;mover(C,u,p);}}}   // caminho bloqueado (aliados na frente): vai atrás do inimigo alcançável mais próximo, como no TFT
+/* inimigo mais próximo (distância e uid como desempate) com caminho livre até uma casa de alcance; null se ninguém é alcançável */
+function alvoAlcancavel(C,u,t){const l=C.un.filter(v=>v.vivo&&v.lado!==u.lado&&v!==t&&!(v.furtivoAte>C.t)).sort((a,b)=>distH(u,a)-distH(u,b)||dist2(u,a)-dist2(u,b)||a.uid-b.uid);
+  for(const v of l)if(passoBFS(C,u,v)>=0)return v;return null;}
 function finalizar(C){if(C.fim)return;C.fim=true;
   const a=C.vivos[0],b=C.vivos[1];
   if(a>0&&b<=0)C.venc=0;else if(b>0&&a<=0)C.venc=1;
@@ -2395,12 +2402,29 @@ function posicionarBot(p){const L=todos(p),N=limUn(p);
     sel.push(rest.splice(bi,1)[0]);}
   p.tab.forEach(l=>l.fill(null));p.banco.fill(null);
   rest.forEach(c=>{const v=vagaBanco(p);if(v>=0)p.banco[v]=c.inst;});
-  const cols=COLS_CENTRO;
-  const classe=inst=>{const d=U[inst.id];return d.k==='assassino'?'ass':d.al>=3?'fundo':d.al===2?'meio':'frente';};
-  const g={frente:[],meio:[],fundo:[],ass:[]};sel.forEach(c=>g[classe(c.inst)].push(c.inst));
-  g.frente.sort((a,b)=>U[b.id].hp*ESTR[b.e]-U[a.id].hp*ESTR[a.e]);
-  const poe=(inst,y,ord)=>{for(let yy=y;yy<4;yy++){for(const x of ord){if(!p.tab[yy][x]){p.tab[yy][x]=inst;return true;}}}for(let yy=y-1;yy>=0;yy--){for(const x of ord){if(!p.tab[yy][x]){p.tab[yy][x]=inst;return true;}}}return false;};
-  g.frente.forEach(i=>poe(i,0,cols));g.ass.forEach(i=>poe(i,1,COLS_PONTAS));g.meio.forEach(i=>poe(i,2,cols));g.fundo.forEach(i=>poe(i,3,cols));}
+  formacaoBot(p,sel.map(c=>c.inst));}
+/* formação no estilo TFT (p.tab: linha 0 = frente, 3 = fundo; o canto (6,3) tem só 2 vizinhos na arena, nos dois lados):
+   - guardiões no centro da frente, depois os outros corpo a corpo (os mais robustos no meio);
+   - o carry principal (quem ataca de longe e vale mais) no canto do fundo; os outros atiradores/magos no fundo, do centro para as pontas;
+   - curandeiros e invocadores na linha 2, logo atrás dos tanques; assassinos nas pontas (fundo se o traço ativa o salto, senão linha 1);
+   - se o último adversário tinha assassinos que saltam (p.opoAss), um guarda-costas corpo a corpo e outra unidade ocupam as 2 casas vizinhas do carry:
+     sem casa livre ao lado dele, o assassino não consegue saltar no carry. */
+function formacaoBot(p,sel){const vigor=i=>U[i.id].hp*ESTR[i.e]*(1+.4*i.itens.length),valor=i=>potUn(i);
+  const nAss=new Set(sel.filter(i=>U[i.id].k==='assassino').map(i=>i.id)).size,saltam=nAss>=TRACOS.assassino.niv[0];
+  const g={tank:[],luta:[],ass:[],sup:[],carry:[]};
+  sel.forEach(i=>{const d=U[i.id];g[d.k==='assassino'?'ass':d.k==='guardiao'?'tank':d.al<=1?'luta':d.k==='curandeiro'||d.k==='invocador'?'sup':'carry'].push(i);});
+  g.tank.sort((a,b)=>vigor(b)-vigor(a));g.luta.sort((a,b)=>vigor(b)-vigor(a));g.carry.sort((a,b)=>valor(b)-valor(a));g.sup.sort((a,b)=>valor(b)-valor(a));
+  const T=p.tab,livre=(x,y)=>!T[y][x],poe=(i,y,ord)=>{const ys=[y,y+1,y+2,y+3,y-1,y-2,y-3].filter(v=>v>=0&&v<4);for(const yy of ys)for(const x of ord)if(livre(x,yy)){T[yy][x]=i;return;}};
+  const frente=g.tank.concat(g.luta);
+  // guarda-costas contra assassinos: o corpo a corpo menos robusto (se sobrar alguém na frente) fica ao lado do carry
+  const carry=g.carry.shift()||null;let guarda=null,vizinho=null;
+  if(carry){T[3][6]=carry;
+    if((p.opoAss||0)>=2){if(frente.length>=3)guarda=frente.pop();vizinho=g.sup.shift()||g.carry.pop()||(!guarda&&frente.length>=2?frente.pop():null);
+      if(guarda)T[3][5]=guarda;if(vizinho)T[2][6]=vizinho;}}
+  frente.forEach(i=>poe(i,0,COLS_CENTRO));
+  g.sup.forEach(i=>poe(i,2,[3,2,4,1,5,0]));
+  g.carry.forEach(i=>poe(i,3,[3,2,4,1,5,0]));
+  g.ass.forEach(i=>poe(i,saltam?3:1,COLS_PONTAS));}
 /* preenche o tabuleiro com unidades do banco (usado quando o relógio do humano acaba com vagas livres) */
 function autoPosicionar(p){let mudou=false;const cols=COLS_CENTRO;
   while(contarTab(p)<limUn(p)){const L=todos(p).filter(L=>L.onde==='banco').sort((a,b)=>potUn(b.inst)-potUn(a.inst))[0];if(!L)break;const d=U[L.inst.id];
@@ -2513,6 +2537,7 @@ function comecarCombate2(G,r,vivos){
     const eqA=espDeJog(A,0,r.est),eqB=espDeJog(B,1,r.est),seed=sementeLuta();
     const C=criarCombate(eqA,eqB,{vis:loc&&!G.opt.semVis,seed});
     const f={a:A,b:B,C,fant:par.fant,seed,eqA,eqB};reg(f,A,B);
+    const nAss=eq=>new Set(eq.un.filter(s=>s.d.k==='assassino').map(s=>s.d.id)).size;A.opoAss=nAss(eqB);if(!par.fant)B.opoAss=nAss(eqA);   // os bots lembram se o último rival tinha assassinos (formacaoBot)
     if(!loc)simular(C);if(on&&(A.humano||(B.humano&&!par.fant)))durLuta(f);return f;});}
 /* duração total da luta (ms): a do host é medida numa cópia silenciosa com a mesma semente, sem mexer na luta que está sendo exibida */
 function durLuta(f){if(f.dur===undefined){if(f.C.fim)f.dur=f.C.t;else{const tw=criarCombate(f.eqA,f.eqB,{seed:f.seed,pve:!!f.pve});simular(tw);f.dur=tw.t;}}return f.dur;}
@@ -2842,33 +2867,66 @@ function iconesItens(u,X,Y,alfa){const it=u.itens||[],SZ=10,P=10.6,x0=X+(32-(it.
   cx.globalAlpha=1;});}
 
 /* ---- desenha uma unidade (combate ou pré-visualização) ---- */
-function desenharUnidade(u,rt,estatico){const p=estatico?celPx(u.x,u.y):posU(u,rt);let ox=0,oy=0;   // p = centro do hexágono (px do mundo)
+function desenharUnidade(u,rt,estatico,en){const p=en?en.p:estatico?celPx(u.x,u.y):posU(u,rt);let ox=0,oy=en?en.oy:0;   // p = centro do hexágono (px do mundo); en = pose da entrada da luta (só visual)
   if(u.lunge&&!estatico){const a=rt-u.lunge.b;if(a>=0&&a<200){const k=Math.sin(Math.PI*a/200)*4*(ESP?-1:1);ox=u.lunge.dx*k;oy=u.lunge.dy*k;}}
   if(!estatico&&!UI.reduz&&UI.celebra&&u.vivo&&u.C===UI.celebra.C&&u.lado===(ESP?1:0)){const a=performance.now()-UI.celebra.b;if(a>200&&a<3800)oy-=Math.abs(Math.sin((a-200)/180+u.uid*.9))*5;}   // pulinho de vitória
   const o=orgPx(p),X=o.X+ox,Y=o.Y+oy,sx=p.x,sy=p.y-PES+28;   // (sx,sy): onde os pés pisam (28 px abaixo do topo da arte)
-  cx.fillStyle='rgba(0,0,0,.38)';cx.beginPath();cx.ellipse(sx,sy,13.5,6,0,0,7);cx.fill();   // sombra escura sob a unidade (contraste)
+  if(en)cx.globalAlpha=en.a;
+  cx.fillStyle='rgba(0,0,0,.38)';cx.beginPath();cx.ellipse(sx,sy,13.5,6,0,0,7);cx.fill();   // sombra escura sob a unidade (contraste); no salto fica no chão
   cx.fillStyle=u.lado===(ESP?1:0)?'rgba(80,140,255,.30)':'rgba(255,80,70,.30)';cx.beginPath();cx.ellipse(sx,sy-1,12.5,5,0,0,7);cx.fill();
   if(u.b&&u.C&&u.b.escudo&&u.b.escudo.ate>u.C.t&&u.b.escudo.v>0){cx.strokeStyle='rgba(180,235,255,.7)';cx.lineWidth=1;cx.beginPath();cx.ellipse(sx,sy-1,14,6,0,0,7);cx.stroke();}
-  const furt=!estatico&&u.C&&u.furtivoAte>u.C.t;if(furt)cx.globalAlpha=.42;      // Stealth Ring: invisível nos primeiros segundos
-  const f=pintarSprite(u.d,ESP&&!estatico?(u.dir+2)%4:u.dir,X,Y,rt,estatico?null:u);if(furt)cx.globalAlpha=1;
+  const furt=!estatico&&u.C&&u.furtivoAte>u.C.t;if(furt)cx.globalAlpha=.42*(en?en.a:1);      // Stealth Ring: invisível nos primeiros segundos
+  const dir=en&&en.dir!==undefined?en.dir:u.dir,f=pintarSprite(u.d,ESP&&!estatico?(dir+2)%4:dir,X,Y,en?en.rt:rt,estatico?null:u);cx.globalAlpha=1;
   if(!f){cx.fillStyle='#a33';cx.fillRect(X+8,Y+8,16,20);}
   return p;}
+
+/* ---- entrada da luta (estilo TFT), só visual: o motor fica parado em t=0 enquanto ela roda (UI.ent, ver laco) ----
+   o exército inimigo se materializa (teletransporte, da linha da frente para o fundo), os assassinos que saltaram aparecem na casa de origem
+   e fazem o arco até o destino que o motor já escolheu, e o "Lutem!" marca a largada. Nada aqui mexe no estado da simulação. */
+const ENT_MS=900;
+function iniciarEntrada(){UI.ent=UI.C&&!UI.demo?{C:UI.C,ini:null,dur:UI.reduz?400:ENT_MS}:null;}
+const emEntrada=now=>{const N=UI.ent;return !!(N&&N.C===UI.C&&UI.C&&UI.C.t===0&&(N.ini===null||now<N.ini+N.dur));};
+const easeOut=k=>1-(1-k)*(1-k);
+function poseEntrada(C){const N=UI.ent;if(!N||N.C!==C||C.t!==0)return null;const now=performance.now(),e=N.ini===null?-1:now-N.ini;if(e>=N.dur)return null;
+  if(N.cache&&N.cache.e===e)return N.cache.r;
+  const meu=ESP?1:0,frente=l=>l===0?TAB_Y:TAB_Y-1,un=new Map(),fx=[],tp=E('teleport');
+  const ini=C.un.filter(u=>u.vivo&&u.lado!==meu).sort((a,b)=>{const sa=a.salto||a,sb=b.salto||b;return Math.abs(sa.y-frente(a.lado))-Math.abs(sb.y-frente(b.lado))||sa.x-sb.x||a.uid-b.uid;});
+  const passo=Math.min(70,N.dur*.45/Math.max(1,ini.length)),apar=new Map();ini.forEach((u,i)=>apar.set(u,60+i*passo));
+  const salto0=N.dur-Math.min(340,N.dur*.45);
+  C.un.forEach(u=>{if(!u.vivo)return;const ap=apar.get(u),s=u.salto,base=celPx(MX(u.x),MY(u.y)),o=s?celPx(MX(s.x),MY(s.y)):base;
+    let a=1,oy=0,p=o,dir=u.lado===0?0:2;
+    if(ap!==undefined){if(e<ap)a=0;else{const k=Math.min(1,(e-ap)/220);a=k;oy=-(1-easeOut(k))*14;fx.push({id:tp,x:o.x,y:o.y,b:N.ini+ap});}}
+    if(s&&e>=salto0){const k=Math.min(1,(e-salto0)/(N.dur-salto0)),q=easeOut(k);p={x:lerp(o.x,base.x,q),y:lerp(o.y,base.y,q)};oy=-Math.sin(Math.PI*k)*(UI.reduz?6:22);dir=dirPara(s,u);
+      if(e>=salto0)fx.push({id:tp,x:o.x,y:o.y,b:N.ini+salto0});}
+    if(!s&&ap===undefined)return;   // aliados parados: pose normal
+    un.set(u,{p,a,oy,dir,rt:now});});
+  const r={un,fx};N.cache={e,r};return r;}
+/* "Lutem!": aparece no fim da entrada e some logo depois da largada */
+function desenharLutem(C,now){const N=UI.ent;if(!N||N.C!==C||N.ini===null)return;const t=now-(N.ini+N.dur-380);if(t<0||t>900)return;
+  const a=t<120?t/120:t>650?1-(t-650)/250:1,s=UI.reduz?1:1+.5*(1-easeOut(Math.min(1,t/200))),x=BX+TAB_W/2,y=BY+HH/2+3.5*HV;
+  cx.save();cx.globalAlpha=a*.55;const g=cx.createLinearGradient(x-TAB_W/2,0,x+TAB_W/2,0);g.addColorStop(0,'rgba(255,200,90,0)');g.addColorStop(.5,'rgba(255,214,120,.9)');g.addColorStop(1,'rgba(255,200,90,0)');
+  cx.fillStyle=g;cx.fillRect(x-TAB_W/2,y-1,TAB_W,2);
+  cx.globalAlpha=a;cx.translate(x,y);cx.scale(s,s);cx.font='700 24px Cinzel, Georgia, serif';cx.textAlign='center';cx.textBaseline='middle';
+  cx.lineJoin='round';cx.lineWidth=4;cx.strokeStyle='#1c1206';cx.strokeText('Lutem!',0,0);
+  const gt=cx.createLinearGradient(0,-12,0,12);gt.addColorStop(0,'#fff3c4');gt.addColorStop(1,'#e0a63a');cx.fillStyle=gt;cx.fillText('Lutem!',0,0);cx.restore();}
 
 /* ---- cena de combate / pré-visualização ---- */
 function renderCombate(C,rt){
   // cadáveres
   for(const m of C.mortos){const age=rt-m.t;if(age>6000)continue;const cd=cadDe(m.u.d);if(!cd)continue;const im=folhaImg(cd.src);if(!im)continue;
     const o=orgPx(celPx(MX(m.x),MY(m.y)));cx.globalAlpha=age>5000?1-(age-5000)/1000:1;cx.drawImage(im,0,0,cd.w,cd.h,o.X+32-cd.w,o.Y+32-cd.h,cd.w,cd.h);cx.globalAlpha=1;}
-  const oculto=monOculto(),vivos=C.un.filter(u=>u.vivo&&u!==oculto).map(u=>({u,p:posU(u,rt)})).sort((a,b)=>a.p.y-b.p.y||a.p.x-b.p.x);
-  vivos.forEach(o=>{desenharUnidade(o.u,rt,false);const g=orgPx(o.p);iconesItens(o.u,g.X,g.Y,1);});   // de trás para a frente (linha de cima primeiro)
-  desenharFx(C.fx,rt);desenharTiros(C.tiros,rt);
+  const oculto=monOculto(),ent=poseEntrada(C),vivos=C.un.filter(u=>u.vivo&&u!==oculto).map(u=>{const en=ent&&ent.un.get(u);return {u,en,p:en?en.p:posU(u,rt)};})
+    .filter(o=>!o.en||o.en.a>0).sort((a,b)=>a.p.y-b.p.y||a.p.x-b.p.x);
+  vivos.forEach(o=>{desenharUnidade(o.u,rt,false,o.en);if(!o.en||o.en.a>=1){const g=orgPx(o.p);iconesItens(o.u,g.X,g.Y,1);}});   // de trás para a frente (linha de cima primeiro)
+  if(ent)desenharFx(ent.fx,performance.now(),true);else desenharFx(C.fx,rt);   // na entrada o relógio da luta está parado em 0: os efeitos do motor esperam a largada
+  desenharTiros(C.tiros,rt);
   // passar o mouse numa unidade: linha fina até o alvo atual
   const h=UI.hoverU;
   if(h&&h.vivo&&h.alvo&&h.alvo.vivo){const a=posU(h,rt),b=posU(h.alvo,rt),ax=a.x,ay=a.y-PES+18,bx=b.x,by=b.y-PES+18;
     cx.save();cx.strokeStyle=h.lado===(ESP?1:0)?'rgba(150,205,255,.9)':'rgba(255,155,135,.9)';cx.lineWidth=1;cx.setLineDash([3,2.5]);
     cx.beginPath();cx.moveTo(ax,ay);cx.lineTo(bx,by);cx.stroke();cx.setLineDash([]);cx.beginPath();cx.arc(bx,by,6,0,7);cx.stroke();cx.beginPath();cx.arc(ax,ay,5,0,7);cx.stroke();cx.restore();}
-  vivos.forEach(o=>desenharBarras(o.u,o.p.x,o.p.y,rt));
-  desenharTextos(C,rt);}
+  vivos.forEach(o=>{if(!o.en||o.en.a>=1&&!o.en.oy)desenharBarras(o.u,o.p.x,o.p.y,rt);});
+  desenharTextos(C,rt);desenharLutem(C,performance.now());}
 function renderPrev(rt){const P=UI.prev;if(!P)return;const dr=UI.drag,now=performance.now();
   const lista=P.un.filter(u=>!(dr&&dr.tipo==='un'&&dr.inst&&u.inst===dr.inst)&&!(u.inst&&UI.voando[u.inst.uid]>now)).sort((a,b)=>a.y-b.y||a.x-b.x);
   lista.forEach(u=>{cx.globalAlpha=u.lado===0?1:.78;const o=orgPx(desenharUnidade(u,rt,true));iconesItens(u,o.X,o.Y,u.lado===0?1:.8);cx.globalAlpha=1;});
@@ -3862,7 +3920,7 @@ function iniciarCombateUI(){UI.lojaAberta=false;if(UI.estado!=='fim')fecharTela(
   if(G.info.tipo==='car'){finalizarRodadaUI();return;}
   if(!G.luta){UI.C=null;UI.prev=null;marcar('jog','btn','topo');banner('Combate','Estágio '+G.info.nome+' · você está eliminado','#e0574a',1300,true);return;}   // espectador (eliminado)
   UI.C=G.luta.C;UI.C.esp=G.luta.b===UI.jog;UI.acc=0;UI.fimEm=0;UI.prev=null;UI.impIdx=0;UI.hoverU=null;marcar('jog','btn','topo','strip');
-  mostrarIntro();}
+  mostrarIntro();iniciarEntrada();}
 /* textos do banner de fim de rodada para o jogador p (o anfitrião também manda isto pronto aos convidados) */
 function descResultado(f,p,r){
   if(r.tipo==='car')return {t:'Carrossel',s:'Item escolhido',cor:'#d9b45a',sm:'',v:null,dano:0};
@@ -4261,7 +4319,7 @@ Online.hostRodada=function(){Online.prepFim=agoraMs()+UI.timerMax*1000;Online.ca
 function enviarLuta(cl,f){const p=cl.p;
   Online.tr.paraCliente(cl.cid,{t:'luta',rodada:G.rodada,nome:G.info.nome,A:eqSer(f.eqA),B:eqSer(f.eqB),mA:metaSer(f.eqA),mB:metaSer(f.eqB),seed:f.seed,pve:!!f.pve,lado:f.b===p?1:0,vs:f.pve?'':(f.a===p?f.b:f.a).nome,dur:f.dur});}
 Online.hostLutas=function(){let mx=0;Object.keys(G.lutas).forEach(id=>{mx=Math.max(mx,durLuta(G.lutas[id]));});
-  Online.combateFim=agoraMs()+(G.info.tipo==='car'?0:Math.max(mx,500)+2000+1300);        // a fase dura a luta mais longa entre humanos (+ folga para a latência)
+  Online.combateFim=agoraMs()+(G.info.tipo==='car'?0:Math.max(mx,500)+2000+1300+ENT_MS);        // a fase dura a luta mais longa entre humanos (+ folga para a latência)
   paraHumanos(cl=>{const f=G.lutas[cl.p.id];if(f)enviarLuta(cl,f);});};
 Online.hostRes=function(r){Online.resFim=agoraMs()+UI.resEm;
   paraHumanos(cl=>{const p=cl.p,f=G.lutas[p.id];
@@ -4340,7 +4398,7 @@ function guestRodada(m){const me=UI.jog;G.opoDe={};G.opoDe[me.id]=m.opo;G.opoEq=
 function guestLuta(m){if(UI.estado!=='fim')fecharTela();G.fase='combate';UI.fase='combate';if(UI.jog)consumirRunas(UI.jog);cancelarRuna(true);marcar('itens','topo');bencaoSinc();   // as runas armadas são gastas nesta luta (o anfitrião confirma no próximo snapshot)
   const C=criarCombate(eqDes(m.A,m.mA),eqDes(m.B,m.mB),{vis:true,seed:m.seed,pve:m.pve});C.esp=m.lado===1;
   UI.C=C;UI.acc=0;UI.fimEm=0;UI.prev=null;Online.lutasVistas++;UI.impIdx=0;UI.hoverU=null;sairEspiar();fecharEmotes();marcar('jog','btn','topo','strip');
-  mostrarIntro();}
+  mostrarIntro();iniciarEntrada();}
 function guestRes(m){if(UI.estado!=='fim')fecharTela();
   // o anfitrião decide: se a nossa animação ainda não acabou, termina agora (e confere se bate com o resultado oficial)
   const C=UI.C;if(C&&!C.fim){let n=0;while(!C.fim&&n++<2000)passo(C);}
@@ -4513,7 +4571,8 @@ function impactoUI(k,now){if(UI.reduz||UI.demo)return;if(k!=='final'&&now-(UI.im
 function laco(ts){requestAnimationFrame(laco);const dt=Math.min(100,ts-(UI.ultT||ts));UI.ultT=ts;const now=performance.now();
   const pausa=UI.pausado&&!Online.ativo;       // online não pausa
   if(UI.intro&&now>=UI.intro)fecharIntro();
-  const espera=now<UI.intro||now<UI.freezeAte;   // entrada da luta e congelamento de impacto: só o motor visual espera (o relógio do anfitrião é por setInterval)
+  if(UI.ent&&UI.ent.ini===null&&!UI.intro)UI.ent.ini=now;   // a entrada no tabuleiro começa quando o VS fecha (ou é pulado)
+  const espera=now<UI.intro||now<UI.freezeAte||emEntrada(now);   // entrada da luta e congelamento de impacto: só o motor visual espera (o relógio do anfitrião é por setInterval)
   if(UI.C&&!pausa&&(UI.demo||UI.estado==='jogo'&&UI.fase==='combate')){
     if(!espera){UI.acc=Math.min(UI.acc+dt*(UI.demo?.7:UI.vel)*(now<(UI.lentoAte||0)?.3:1),500);while(UI.acc>=100&&!UI.C.fim){passo(UI.C);UI.acc-=100;}}
     if(!UI.demo){const I=UI.C.imp;while(UI.impIdx<I.length){impactoUI(I[UI.impIdx++].k,now);}somCombate(UI.C,UI.C.t+UI.acc);somClimax(UI.C,UI.C.t+UI.acc);}
